@@ -1,0 +1,2 @@
+rootProject.name = "DailyCosmos"
+include ':app'

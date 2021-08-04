@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">DailyCosmos</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="today">Today</string>
+    <string name="explore">Explore</string>
+    <string name="search">Search</string>
+    <string name="content_description_cover_photo">This image is the cover photo of the application.</string>
+    <string name="favorite">favorite</string>
+    <string name="content_description_favorite">This icon redirects to the favorites fragment</string>
+    <string name="content_description_search">This icon shows the search bar to locate an object.</string>
+    <string name="more">more</string>
+    <string name="content_description_about_of">This option redirects you to the activity to learn about the application and the developer.</string>
+    <string name="about_of">About of</string>
+    <string name="contact">Contact</string>
+    <string name="content_description_contact">"This option redirects you to the activity to send an email to the developer. "</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="content_description_media_apod">This image is the picture of the cardview to display in the recycler view</string>
+    <string name="title_item_apod">Flemings Triangular Wisp</string>
+    <string name="supporting_text_item_apod">2021 July 27</string>
+    <string name="secondary_text_item_apod">Chaotic in appearance, these tangled filaments of shocked, glowing gas are spread across planet Earth\'s sky toward the constellation of Cygnus as part of the Veil Nebula. The Veil Nebula itself is a large supernova remnant, an expanding cloud born of the death explosion of a massive star. Light from the original supernova explosion likely reached Earth over 5,000 years ago. The glowing filaments are really more like long ripples in a sheet seen almost edge on, remarkably well separated into the glow of ionized hydrogen atoms shown in blue and oxygen in red hues. Also known as the Cygnus Loop and cataloged as NGC 6979, the Veil Nebula now spans about 6 times the diameter of the full Moon. The length of the wisp corresponds to about 30 light years, given its estimated distance of 2,400 light years. Often identified as Pickering\'s Triangle for a director of Harvard College Observatory, it is also named for its discoverer, astronomer Williamina Fleming, as Fleming\'s Triangular Wisp.</string>
+    <string name="action_1_item_apod">Add</string>
+    <string name="action_2_item_apod">Share</string>
+    <string name="content_description_shuffle" />
+    <string name="shuffle">Shuffle</string>
+    <string name="content_description_calendar" />
+    <string name="calendar">Calendar</string>
+    <string name="content_description_share" />
+    <string name="share">Share</string>
+    <string name="wait_for_the_image_to_load">Wait for the image to load</string>
+    <string name="picture_was_saved_successfully">Picture was saved successfully</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor, massa a lacinia fringilla, nibh mauris eleifend neque, vitae feugiat mauris mauris id nibh. Nulla pretium dapibus metus a pellentesque. Vestibulum suscipit leo sed ligula tincidunt, a vulputate libero mollis. Suspendisse neque libero, ultrices non quam quis, aliquam accumsan ante. Sed mauris libero, sollicitudin nec ultricies id, congue vel nisi. Fusce dictum purus sed augue egestas scelerisque. Vestibulum fermentum id ligula vel accumsan. Vestibulum id nulla hendrerit, tempor risus id, ullamcorper sem. Pellentesque non purus suscipit, pharetra ligula at, egestas elit. Aliquam erat volutpat. Integer eu ex lobortis, aliquet metus ut, sollicitudin lorem.</string>
+    <string name="no_description">No description</string>
+</resources>

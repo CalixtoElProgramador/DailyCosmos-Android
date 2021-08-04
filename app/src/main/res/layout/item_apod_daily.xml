@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackgroundDetail"
+    android:fitsSystemWindows="true">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar_details"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_300sdp"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:layout_scrollFlags="scroll|enterAlwaysCollapsed|snap"
+            app:statusBarScrim="?attr/colorPrimaryVariant">
+
+            <ProgressBar
+                android:id="@+id/pb_imageDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/img_apodPicture"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/content_description_cover_photo"
+                android:fitsSystemWindows="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/photo_cover" />
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBar"
+                style="@style/Widget.MaterialComponents.Toolbar.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                android:elevation="0dp"
+                app:layout_collapseMode="pin"
+                app:menu="@menu/top_app_bar_details">
+
+
+            </com.google.android.material.appbar.MaterialToolbar>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_apodDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_32sdp"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:gravity="center"
+                android:textSize="@dimen/_12sdp"
+                android:textStyle="bold"
+                tools:text="2021-07-31" />
+
+            <TextView
+                android:id="@+id/text_apodTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/_16sdp"
+                android:paddingEnd="@dimen/_16sdp"
+                android:textAlignment="center"
+                android:textIsSelectable="true"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:fontFamily="@font/pt_sans_bold"
+                android:textSize="@dimen/_28ssp"
+                android:textStyle="bold"
+                android:textColor="@color/colorSecondary"
+                tools:text="@string/title_item_apod" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="?attr/actionBarSize"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_apodExplanation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="@dimen/_8sdp"
+                    android:paddingStart="@dimen/_16sdp"
+                    android:textIsSelectable="true"
+                    android:paddingTop="@dimen/_40sdp"
+                    android:paddingEnd="@dimen/_16sdp"
+                    android:paddingBottom="@dimen/_16sdp"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    android:textColor="#7d7d7d"
+                    android:textSize="@dimen/_15ssp"
+                    tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor, massa a lacinia fringilla, nibh mauris eleifend neque, vitae feugiat mauris mauris id nibh. Nulla pretium dapibus metus a pellentesque. Vestibulum suscipit leo sed ligula tincidunt, a vulputate libero mollis. Suspendisse neque libero, ultrices non quam quis, aliquam accumsan ante. Sed mauris libero, sollicitudin nec ultricies id, congue vel nisi. Fusce dictum purus sed augue egestas scelerisque. Vestibulum fermentum id ligula vel accumsan. Vestibulum id nulla hendrerit, tempor risus id, ullamcorper sem. Pellentesque non purus suscipit, pharetra ligula at, egestas elit. Aliquam erat volutpat. Integer eu ex lobortis, aliquet metus ut, sollicitudin lorem." />
+
+                <TextView
+                    android:id="@+id/text_apodCopyright"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/_24sdp"
+                    android:textIsSelectable="true"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                    android:textColor="#7d7d7d"
+                    android:textSize="@dimen/_14ssp"
+                    tools:text="Copyright: Aarón Calixto" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_favorite_border"
+        app:layout_anchor="@id/appbar_details"
+        app:layout_anchorGravity="center|bottom" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_graph"
+    app:startDestination="@id/todayFragment">
+
+    <fragment
+        android:id="@+id/todayFragment"
+        android:name="com.listocalixto.dailycosmos.ui.main.today.TodayFragment"
+        android:label="fragment_today"
+        tools:layout="@layout/fragment_today">
+        <action
+            android:id="@+id/action_todayFragment_to_pictureFragment"
+            app:destination="@id/pictureFragment"
+            app:enterAnim="@anim/fade_in_main"
+            app:exitAnim="@anim/fade_out_main" />
+    </fragment>
+    <fragment
+        android:id="@+id/exploreFragment"
+        android:name="com.listocalixto.dailycosmos.ui.main.explore.ExploreFragment"
+        android:label="fragment_explorer"
+        tools:layout="@layout/fragment_explorer">
+        <action
+            android:id="@+id/action_exploreFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="com.listocalixto.dailycosmos.ui.main.item_details.DetailsFragment"
+        android:label="fragment_details"
+        tools:layout="@layout/fragment_details">
+        <argument
+            android:name="copyright"
+            app:argType="string" />
+        <argument
+            android:name="date"
+            app:argType="string" />
+        <argument
+            android:name="explanation"
+            app:argType="string" />
+        <argument
+            android:name="hdurl"
+            app:argType="string" />
+        <argument
+            android:name="media_type"
+            app:argType="string" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="url"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_detailsFragment_to_pictureFragment"
+            app:destination="@id/pictureFragment"
+            app:enterAnim="@anim/fade_in_main"
+            app:exitAnim="@anim/fade_out_main"
+            app:popEnterAnim="@anim/fade_in_main"
+            app:popExitAnim="@anim/fade_out_main" />
+    </fragment>
+    <fragment
+        android:id="@+id/pictureFragment"
+        android:name="com.listocalixto.dailycosmos.ui.main.PictureFragment"
+        android:label="fragment_picture"
+        tools:layout="@layout/fragment_picture" >
+    <argument
+        android:name="hdurl"
+        app:argType="string" />
+    <argument
+        android:name="title"
+        app:argType="string" />
+    <argument
+        android:name="url"
+        app:argType="string" />
+
+    </fragment>
+
+</navigation>

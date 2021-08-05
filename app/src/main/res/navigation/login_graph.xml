@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_graph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.listocalixto.dailycosmos.ui.auth.login.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_register01Fragment"
+            app:destination="@id/register01Fragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_loginFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/register01Fragment"
+        android:name="com.listocalixto.dailycosmos.ui.auth.register.Register01Fragment"
+        android:label="fragment_register01"
+        tools:layout="@layout/fragment_register01" >
+        <action
+            android:id="@+id/action_register01Fragment_to_register02Fragment"
+            app:destination="@id/register02Fragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/register02Fragment"
+        android:name="com.listocalixto.dailycosmos.ui.auth.register.Register02Fragment"
+        android:label="fragment_register02"
+        tools:layout="@layout/fragment_register02" >
+        <action
+            android:id="@+id/action_register02Fragment_to_register03Fragment"
+            app:destination="@id/register03Fragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/register03Fragment"
+        android:name="com.listocalixto.dailycosmos.ui.auth.register.Register03Fragment"
+        android:label="fragment_register03"
+        tools:layout="@layout/fragment_register03" >
+        <action
+            android:id="@+id/action_register03Fragment_to_successfulFragment"
+            app:destination="@id/successfulFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out"
+            app:popUpTo="@id/loginFragment" />
+        <action
+            android:id="@+id/action_register03Fragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/successfulFragment"
+        android:name="com.listocalixto.dailycosmos.ui.auth.successful.SuccessfulFragment"
+        android:label="fragment_successful"
+        tools:layout="@layout/fragment_successful" >
+        <action
+            android:id="@+id/action_successfulFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.listocalixto.dailycosmos.ui.main.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" />
+</navigation>

@@ -13,8 +13,10 @@
         <action
             android:id="@+id/action_todayFragment_to_pictureFragment"
             app:destination="@id/pictureFragment"
-            app:enterAnim="@anim/fade_in_main"
-            app:exitAnim="@anim/fade_out_main" />
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
     </fragment>
     <fragment
         android:id="@+id/exploreFragment"
@@ -26,8 +28,8 @@
             app:destination="@id/detailsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/detailsFragment"
@@ -58,10 +60,10 @@
         <action
             android:id="@+id/action_detailsFragment_to_pictureFragment"
             app:destination="@id/pictureFragment"
-            app:enterAnim="@anim/fade_in_main"
-            app:exitAnim="@anim/fade_out_main"
-            app:popEnterAnim="@anim/fade_in_main"
-            app:popExitAnim="@anim/fade_out_main" />
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
     </fragment>
     <fragment
         android:id="@+id/pictureFragment"

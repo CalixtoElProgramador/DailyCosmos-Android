@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/_4sdp"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/_16sdp"
+    android:paddingTop="?attr/actionBarSize"
+    android:paddingEnd="@dimen/_16sdp"
+    tools:context=".ui.auth.register.Register02Fragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/quicksand_regular"
+        android:includeFontPadding="false"
+        android:text="@string/create_a_password"
+        android:textColor="@color/colorTextPrimary"
+        android:textSize="@dimen/_24ssp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:fontFamily="@font/dosis_regular"
+        android:includeFontPadding="false"
+        android:lineSpacingExtra="@dimen/_2sdp"
+        android:text="@string/subtitle_register02"
+        android:textColor="@color/colorTextSecondary"
+        android:textSize="@dimen/_13ssp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/inputLayout_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_16sdp"
+        app:boxStrokeColor="#E650B1"
+        app:boxStrokeErrorColor="@color/colorErrorLogin"
+        app:counterEnabled="true"
+        app:endIconMode="password_toggle"
+        app:errorIconDrawable="@drawable/ic_error"
+        app:errorIconTint="@color/colorErrorLogin"
+        app:errorTextColor="@color/colorErrorLogin"
+        app:hintTextColor="#E650B1"
+        app:startIconDrawable="@drawable/ic_lock">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_password"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/dosis_regular"
+            android:hint="@string/password"
+            android:includeFontPadding="false"
+            android:inputType="textPassword"
+            android:singleLine="true" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/inputLayout_passwordConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_16sdp"
+        app:boxStrokeColor="#E650B1"
+        app:boxStrokeErrorColor="@color/colorErrorLogin"
+        app:counterEnabled="true"
+        app:endIconMode="password_toggle"
+        app:errorIconDrawable="@drawable/ic_error"
+        app:errorIconTint="@color/colorErrorLogin"
+        app:errorTextColor="@color/colorErrorLogin"
+        app:hintTextColor="#E650B1"
+        app:startIconDrawable="@drawable/ic_lock_outline">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_passwordConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/dosis_regular"
+            android:hint="@string/confirm_password"
+            android:includeFontPadding="false"
+            android:inputType="textPassword"
+            android:singleLine="true" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+</LinearLayout>

@@ -38,11 +38,11 @@ class UserDataSource {
         return authResult.user
     }
 
-    suspend fun isEmailRegister(email: String): Boolean {
-        val isRegister =
+    suspend fun isEmailRegistered(email: String): Boolean {
+        val isRegistered =
             FirebaseFirestore.getInstance().collection("users").whereEqualTo("email", email).get()
                 .await()
-        return isRegister.isEmpty
+        return isRegistered.isEmpty
     }
 
 }

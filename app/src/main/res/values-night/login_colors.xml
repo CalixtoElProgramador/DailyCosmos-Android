@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimaryLogin">#772A5C</color>
+    <color name="colorPrimaryVariantLogin">#310226</color>
+    <color name="colorOnPrimaryLogin">#FFF</color>
+
+    <color name="colorSecondaryLogin">#0188AE</color>
+    <color name="colorSecondaryVariantLogin">#0188AE</color>
+    <color name="colorOnSecondaryLogin">#FFF</color>
+
+    <color name="colorBackgroundLogin">#121212</color>
+    <color name="colorSurfaceLogin">#FFF</color>
+    <color name="colorErrorLogin">#CF6679</color>
+
+    <color name="colorOnBackgroundLogin">#000</color>
+    <color name="colorOnSurfaceLogin">#FFF</color>
+    <color name="colorOnErrorLogin">#FFF</color>
+
+</resources>

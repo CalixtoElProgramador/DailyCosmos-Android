@@ -20,7 +20,7 @@ class AuthRepoImpl(private val dataSource: UserDataSource) : AuthRepo {
         return dataSource.signUp(name, lastname, email, password, imageBitmap)
     }
 
-    override suspend fun isEmailRegister(email: String): Boolean {
-        return dataSource.isEmailRegister(email)
+    override suspend fun isEmailRegistered(email: String): Boolean {
+        return dataSource.isEmailRegistered(email)
     }
 }

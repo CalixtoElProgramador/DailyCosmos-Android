@@ -38,7 +38,7 @@ class AuthViewModel(private val repo: AuthRepo) : ViewModel() {
     fun isEmailRegister(email: String) = liveData(Dispatchers.IO) {
         emit(Result.Loading())
         try {
-            emit(Result.Success(repo.isEmailRegister(email)))
+            emit(Result.Success(repo.isEmailRegistered(email)))
         } catch (e: Exception) {
             emit(Result.Failure(e))
         }

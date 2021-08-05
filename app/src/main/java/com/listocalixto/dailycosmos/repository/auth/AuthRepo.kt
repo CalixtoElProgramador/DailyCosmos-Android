@@ -7,6 +7,6 @@ interface AuthRepo {
 
     suspend fun singIn(email: String, password: String): FirebaseUser?
     suspend fun signUp(name: String, lastname: String, email: String, password: String, imageBitmap: Bitmap): FirebaseUser?
-    suspend fun isEmailRegister(email: String): Boolean
+    suspend fun isEmailRegistered(email: String): Boolean
 
 }

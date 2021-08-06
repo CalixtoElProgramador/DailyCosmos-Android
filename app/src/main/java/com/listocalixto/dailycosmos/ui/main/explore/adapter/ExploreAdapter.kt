@@ -3,9 +3,11 @@ package com.listocalixto.dailycosmos.ui.main.explorer.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import com.listocalixto.dailycosmos.core.BaseDiffUtil
 import com.listocalixto.dailycosmos.core.BaseViewHolder
 import com.listocalixto.dailycosmos.data.model.APOD
@@ -19,6 +21,8 @@ class ExploreAdapter(
     interface OnAPODClickListener {
         fun onAPODClick(apod: APOD, binding: ItemApodBinding)
     }
+
+    private val firebaseAuth by lazy {FirebaseAuth.getInstance()}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
         val itemBinding =
@@ -59,6 +63,12 @@ class ExploreAdapter(
                 Glide.with(context).load(item.url).into(binding.imageItemAPOD)
             } else {
                 Glide.with(context).load(item.hdurl).into(binding.imageItemAPOD)
+            }
+
+            binding.favoritesItemAPOD.setOnClickListener{
+                if (firebaseAuth.currentUser?.isAnonymous == true) {
+                    Toast.makeText(context, "Función solo para registrados", Toast.LENGTH_SHORT).show()
+                }
             }
 
             binding.apply {

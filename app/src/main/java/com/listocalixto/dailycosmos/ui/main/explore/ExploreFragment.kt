@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.WindowManager
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -28,11 +29,12 @@ import com.listocalixto.dailycosmos.databinding.ItemApodBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Suppress("DEPRECATION")
 class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnAPODClickListener {
 
     @SuppressLint("SimpleDateFormat")
     private val sdf = SimpleDateFormat("yyyy-MM-dd")
-    private val viewModel by viewModels<APODViewModel> {
+    private val viewModel by activityViewModels<APODViewModel> {
         APODViewModelFactory(
             APODRepositoryImpl(
                 RemoteAPODDataSource(RetrofitClient.webservice),
@@ -58,6 +60,11 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     private lateinit var layoutManager: StaggeredGridLayoutManager
     private lateinit var newEndDate: Calendar
     private lateinit var newStartDate: Calendar
+
+    override fun onResume() {
+        super.onResume()
+        isLoading = false
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -98,14 +105,6 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
             ViewModelProvider(requireActivity()).get(DataStoreViewModel::class.java)
     }
 
-    private fun isAdapterInit() {
-        if (!::adapter.isInitialized) {
-            getResults(sdf.format(endDate.time), sdf.format(startDate.time))
-        } else {
-            binding.rvApod.adapter = adapter
-        }
-    }
-
     private fun configRecyclerView() {
         layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         binding.rvApod.layoutManager = layoutManager
@@ -122,6 +121,14 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         dataStoreViewModel.readLastDateFromDataStore.observe(viewLifecycleOwner, { date ->
             startDate.time = sdf.parse(date)!!
         })
+    }
+
+    private fun isAdapterInit() {
+        if (!::adapter.isInitialized) {
+            getResults(sdf.format(endDate.time), sdf.format(startDate.time))
+        } else {
+            binding.rvApod.adapter = adapter
+        }
     }
 
     private fun initNewDates() {

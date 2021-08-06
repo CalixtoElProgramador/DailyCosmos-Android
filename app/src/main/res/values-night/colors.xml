@@ -7,7 +7,7 @@
     <color name="colorOnPrimary">@color/white</color>
     <!-- Secondary brand color. -->
     <color name="colorSecondary">#ffc7e9</color>
-    <color name="colorSecondaryVariant">#e696b7</color>
+    <color name="colorSecondaryVariant">#ffc7e9</color>
     <color name="colorOnSecondary">#FF000000</color>
 
     <color name="colorBackground">#4D675A</color>

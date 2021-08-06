@@ -29,7 +29,7 @@
     <string name="share">Share</string>
     <string name="wait_for_the_image_to_load">Wait for the image to load</string>
     <string name="picture_was_saved_successfully">Picture was saved successfully</string>
-    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor, massa a lacinia fringilla, nibh mauris eleifend neque, vitae feugiat mauris mauris id nibh. Nulla pretium dapibus metus a pellentesque. Vestibulum suscipit leo sed ligula tincidunt, a vulputate libero mollis. Suspendisse neque libero, ultrices non quam quis, aliquam accumsan ante. Sed mauris libero, sollicitudin nec ultricies id, congue vel nisi. Fusce dictum purus sed augue egestas scelerisque. Vestibulum fermentum id ligula vel accumsan. Vestibulum id nulla hendrerit, tempor risus id, ullamcorper sem. Pellentesque non purus suscipit, pharetra ligula at, egestas elit. Aliquam erat volutpat. Integer eu ex lobortis, aliquet metus ut, sollicitudin lorem.</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor, massa a lacinia fringilla, nibh mauris eleifend neque, vitae feugiat mauris id nibh. Nulla pretium dapibus metus a pellentesque. Vestibulum suscipit leo sed ligula tincidunt, a vulputate libero mollis. Suspendisse neque libero, ultrices non quam quis, aliquam accumsan ante. Sed mauris libero, sollicitudin nec ultricies id, congue vel nisi. Fusce dictum purus sed augue egestas scelerisque. Vestibulum fermentum id ligula vel accumsan. Vestibulum id nulla hendrerit, tempor risus id, ullamcorper sem. Pellentesque non purus suscipit, pharetra ligula at, egestas elit. Aliquam erat volutpat. Integer eu ex lobortis, aliquet metus ut, sollicitudin lorem.</string>
     <string name="no_description">No description</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
@@ -56,4 +56,6 @@
     <string name="subtitle_register_03">Click on the icon above to select your profile picture.</string>
     <string name="error_no_photo_app">There is no app to take a photo</string>
     <string name="select_a_photo">Select a photo</string>
+    <string name="click_here_to_share_this_photo">Did you like the image? Click here to share</string>
+    <string name="enter_anonymously">Enter anonymously</string>
 </resources>

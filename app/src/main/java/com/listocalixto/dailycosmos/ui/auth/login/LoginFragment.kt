@@ -1,6 +1,7 @@
 package com.listocalixto.dailycosmos.ui.auth.login
 
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -41,7 +42,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             getPerson().value?.let { binding.inputEmail.setText(it.email) }
             getPassword().value?.let { binding.inputPassword.setText(it.passwrod) }
         }
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,9 +55,30 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             validateInputs()
         }
 
+        binding.textSingInAnon.setOnClickListener {
+            createAnonCount()
+            isEnabledViews(false)
+            firebaseAuth.signInAnonymously().addOnCompleteListener(requireActivity()) { task ->
+                if (task.isSuccessful) {
+                    isEnabledViews(true)
+                    Log.d("FirebaseAuth", "Usuario anónimo creado ")
+                    findNavController().navigate(R.id.action_loginFragment_to_mainActivity)
+                    requireActivity().finish()
+                } else {
+                    isEnabledViews(true)
+                    Log.d("FirebaseAuth", "Usuario anónimo NO creado: ${task.exception}")
+                    Toast.makeText(context, "Ha ocurrido un error... inténtalo más tarde", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
         binding.layoutTextRegister.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_register01Fragment)
         }
+    }
+
+    private fun createAnonCount() {
+
     }
 
     private fun setErrorEnabledAfterChanges() {
@@ -131,6 +152,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         binding.inputLayoutPassword.isEnabled = boolean
         binding.buttonSignIn.isEnabled = boolean
         binding.layoutTextRegister.isEnabled = boolean
+        binding.textSingInAnon.isEnabled = boolean
 
         if (!boolean) {
             binding.lottieLoading.visibility = View.VISIBLE

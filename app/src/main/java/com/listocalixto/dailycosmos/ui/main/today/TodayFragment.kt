@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -37,7 +38,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
 
     @SuppressLint("SimpleDateFormat")
     private val sdf = SimpleDateFormat("yyyy-MM-dd")
-    private val viewModel by viewModels<APODViewModel> {
+    private val viewModel by activityViewModels<APODViewModel> {
         APODViewModelFactory(
             APODRepositoryImpl(
                 RemoteAPODDataSource(RetrofitClient.webservice),
@@ -63,6 +64,11 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     private var isLoading = false
 
     private var sizeList: Int = 0
+
+    override fun onResume() {
+        super.onResume()
+        isLoading = false
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -111,12 +117,14 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                 when (result) {
                     is Result.Loading -> {
                         if (!::adapterToday.isInitialized) {
+                            binding.lottieLoading.visibility = View.VISIBLE
                             Log.d("ViewModelDaily", "Loading... Adapter is NOT Initialized")
                         } else {
                             Log.d("ViewModelDaily", "Loading... Adapter is Initialized")
                         }
                     }
                     is Result.Success -> {
+                        binding.lottieLoading.visibility = View.GONE
                         if (::adapterToday.isInitialized) {
                             sizeList += 10
                             adapterToday.setData(result.data)
@@ -132,6 +140,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                         Log.d("ViewModelDaily", "Results: ${result.data}")
                     }
                     is Result.Failure -> {
+                        binding.lottieLoading.visibility = View.GONE
                         Log.d("ViewModelDaily", "ViewModel error: ${result.exception}")
                     }
                 }

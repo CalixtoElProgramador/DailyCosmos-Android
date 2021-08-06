@@ -20,12 +20,16 @@
             app:layout_scrollFlags="scroll|enterAlwaysCollapsed|snap"
             app:statusBarScrim="?attr/colorPrimaryVariant">
 
-            <ProgressBar
+            <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/pb_imageDetails"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="@dimen/_80sdp"
                 android:layout_gravity="center"
-                android:visibility="visible" />
+                android:layout_marginTop="@dimen/_8sdp"
+                android:visibility="visible"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/planet_loading" />
 
             <ImageView
                 android:id="@+id/img_apodPicture"
@@ -43,8 +47,7 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@android:color/transparent"
                 android:elevation="0dp"
-                app:layout_collapseMode="pin"
-                app:menu="@menu/top_app_bar_details">
+                app:layout_collapseMode="pin">
 
 
             </com.google.android.material.appbar.MaterialToolbar>
@@ -78,37 +81,36 @@
                 android:id="@+id/text_apodTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/pt_sans_bold"
                 android:paddingStart="@dimen/_16sdp"
                 android:paddingEnd="@dimen/_16sdp"
                 android:textAlignment="center"
-                android:textIsSelectable="true"
                 android:textAppearance="?attr/textAppearanceHeadline6"
-                android:fontFamily="@font/pt_sans_bold"
+                android:textColor="@color/colorSecondary"
+                android:textIsSelectable="true"
                 android:textSize="@dimen/_28ssp"
                 android:textStyle="bold"
-                android:textColor="@color/colorSecondary"
                 tools:text="@string/title_item_apod" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="?attr/actionBarSize"
-                android:layout_marginBottom="@dimen/_8sdp"
-                android:orientation="vertical">
+                android:layout_marginBottom="@dimen/_32sdp"
+                android:orientation="vertical"
+                android:paddingBottom="?attr/actionBarSize">
 
                 <TextView
                     android:id="@+id/text_apodExplanation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_40sdp"
                     android:lineSpacingExtra="@dimen/_8sdp"
                     android:paddingStart="@dimen/_16sdp"
-                    android:textIsSelectable="true"
-                    android:paddingTop="@dimen/_40sdp"
                     android:paddingEnd="@dimen/_16sdp"
-                    android:paddingBottom="@dimen/_16sdp"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                    android:textColor="#7d7d7d"
+                    android:textColor="@color/colorTextSecondary"
+                    android:textIsSelectable="true"
                     android:textSize="@dimen/_15ssp"
                     tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor, massa a lacinia fringilla, nibh mauris eleifend neque, vitae feugiat mauris mauris id nibh. Nulla pretium dapibus metus a pellentesque. Vestibulum suscipit leo sed ligula tincidunt, a vulputate libero mollis. Suspendisse neque libero, ultrices non quam quis, aliquam accumsan ante. Sed mauris libero, sollicitudin nec ultricies id, congue vel nisi. Fusce dictum purus sed augue egestas scelerisque. Vestibulum fermentum id ligula vel accumsan. Vestibulum id nulla hendrerit, tempor risus id, ullamcorper sem. Pellentesque non purus suscipit, pharetra ligula at, egestas elit. Aliquam erat volutpat. Integer eu ex lobortis, aliquet metus ut, sollicitudin lorem." />
 
@@ -116,12 +118,12 @@
                     android:id="@+id/text_apodCopyright"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/_24sdp"
-                    android:textIsSelectable="true"
+                    android:layout_marginTop="@dimen/_32sdp"
                     android:textAlignment="center"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                    android:textColor="#7d7d7d"
-                    android:textSize="@dimen/_14ssp"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    android:textColor="@color/colorTextSecondary"
+                    android:textIsSelectable="true"
+                    android:textSize="@dimen/_15ssp"
                     tools:text="Copyright: Aarón Calixto" />
 
             </LinearLayout>

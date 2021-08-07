@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
-import android.view.WindowManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -57,8 +56,6 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     private lateinit var dataStoreViewModel: DataStoreViewModel
     private lateinit var adapter: ExploreAdapter
     private lateinit var layoutManager: StaggeredGridLayoutManager
-    private lateinit var newEndDate: Calendar
-    private lateinit var newStartDate: Calendar
 
     override fun onResume() {
         super.onResume()
@@ -68,11 +65,27 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initVars(view)
-        configWindow()
+        //configWindow()
         configRecyclerView()
         readFromDataStore()
         isAdapterInit()
         loadMoreResults()
+
+        binding.topAppBar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.settingsActivity -> {
+                    findNavController().navigate(R.id.action_exploreFragment_to_settingsActivity)
+                    true
+                }
+                else -> {
+                    false
+                }
+            }
+        }
+        binding.fabGoToFavorites.setOnClickListener {
+            findNavController().navigate(R.id.action_exploreFragment_to_favoritesFragment)
+        }
+
     }
 
     private fun loadMoreResults() {
@@ -89,8 +102,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                         Log.d("RecyclerView", "onScrolled: Second condition")
                         if ((visibleItemCount + pastVisibleItem[pastVisibleItem.lastIndex]) >= total) {
                             Log.d("RecyclerView", "onScrolled: Third condition")
-                            initNewDates()
-                            getResults(sdf.format(newEndDate.time), sdf.format(newStartDate.time))
+                            getResults(newDates()[0], newDates()[1])
                         }
                     }
                 }
@@ -109,16 +121,19 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         binding.rvApod.layoutManager = layoutManager
     }
 
-    private fun configWindow() {
+    /*private fun configWindow() {
         activity?.window?.addFlags((WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS))
         activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         activity?.window?.statusBarColor =
             requireActivity().resources.getColor(R.color.colorPrimaryVariant)
-    }
+    }*/
 
     private fun readFromDataStore() {
         dataStoreViewModel.readLastDateFromDataStore.observe(viewLifecycleOwner, { date ->
             startDate.time = sdf.parse(date)!!
+            /*if (sdf.format(referenceDate.time) == sdf.format(startDate.time)) {
+                binding.titleCollapsingToolBar.text = getString(R.string.title_explore_collapsing_toolbar)
+            }*/
         })
     }
 
@@ -130,8 +145,8 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         }
     }
 
-    private fun initNewDates() {
-        newEndDate = Calendar.getInstance().apply {
+    private fun newDates(): Array<String> {
+        val newEndDate = Calendar.getInstance().apply {
             set(
                 startDate.get(Calendar.YEAR),
                 startDate.get(Calendar.MONTH),
@@ -139,7 +154,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
             )
             add(Calendar.DATE, -1)
         }
-        newStartDate = Calendar.getInstance().apply {
+        val newStartDate = Calendar.getInstance().apply {
             set(
                 startDate.get(Calendar.YEAR),
                 startDate.get(Calendar.MONTH),
@@ -147,6 +162,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
             )
             add(Calendar.DATE, -10)
         }
+        return arrayOf(sdf.format(newEndDate.time), sdf.format(newStartDate.time))
     }
 
     private fun getResults(end: String, start: String) {
@@ -169,7 +185,6 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                             adapter.setData(result.data)
                             dataStoreViewModel.saveLastDateToDataStore(result.data[result.data.lastIndex].date)
                             binding.pbMoreResults.visibility = View.GONE
-                            saveToDataStore()
                             Log.d("ViewModel", "Result... Adapter is Initialized")
                         } else {
                             Log.d("ViewModel", "Result... Adapter is NOT Initialized")
@@ -185,10 +200,6 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                     }
                 }
             })
-    }
-
-    private fun saveToDataStore() {
-
     }
 
     override fun onAPODClick(apod: APOD, binding: ItemApodBinding) {

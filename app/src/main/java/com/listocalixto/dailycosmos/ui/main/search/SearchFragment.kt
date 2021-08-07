@@ -17,7 +17,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSearchBinding.bind(view)
 
-        configWindow()
+        //configWindow()
     }
 
     private fun configWindow() {

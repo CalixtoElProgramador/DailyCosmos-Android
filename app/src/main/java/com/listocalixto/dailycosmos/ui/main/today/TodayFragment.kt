@@ -8,7 +8,6 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
@@ -50,11 +49,12 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
             )
         )
     }
-
     private val viewModelFavorite by activityViewModels<APODFavoriteViewModel> {
         APODFavoriteViewModelFactory(APODFavoriteRepositoryImpl(RemoteAPODFavoriteDataSource()))
     }
 
+    private var isLoading = false
+    private var sizeList: Int = 0
     private var endDate: Calendar = Calendar.getInstance()
     private var startDate: Calendar = Calendar.getInstance().apply {
         set(
@@ -68,10 +68,6 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     private lateinit var binding: FragmentTodayBinding
     private lateinit var dataStoreViewModel: DataStoreViewModel
     private lateinit var adapterToday: TodayAdapter
-    private lateinit var newStartDate: Calendar
-    private var isLoading = false
-
-    private var sizeList: Int = 0
 
     override fun onResume() {
         super.onResume()
@@ -228,7 +224,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
             )
             add(Calendar.DATE, -1)
         }
-        newStartDate = Calendar.getInstance().apply {
+        val newStartDate = Calendar.getInstance().apply {
             set(
                 startDate.get(Calendar.YEAR),
                 startDate.get(Calendar.MONTH),

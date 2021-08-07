@@ -73,4 +73,7 @@
     <string name="settings">Settings</string>
     <string name="random">Random</string>
     <string name="content_description_settings">This option is intended to go to the application settings fragment.</string>
+    <string name="title_explore_collapsing_toolbar">Find wonderful images of the cosmos and add them to your favorites</string>
+    <string name="subtitle_explore_collapsing_toolbar">From June 16, 1995 to the present</string>
+    <string name="helper_text_search_view">Click on the icon to search</string>
 </resources>

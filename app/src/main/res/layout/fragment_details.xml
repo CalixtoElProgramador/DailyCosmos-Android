@@ -17,6 +17,7 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/colorBackground"
             android:fitsSystemWindows="true"
             app:layout_scrollFlags="scroll|enterAlwaysCollapsed|snap"
             app:statusBarScrim="?attr/colorPrimaryVariant">
@@ -81,8 +82,8 @@
                 android:id="@+id/text_apodTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/_16sdp"
                 android:fontFamily="@font/pt_sans_bold"
+                android:paddingStart="@dimen/_16sdp"
                 android:paddingEnd="@dimen/_16sdp"
                 android:textAlignment="center"
                 android:textAppearance="?attr/textAppearanceHeadline6"

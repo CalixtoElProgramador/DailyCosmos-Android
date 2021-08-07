@@ -3,6 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/random"
+        android:enabled="true"
+        android:icon="@drawable/ic_shuffle"
+        android:title="@string/random"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/calendar"
+        android:enabled="true"
+        android:icon="@drawable/ic_calendar"
+        android:title="@string/calendar"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/settingsActivity"
         android:contentDescription="@string/content_description_settings"
         android:title="@string/settings"

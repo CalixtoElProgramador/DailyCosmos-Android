@@ -13,10 +13,12 @@ import android.os.Environment
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.databinding.FragmentPictureBinding
 import java.io.*
@@ -145,11 +147,12 @@ class PictureFragment : Fragment(R.layout.fragment_picture) {
 
         val saved: Boolean? = bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, outPutStream)
         if (saved == true) {
-            Toast.makeText(
-                context,
-                getString(R.string.picture_was_saved_successfully),
-                Toast.LENGTH_SHORT
+            Snackbar.make(
+                binding.btnSaveImage,
+                R.string.picture_was_saved_successfully,
+                Snackbar.LENGTH_LONG
             ).show()
+
         }
 
         if (outPutStream != null) {

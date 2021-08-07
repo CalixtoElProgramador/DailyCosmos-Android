@@ -10,7 +10,7 @@
     <color name="colorSecondaryVariant">#ffc7e9</color>
     <color name="colorOnSecondary">#FF000000</color>
 
-    <color name="colorBackground">#4D675A</color>
+    <color name="colorBackground">#121212</color>
     <color name="colorSurface">#121212</color>
 
     <color name="colorBackgroundDetail">#190F14</color>

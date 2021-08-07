@@ -13,7 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.listocalixto.dailycosmos.R
-import com.listocalixto.dailycosmos.data.remote.auth.UserDataSource
+import com.listocalixto.dailycosmos.data.remote.auth.AuthDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentLoginBinding
 import com.listocalixto.dailycosmos.presentation.auth.AuthViewModel
 import com.listocalixto.dailycosmos.presentation.auth.AuthViewModelFactory
@@ -28,7 +28,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     private lateinit var binding: FragmentLoginBinding
     private val viewModelShared: RegisterViewModel by activityViewModels()
     private val viewModel by viewModels<AuthViewModel> {
-        AuthViewModelFactory(AuthRepoImpl(UserDataSource()))
+        AuthViewModelFactory(AuthRepoImpl(AuthDataSource()))
     }
     private val firebaseAuth by lazy { FirebaseAuth.getInstance() }
 

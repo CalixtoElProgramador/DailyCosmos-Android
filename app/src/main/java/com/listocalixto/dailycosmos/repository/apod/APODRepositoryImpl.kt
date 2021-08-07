@@ -14,7 +14,7 @@ class APODRepositoryImpl(
     override suspend fun getResults(endDate: String, startDate: String): List<APOD> {
         return if (InternetCheck.isNetworkAvailable()) {
             dataSourceRemote.getResults(endDate, startDate).asReversed().forEach { apod ->
-                dataSourceLocal.saveAPOD(apod.toAPODEntity())
+                dataSourceLocal.saveAPOD(apod.toAPODEntity(0))
             }
             dataSourceLocal.getResults()
         } else {

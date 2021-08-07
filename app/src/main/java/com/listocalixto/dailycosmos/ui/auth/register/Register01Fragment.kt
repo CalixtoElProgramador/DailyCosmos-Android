@@ -16,7 +16,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
 import com.listocalixto.dailycosmos.R
-import com.listocalixto.dailycosmos.data.remote.auth.UserDataSource
+import com.listocalixto.dailycosmos.data.remote.auth.AuthDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentRegister01Binding
 import com.listocalixto.dailycosmos.presentation.auth.AuthViewModel
 import com.listocalixto.dailycosmos.presentation.auth.AuthViewModelFactory
@@ -31,7 +31,7 @@ class Register01Fragment : Fragment(R.layout.fragment_register01) {
     private val patternEmail = Patterns.EMAIL_ADDRESS.toRegex()
     private val viewModelShared: RegisterViewModel by activityViewModels()
     private val viewModel by viewModels<AuthViewModel> {
-        AuthViewModelFactory(AuthRepoImpl(UserDataSource()))
+        AuthViewModelFactory(AuthRepoImpl(AuthDataSource()))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

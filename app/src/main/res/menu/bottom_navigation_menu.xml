@@ -6,18 +6,30 @@
         android:id="@+id/todayFragment"
         android:enabled="true"
         android:icon="@drawable/ic_today"
-        android:title="@string/today"/>
+        android:title="@string/today" />
 
     <item
         android:id="@+id/exploreFragment"
         android:enabled="true"
         android:icon="@drawable/ic_explore"
-        android:title="@string/explore"/>
+        android:title="@string/explore" />
 
     <item
-        android:id="@+id/page_3"
+        android:id="@+id/favoritesFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_favorite"
+        android:title="@string/favorite" />
+
+    <item
+        android:id="@+id/randomFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_shuffle"
+        android:title="@string/random" />
+
+    <item
+        android:id="@+id/searchFragment"
         android:enabled="true"
         android:icon="@drawable/ic_search"
-        android:title="@string/search"/>
+        android:title="@string/search" />
 
 </menu>

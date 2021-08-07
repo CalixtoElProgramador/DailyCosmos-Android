@@ -30,6 +30,9 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_exploreFragment_to_settingsActivity"
+            app:destination="@id/settingsActivity" />
     </fragment>
     <fragment
         android:id="@+id/detailsFragment"
@@ -81,5 +84,46 @@
         app:argType="string" />
 
     </fragment>
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.listocalixto.dailycosmos.ui.main.favorites.FavoritesFragment"
+        android:label="fragment_favorites"
+        tools:layout="@layout/fragment_favorites" >
+        <action
+            android:id="@+id/action_favoritesFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+        <action
+            android:id="@+id/action_favoritesFragment_to_settingsActivity"
+            app:destination="@id/settingsActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/randomFragment"
+        android:name="com.listocalixto.dailycosmos.ui.main.random.RandomFragment"
+        android:label="fragment_random"
+        tools:layout="@layout/fragment_random" >
+        <action
+            android:id="@+id/action_randomFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+        <action
+            android:id="@+id/action_randomFragment_to_settingsActivity"
+            app:destination="@id/settingsActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.listocalixto.dailycosmos.ui.main.search.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_settingsActivity"
+            app:destination="@id/settingsActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/settingsActivity"
+        android:name="com.listocalixto.dailycosmos.ui.settings.SettingsActivity"
+        android:label="activity_settings"
+        tools:layout="@layout/activity_settings" />
 
 </navigation>

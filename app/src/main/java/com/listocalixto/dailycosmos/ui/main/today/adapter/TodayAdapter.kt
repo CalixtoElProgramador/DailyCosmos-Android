@@ -8,18 +8,25 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.core.BaseViewHolder
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.databinding.ItemApodDailyBinding
 import com.listocalixto.dailycosmos.core.BaseDiffUtil
 
+@Suppress("CAST_NEVER_SUCCEEDS")
 class TodayAdapter(
     private var apodList: List<APOD>,
-    private val itemClickListener: OnImageAPODClickListener
+    private val imageClickListener: OnImageAPODClickListener,
+    private val fabClickListener: OnFabClickListener
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
     interface OnImageAPODClickListener {
         fun onImageClick(apod: APOD, itemBinding: ItemApodDailyBinding)
+    }
+
+    interface OnFabClickListener {
+        fun onFabClick(apod: APOD, itemBinding: ItemApodDailyBinding, position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
@@ -31,7 +38,14 @@ class TodayAdapter(
             val position =
                 holder.bindingAdapterPosition.takeIf { it != DiffUtil.DiffResult.NO_POSITION }
                     ?: return@setOnClickListener
-            itemClickListener.onImageClick(apodList[position], itemBinding)
+            imageClickListener.onImageClick(apodList[position], itemBinding)
+        }
+
+        itemBinding.fabAddAPODFavorites.setOnClickListener {
+            val position =
+                holder.bindingAdapterPosition.takeIf { it != DiffUtil.DiffResult.NO_POSITION }
+                    ?: return@setOnClickListener
+            fabClickListener.onFabClick(apodList[position], itemBinding, position)
         }
         return holder
     }
@@ -46,6 +60,7 @@ class TodayAdapter(
 
     override fun getItemCount(): Int = apodList.size
 
+
     fun setData(newAPODList: List<APOD>) {
         val diffUtil = BaseDiffUtil(apodList, newAPODList)
         val diffResults = DiffUtil.calculateDiff(diffUtil)
@@ -58,6 +73,7 @@ class TodayAdapter(
         val context: Context
     ) :
         BaseViewHolder<APOD>(binding.root) {
+
         @SuppressLint("SetTextI18n")
         override fun bind(item: APOD) {
             if (item.hdurl.isEmpty()) {
@@ -67,6 +83,7 @@ class TodayAdapter(
             }
             binding.textApodTitle.text = item.title
             binding.textApodDate.text = item.date
+
             if (item.explanation.isEmpty()) {
                 binding.textApodExplanation.text = "No description"
             } else {
@@ -77,8 +94,11 @@ class TodayAdapter(
             } else {
                 binding.textApodCopyright.text = "Copyright: ${item.copyright}"
             }
+            if (item.is_favorite == 0) {
+                binding.fabAddAPODFavorites.setImageResource(R.drawable.ic_favorite_border)
+            } else {
+                binding.fabAddAPODFavorites.setImageResource(R.drawable.ic_favorite)
+            }
         }
-
     }
-
 }

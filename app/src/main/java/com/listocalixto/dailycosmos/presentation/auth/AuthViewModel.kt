@@ -43,6 +43,16 @@ class AuthViewModel(private val repo: AuthRepo) : ViewModel() {
             emit(Result.Failure(e))
         }
     }
+
+    fun getCurrentUser() = liveData(Dispatchers.IO) {
+        emit(Result.Loading())
+        try {
+            emit(Result.Success(repo.getCurrentUser()))
+        } catch (e: Exception) {
+            emit(Result.Failure(e))
+        }
+    }
+
 }
 
 @Suppress("UNCHECKED_CAST")

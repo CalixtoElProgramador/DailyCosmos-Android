@@ -9,7 +9,7 @@ import com.listocalixto.dailycosmos.data.model.User
 import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayOutputStream
 
-class UserDataSource {
+class AuthDataSource {
 
     suspend fun signIn(email: String, password: String): FirebaseUser? {
         val authResult =
@@ -45,4 +45,11 @@ class UserDataSource {
         return isRegistered.isEmpty
     }
 
+    suspend fun getCurrentUser(): User? {
+        val user = FirebaseAuth.getInstance().currentUser
+        val querySnapshot =
+            FirebaseFirestore.getInstance().collection("users").document("${user?.uid}").get()
+                .await()
+        return querySnapshot.toObject(User::class.java)
+    }
 }

@@ -17,8 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="?attr/actionBarSize"
         android:paddingStart="@dimen/_8sdp"
+        android:paddingTop="?attr/actionBarSize"
         android:paddingEnd="@dimen/_8sdp">
 
         <ImageButton
@@ -35,6 +35,16 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/btn_copyLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/app_name"
+            android:padding="@dimen/_8sdp"
+            android:src="@drawable/ic_link"
+            app:tint="@color/white" />
 
         <ImageButton
             android:id="@+id/btn_saveImage"
@@ -55,6 +65,7 @@
             android:padding="@dimen/_8sdp"
             android:src="@drawable/ic_share"
             app:tint="@color/white" />
+
 
     </LinearLayout>
 

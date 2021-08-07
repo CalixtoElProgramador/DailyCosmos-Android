@@ -15,7 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
 import com.listocalixto.dailycosmos.R
-import com.listocalixto.dailycosmos.data.remote.auth.UserDataSource
+import com.listocalixto.dailycosmos.data.remote.auth.AuthDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentRegister03Binding
 import com.listocalixto.dailycosmos.presentation.auth.AuthViewModel
 import com.listocalixto.dailycosmos.presentation.auth.AuthViewModelFactory
@@ -29,7 +29,7 @@ class Register03Fragment : Fragment(R.layout.fragment_register03) {
 
     private val viewModelShared: RegisterViewModel by activityViewModels()
     private val viewModelFirebase by viewModels<AuthViewModel> {
-        AuthViewModelFactory(AuthRepoImpl(UserDataSource()))
+        AuthViewModelFactory(AuthRepoImpl(AuthDataSource()))
     }
 
     private var bitmap: Bitmap? = null

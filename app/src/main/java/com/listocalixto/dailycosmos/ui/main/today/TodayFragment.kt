@@ -26,7 +26,11 @@ import com.listocalixto.dailycosmos.ui.main.today.adapter.TodayAdapter
 import java.text.SimpleDateFormat
 import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.model.APOD
+import com.listocalixto.dailycosmos.data.remote.apod_favorite.RemoteAPODFavoriteDataSource
 import com.listocalixto.dailycosmos.databinding.ItemApodDailyBinding
+import com.listocalixto.dailycosmos.presentation.apod_favorite.APODFavoriteViewModel
+import com.listocalixto.dailycosmos.presentation.apod_favorite.APODFavoriteViewModelFactory
+import com.listocalixto.dailycosmos.repository.apod_favorite.APODFavoriteRepositoryImpl
 import java.util.*
 import kotlin.math.abs
 
@@ -34,7 +38,7 @@ private const val MIN_SCALE = 0.75f
 
 @Suppress("DEPRECATION")
 class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPODClickListener,
-    ViewPager2.PageTransformer {
+    ViewPager2.PageTransformer, TodayAdapter.OnFabClickListener {
 
     @SuppressLint("SimpleDateFormat")
     private val sdf = SimpleDateFormat("yyyy-MM-dd")
@@ -45,6 +49,10 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                 LocalAPODDataSource(AppDatabase.getDatabase(requireContext()).apodDao())
             )
         )
+    }
+
+    private val viewModelFavorite by activityViewModels<APODFavoriteViewModel> {
+        APODFavoriteViewModelFactory(APODFavoriteRepositoryImpl(RemoteAPODFavoriteDataSource()))
     }
 
     private var endDate: Calendar = Calendar.getInstance()
@@ -133,7 +141,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                             Log.d("ViewModelDaily", "Result... Adapter is Initialized")
                         } else {
                             Log.d("ViewModelDaily", "Result... Adapter is NOT Initialized")
-                            adapterToday = TodayAdapter(result.data, this@TodayFragment)
+                            adapterToday = TodayAdapter(result.data, this@TodayFragment, this@TodayFragment)
                             binding.vpPhotoToday.adapter = adapterToday
                         }
                         isLoading = false
@@ -163,7 +171,6 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
             )
             findNavController().navigate(action)
         }
-
     }
 
     override fun transformPage(page: View, position: Float) {
@@ -200,6 +207,9 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     private fun loadMoreResults() {
         Log.d("ViewPager2", "Position of the ViewPager: ${binding.vpPhotoToday.currentItem}")
         Log.d("ViewPager2", "List size: $sizeList")
+
+
+
         if (!isLoading) {
             Log.d("ViewPager2", "isLoading: $isLoading")
             if (binding.vpPhotoToday.currentItem >= sizeList - 6) {
@@ -227,5 +237,22 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
             add(Calendar.DATE, -10)
         }
         return arrayOf(sdf.format(newEndDate.time), sdf.format(newStartDate.time))
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    override fun onFabClick(apod: APOD, itemBinding: ItemApodDailyBinding, position: Int) {
+        viewModelFavorite.setAPODFavorite(apod).observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Result.Loading -> {
+                    Log.d("Favorite", "Loading... ")
+                }
+                is Result.Success -> {
+                    Log.d("Favorite", "Se subió exitosamente ")
+                }
+                is Result.Failure -> {
+                    Log.d("Favorite", "No se subió. Error: ${result.exception}")
+                }
+            }
+        })
     }
 }

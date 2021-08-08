@@ -20,9 +20,10 @@ import com.listocalixto.dailycosmos.presentation.apod.APODViewModelFactory
 import com.listocalixto.dailycosmos.presentation.apod.DataStoreViewModel
 import com.listocalixto.dailycosmos.repository.apod.APODRepositoryImpl
 import com.listocalixto.dailycosmos.repository.apod.RetrofitClient
-import com.listocalixto.dailycosmos.ui.main.explorer.adapter.ExploreAdapter
+import com.listocalixto.dailycosmos.ui.main.explore.adapter.ExploreAdapter
 import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.model.APOD
+import com.listocalixto.dailycosmos.data.remote.apod_favorite.RemoteAPODFavoriteDataSource
 import com.listocalixto.dailycosmos.databinding.ItemApodBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -36,7 +37,8 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         APODViewModelFactory(
             APODRepositoryImpl(
                 RemoteAPODDataSource(RetrofitClient.webservice),
-                LocalAPODDataSource(AppDatabase.getDatabase(requireContext()).apodDao())
+                LocalAPODDataSource(AppDatabase.getDatabase(requireContext()).apodDao()),
+                RemoteAPODFavoriteDataSource()
             )
         )
     }
@@ -83,7 +85,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
             }
         }
         binding.fabGoToFavorites.setOnClickListener {
-            findNavController().navigate(R.id.action_exploreFragment_to_favoritesFragment)
+
         }
 
     }
@@ -210,7 +212,8 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
             apod.hdurl,
             apod.media_type,
             apod.title,
-            apod.url
+            apod.url,
+            apod.is_favorite
         )
         findNavController().navigate(action)
 

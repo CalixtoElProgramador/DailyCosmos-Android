@@ -45,7 +45,8 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
         APODViewModelFactory(
             APODRepositoryImpl(
                 RemoteAPODDataSource(RetrofitClient.webservice),
-                LocalAPODDataSource(AppDatabase.getDatabase(requireContext()).apodDao())
+                LocalAPODDataSource(AppDatabase.getDatabase(requireContext()).apodDao()),
+                RemoteAPODFavoriteDataSource()
             )
         )
     }
@@ -137,7 +138,8 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                             Log.d("ViewModelDaily", "Result... Adapter is Initialized")
                         } else {
                             Log.d("ViewModelDaily", "Result... Adapter is NOT Initialized")
-                            adapterToday = TodayAdapter(result.data, this@TodayFragment, this@TodayFragment)
+                            adapterToday =
+                                TodayAdapter(result.data, this@TodayFragment, this@TodayFragment)
                             binding.vpPhotoToday.adapter = adapterToday
                         }
                         isLoading = false

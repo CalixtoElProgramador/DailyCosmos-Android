@@ -58,8 +58,8 @@
                     android:textSize="@dimen/_14ssp" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:id="@+id/inputLayout_search"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_16sdp"
@@ -101,7 +101,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_16sdp"
         android:contentDescription="@string/app_name"
-        android:src="@drawable/ic_favorite"
+        android:src="@drawable/ic_calendar"
         app:fabSize="mini"
         app:layout_anchor="@id/appBar_explorer"
         app:layout_anchorGravity="bottom|start" />

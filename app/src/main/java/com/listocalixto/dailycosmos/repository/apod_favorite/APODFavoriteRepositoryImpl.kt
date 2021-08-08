@@ -13,5 +13,5 @@ class APODFavoriteRepositoryImpl(private val dataSource: RemoteAPODFavoriteDataS
         dataSource.setAPODFavorite(apod)
     }
 
-    override suspend fun getAPODFavorites(): Result<List<APODFavoriteEntity>> = dataSource.getAPODFavorites()
+    override suspend fun getAPODFavorites(): List<APODFavoriteEntity> = dataSource.getAPODFavorites()
 }

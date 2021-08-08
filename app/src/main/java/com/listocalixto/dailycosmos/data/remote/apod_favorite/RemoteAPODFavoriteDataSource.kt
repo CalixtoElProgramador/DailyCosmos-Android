@@ -28,7 +28,7 @@ class RemoteAPODFavoriteDataSource {
         }
     }
 
-    suspend fun getAPODFavorites(): Result<List<APODFavoriteEntity>> {
+    suspend fun getAPODFavorites(): List<APODFavoriteEntity> {
         val user = FirebaseAuth.getInstance().currentUser
         val favoritesList = mutableListOf<APODFavoriteEntity>()
         val querySnapshot =
@@ -39,6 +39,6 @@ class RemoteAPODFavoriteDataSource {
                 favoritesList.add(it)
             }
         }
-        return Result.Success(favoritesList)
+        return favoritesList
     }
 }

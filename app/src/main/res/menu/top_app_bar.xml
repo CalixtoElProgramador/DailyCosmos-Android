@@ -10,13 +10,6 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/calendar"
-        android:enabled="true"
-        android:icon="@drawable/ic_calendar"
-        android:title="@string/calendar"
-        app:showAsAction="ifRoom" />
-
-    <item
         android:id="@+id/settingsActivity"
         android:contentDescription="@string/content_description_settings"
         android:title="@string/settings"

@@ -8,6 +8,6 @@ interface APODFavoriteRepository {
 
     suspend fun setAPODFavorite(apod: APOD)
 
-    suspend fun getAPODFavorites(): Result<List<APODFavoriteEntity>>
+    suspend fun getAPODFavorites(): List<APODFavoriteEntity>
 
 }

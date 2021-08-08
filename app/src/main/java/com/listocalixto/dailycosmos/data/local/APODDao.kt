@@ -1,6 +1,7 @@
 package com.listocalixto.dailycosmos.data.local
 
 import androidx.room.*
+import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.data.model.APODEntity
 
 @Dao
@@ -11,5 +12,8 @@ interface APODDao {
 
     @Insert(onConflict= OnConflictStrategy.IGNORE)
     suspend fun saveAPOD(apod: APODEntity)
+
+    @Update(entity = APODEntity::class)
+    suspend fun updateFavorite(apod: APODEntity)
 
 }

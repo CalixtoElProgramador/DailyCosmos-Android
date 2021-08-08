@@ -14,4 +14,10 @@
         android:icon="@drawable/ic_explore"
         android:title="@string/explore" />
 
+    <item
+        android:id="@+id/favoritesFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_favorite"
+        android:title="@string/favorite" />
+
 </menu>

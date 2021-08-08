@@ -1,4 +1,4 @@
-package com.listocalixto.dailycosmos.ui.main.explorer.adapter
+package com.listocalixto.dailycosmos.ui.main.explore.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
+import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.core.BaseDiffUtil
 import com.listocalixto.dailycosmos.core.BaseViewHolder
 import com.listocalixto.dailycosmos.data.model.APOD
@@ -22,7 +23,6 @@ class ExploreAdapter(
         fun onAPODClick(apod: APOD, binding: ItemApodBinding)
     }
 
-    private val firebaseAuth by lazy {FirebaseAuth.getInstance()}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
         val itemBinding =
@@ -65,16 +65,17 @@ class ExploreAdapter(
                 Glide.with(context).load(item.hdurl).into(binding.imageItemAPOD)
             }
 
-            binding.favoritesItemAPOD.setOnClickListener{
-                if (firebaseAuth.currentUser?.isAnonymous == true) {
-                    Toast.makeText(context, "Función solo para registrados", Toast.LENGTH_SHORT).show()
-                }
-            }
-
             binding.apply {
                 titleItemAPOD.text = item.title
                 dateItemAPOD.text = item.date
             }
+
+            if (item.is_favorite == 0) {
+                binding.favoritesItemAPOD.setImageResource(R.drawable.ic_favorite_border)
+            } else {
+                binding.favoritesItemAPOD.setImageResource(R.drawable.ic_favorite)
+            }
+
         }
     }
 

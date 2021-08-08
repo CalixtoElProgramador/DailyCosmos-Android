@@ -53,6 +53,11 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
     @SuppressLint("SetTextI18n")
     private fun setInformation() {
+        if (args.isFavorite == 1) {
+            binding.fabAddAPODFavorites.setImageResource(R.drawable.ic_favorite)
+        } else {
+            binding.fabAddAPODFavorites.setImageResource(R.drawable.ic_favorite_border)
+        }
         if (args.hdurl.isEmpty()) {
             Glide.with(requireContext()).load(args.url).into(binding.imgApodPicture)
         } else {

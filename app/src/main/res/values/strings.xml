@@ -76,4 +76,5 @@
     <string name="title_explore_collapsing_toolbar">Find wonderful images of the cosmos and add them to your favorites</string>
     <string name="subtitle_explore_collapsing_toolbar">From June 16, 1995 to the present</string>
     <string name="helper_text_search_view">Click on the icon to search</string>
+    <string name="image_favorite">Image favorite</string>
 </resources>

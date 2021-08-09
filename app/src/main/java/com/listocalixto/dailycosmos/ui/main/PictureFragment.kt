@@ -1,10 +1,10 @@
 package com.listocalixto.dailycosmos.ui.main
 
-import android.content.ContentResolver
-import android.content.ContentValues
+import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
@@ -18,6 +18,8 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.snackbar.Snackbar
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.databinding.FragmentPictureBinding
@@ -29,7 +31,6 @@ const val REQUEST_PERMISSION_WRITE_STORAGE = 200
 class PictureFragment : Fragment(R.layout.fragment_picture) {
 
     private lateinit var binding: FragmentPictureBinding
-    private var drawable: BitmapDrawable? = null
     private var bitmap: Bitmap? = null
 
     private val args by navArgs<PictureFragmentArgs>()
@@ -38,15 +39,48 @@ class PictureFragment : Fragment(R.layout.fragment_picture) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentPictureBinding.bind(view)
 
-        if (args.hdurl.isEmpty()) {
-            Glide.with(requireContext()).load(args.url).into(binding.photoView)
+        if (args.hdurl.isNotEmpty()) {
+            //Glide.with(requireContext()).load(args.url).into(binding.photoView)
+            Glide.with(requireContext()).asBitmap().load(args.hdurl)
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: Transition<in Bitmap>?
+                    ) {
+                        binding.photoView.setImageBitmap(resource)
+                        bitmap = resource
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {
+                        binding.photoView.setImageBitmap(bitmap)
+                    }
+                })
+
         } else {
-            Glide.with(requireContext()).load(args.hdurl).into(binding.photoView)
+            //Glide.with(requireContext()).load(args.hdurl).into(binding.photoView)
+            Glide.with(requireContext()).asBitmap().load(args.hdurl)
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: Transition<in Bitmap>?
+                    ) {
+                        binding.photoView.setImageBitmap(resource)
+                        bitmap = resource
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {
+                        binding.photoView.setImageBitmap(bitmap)
+                    }
+                })
         }
 
         binding.btnBack.setOnClickListener {
             activity?.onBackPressed()
         }
+
+        binding.btnCopyLink.setOnClickListener {copyLinkToClipboard()}
+
+        binding.btnShareImage.setOnClickListener { shareLink() }
 
         binding.btnSaveImage.setOnClickListener {
             if (binding.photoView.drawable == null) {
@@ -56,11 +90,36 @@ class PictureFragment : Fragment(R.layout.fragment_picture) {
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
-                drawable = binding.photoView.drawable as BitmapDrawable
-                bitmap = drawable?.bitmap
+                //drawable = binding.photoView.drawable as BitmapDrawable
+                //bitmap = drawable?.bitmap
                 checkPermissionsStorage()
+
             }
         }
+    }
+
+    private fun shareLink() {
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            if (args.hdurl.isNotEmpty()) {
+                this.putExtra(Intent.EXTRA_TEXT, args.hdurl)
+            } else {
+                this.putExtra(Intent.EXTRA_TEXT, args.url)
+            }
+            type = "text/plain"
+        }
+        startActivity(shareIntent)
+    }
+
+    private fun copyLinkToClipboard() {
+        val clipboard = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = if (args.hdurl.isNotEmpty()) {
+            ClipData.newPlainText("Image link", args.hdurl)
+        } else {
+            ClipData.newPlainText("Image link", args.url)
+        }
+        clipboard.setPrimaryClip(clip)
+        Snackbar.make(binding.photoView,"Link copied", Snackbar.LENGTH_SHORT).show()
     }
 
     private fun checkPermissionsStorage() {
@@ -152,6 +211,9 @@ class PictureFragment : Fragment(R.layout.fragment_picture) {
                 R.string.picture_was_saved_successfully,
                 Snackbar.LENGTH_LONG
             ).show()
+
+            binding.btnSaveImage.isEnabled = false
+            binding.btnSaveImage.alpha = 0.4f
 
         }
 

@@ -7,6 +7,7 @@ import com.listocalixto.dailycosmos.data.model.APODEntity
 import com.listocalixto.dailycosmos.data.model.toAPODEntity
 import com.listocalixto.dailycosmos.data.remote.apod.RemoteAPODDataSource
 import com.listocalixto.dailycosmos.data.remote.apod_favorite.RemoteAPODFavoriteDataSource
+import com.listocalixto.dailycosmos.data.remote.translator.TranslatorDataSource
 
 class APODRepositoryImpl(
     private val dataSourceRemote: RemoteAPODDataSource,
@@ -19,20 +20,20 @@ class APODRepositoryImpl(
             dataSourceRemote.getResults(endDate, startDate).forEach { apod ->
                 dataSourceLocal.saveAPOD(apod.toAPODEntity(0))
             }
-
-            dataSourceFireStore.getAPODFavorites().forEach {favorite ->
-                dataSourceLocal.updateAPOD(APODEntity(
-                    favorite.date,
-                    favorite.copyright,
-                    favorite.explanation,
-                    favorite.hdurl,
-                    favorite.media_type,
-                    favorite.title,
-                    favorite.url,
-                    1
-                ))
+            dataSourceFireStore.getAPODFavorites().forEach { favorite ->
+                dataSourceLocal.updateAPOD(
+                    APODEntity(
+                        favorite.date,
+                        favorite.copyright,
+                        favorite.explanation,
+                        favorite.hdurl,
+                        favorite.media_type,
+                        favorite.title,
+                        favorite.url,
+                        1
+                    )
+                )
             }
-
             dataSourceLocal.getResults()
         } else {
             dataSourceLocal.getResults()

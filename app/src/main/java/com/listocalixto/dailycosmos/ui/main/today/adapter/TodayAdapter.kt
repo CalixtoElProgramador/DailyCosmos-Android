@@ -2,23 +2,30 @@ package com.listocalixto.dailycosmos.ui.main.today.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.mlkit.nl.translate.TranslateRemoteModel
+import com.google.mlkit.nl.translate.Translator
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.core.BaseViewHolder
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.databinding.ItemApodDailyBinding
 import com.listocalixto.dailycosmos.core.BaseDiffUtil
+import com.listocalixto.dailycosmos.data.remote.translator.TranslatorDataSource
+import com.listocalixto.dailycosmos.presentation.translator.TranslatorDataStoreViewModel
+import com.listocalixto.dailycosmos.repository.translator.TranslatorDataStore
 
 @Suppress("CAST_NEVER_SUCCEEDS")
 class TodayAdapter(
     private var apodList: List<APOD>,
     private val imageClickListener: OnImageAPODClickListener,
-    private val fabClickListener: OnFabClickListener
+    private val fabClickListener: OnFabClickListener,
+    private val buttonClickListener: OnButtonClickListener
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
     interface OnImageAPODClickListener {
@@ -27,6 +34,10 @@ class TodayAdapter(
 
     interface OnFabClickListener {
         fun onFabClick(apod: APOD, itemBinding: ItemApodDailyBinding, position: Int)
+    }
+
+    interface OnButtonClickListener {
+        fun onButtonClick(apod: APOD, itemBinding: ItemApodDailyBinding)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
@@ -47,6 +58,14 @@ class TodayAdapter(
                     ?: return@setOnClickListener
             fabClickListener.onFabClick(apodList[position], itemBinding, position)
         }
+
+        itemBinding.btnTranslate.setOnClickListener {
+            val position =
+                holder.bindingAdapterPosition.takeIf { it != DiffUtil.DiffResult.NO_POSITION }
+                    ?: return@setOnClickListener
+            buttonClickListener.onButtonClick(apodList[position], itemBinding)
+        }
+
         return holder
     }
 
@@ -76,19 +95,24 @@ class TodayAdapter(
 
         @SuppressLint("SetTextI18n")
         override fun bind(item: APOD) {
+
             if (item.hdurl.isEmpty()) {
                 Glide.with(context).load(item.url).into(binding.imgApodPicture)
             } else {
                 Glide.with(context).load(item.hdurl).into(binding.imgApodPicture)
             }
+
             binding.textApodTitle.text = item.title
             binding.textApodDate.text = item.date
 
             if (item.explanation.isEmpty()) {
-                binding.textApodExplanation.text = "No description"
+                binding.textApodExplanation.text = context.getString(R.string.no_explanation)
+                binding.btnTranslate.visibility = View.GONE
             } else {
                 binding.textApodExplanation.text = item.explanation
+                binding.btnTranslate.visibility = View.VISIBLE
             }
+
             if (item.copyright.isEmpty()) {
                 binding.textApodCopyright.visibility = View.GONE
             } else {

@@ -59,6 +59,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage-ktx:20.0.0'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
 
+    //ML Kit
+    implementation 'com.google.mlkit:translate:16.1.2'
+
     // Play services coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0'

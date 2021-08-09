@@ -127,6 +127,16 @@
                     android:textSize="@dimen/_15ssp"
                     tools:text="Copyright: Aarón Calixto" />
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_translate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/colorSecondary"
+                    android:textColor="@color/colorSurface"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_32sdp"
+                    android:text="@string/translate" />
+
             </LinearLayout>
 
         </LinearLayout>

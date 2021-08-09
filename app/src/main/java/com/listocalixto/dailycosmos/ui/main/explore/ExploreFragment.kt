@@ -24,6 +24,7 @@ import com.listocalixto.dailycosmos.ui.main.explore.adapter.ExploreAdapter
 import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.data.remote.apod_favorite.RemoteAPODFavoriteDataSource
+import com.listocalixto.dailycosmos.data.remote.translator.TranslatorDataSource
 import com.listocalixto.dailycosmos.databinding.ItemApodBinding
 import java.text.SimpleDateFormat
 import java.util.*

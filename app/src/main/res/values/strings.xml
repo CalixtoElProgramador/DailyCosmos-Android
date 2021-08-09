@@ -77,4 +77,14 @@
     <string name="subtitle_explore_collapsing_toolbar">From June 16, 1995 to the present</string>
     <string name="helper_text_search_view">Click on the icon to search</string>
     <string name="image_favorite">Image favorite</string>
+    <string name="ask_download_traductor">Would you like to download a translator to switch from English to the language of your phone? It works with and without internet. It is by the Firebase machine learning kit. It\'s not the best but it works. It weighs about 30 Mb</string>
+    <string name="decline">Decline</string>
+    <string name="accept">Accept</string>
+    <string name="downloading_translator_message">Downloading... this will take a few minutes.</string>
+    <string name="translate_download_successfully">Model trained to translate downloaded</string>
+    <string name="error_download_translate">There was an error downloading translator.</string>
+    <string name="translate">Translate</string>
+    <string name="snackbar_download_translator">Download has started</string>
+    <string name="ask_download_traductor_title">Download translator</string>
+    <string name="no_explanation">No explanation</string>
 </resources>

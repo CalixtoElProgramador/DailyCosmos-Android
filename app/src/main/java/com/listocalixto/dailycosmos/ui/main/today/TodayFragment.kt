@@ -1,16 +1,21 @@
 package com.listocalixto.dailycosmos.ui.main.today
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
+import com.google.mlkit.nl.translate.Translator
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.data.local.AppDatabase
 import com.listocalixto.dailycosmos.data.local.LocalAPODDataSource
@@ -26,9 +31,11 @@ import java.text.SimpleDateFormat
 import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.data.remote.apod_favorite.RemoteAPODFavoriteDataSource
+import com.listocalixto.dailycosmos.data.remote.translator.TranslatorDataSource
 import com.listocalixto.dailycosmos.databinding.ItemApodDailyBinding
 import com.listocalixto.dailycosmos.presentation.apod_favorite.APODFavoriteViewModel
 import com.listocalixto.dailycosmos.presentation.apod_favorite.APODFavoriteViewModelFactory
+import com.listocalixto.dailycosmos.presentation.translator.TranslatorDataStoreViewModel
 import com.listocalixto.dailycosmos.repository.apod_favorite.APODFavoriteRepositoryImpl
 import java.util.*
 import kotlin.math.abs
@@ -37,7 +44,8 @@ private const val MIN_SCALE = 0.75f
 
 @Suppress("DEPRECATION")
 class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPODClickListener,
-    ViewPager2.PageTransformer, TodayAdapter.OnFabClickListener {
+    ViewPager2.PageTransformer, TodayAdapter.OnFabClickListener,
+    TodayAdapter.OnButtonClickListener {
 
     @SuppressLint("SimpleDateFormat")
     private val sdf = SimpleDateFormat("yyyy-MM-dd")
@@ -69,6 +77,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     private lateinit var binding: FragmentTodayBinding
     private lateinit var dataStoreViewModel: DataStoreViewModel
     private lateinit var adapterToday: TodayAdapter
+    private lateinit var translatorDataStore: TranslatorDataStoreViewModel
 
     override fun onResume() {
         super.onResume()
@@ -104,6 +113,8 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
         binding = FragmentTodayBinding.bind(view)
         dataStoreViewModel =
             ViewModelProvider(requireActivity()).get(DataStoreViewModel::class.java)
+        translatorDataStore =
+            ViewModelProvider(requireActivity()).get(TranslatorDataStoreViewModel::class.java)
     }
 
     private fun readFromDataStore() {
@@ -139,7 +150,12 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                         } else {
                             Log.d("ViewModelDaily", "Result... Adapter is NOT Initialized")
                             adapterToday =
-                                TodayAdapter(result.data, this@TodayFragment, this@TodayFragment)
+                                TodayAdapter(
+                                    result.data,
+                                    this,
+                                    this,
+                                    this
+                                )
                             binding.vpPhotoToday.adapter = adapterToday
                         }
                         isLoading = false
@@ -205,9 +221,6 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     private fun loadMoreResults() {
         Log.d("ViewPager2", "Position of the ViewPager: ${binding.vpPhotoToday.currentItem}")
         Log.d("ViewPager2", "List size: $sizeList")
-
-
-
         if (!isLoading) {
             Log.d("ViewPager2", "isLoading: $isLoading")
             if (binding.vpPhotoToday.currentItem >= sizeList - 6) {
@@ -215,7 +228,6 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
             }
         }
     }
-
 
     private fun newDates(): Array<String> {
         val newEndDate = Calendar.getInstance().apply {
@@ -249,6 +261,46 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                 }
                 is Result.Failure -> {
                     Log.d("Favorite", "No se subió. Error: ${result.exception}")
+                }
+            }
+        })
+    }
+
+    @SuppressLint("ShowToast")
+    @RequiresApi(Build.VERSION_CODES.N)
+    override fun onButtonClick(apod: APOD, itemBinding: ItemApodDailyBinding) {
+        translatorDataStore.readValue.observe(viewLifecycleOwner, {
+            if (it == 0) {
+                MaterialAlertDialogBuilder(
+                    requireContext(),
+                    R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog
+                )
+                    .setTitle(getString(R.string.ask_download_traductor_title))
+                    .setIcon(R.drawable.ic_save_alt)
+                    .setMessage(resources.getString(R.string.ask_download_traductor))
+                    .setNegativeButton(resources.getString(R.string.decline)) { dialog, which ->
+                    }
+                    .setPositiveButton(resources.getString(R.string.accept)) { dialog, which ->
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            Snackbar.make(
+                                binding.vpPhotoToday,
+                                getString(R.string.snackbar_download_translator),
+                                Snackbar.LENGTH_SHORT
+                            )
+                                .setAnchorView(requireActivity().requireViewById(R.id.bottom_navigation))
+                                .show()
+                        }
+                        translatorDataStore.saveValue(1)
+                    }
+                    .show()
+            } else {
+                val translator =
+                    TranslatorDataSource().downloadEnglishToOwnerLanguageModel(
+                        requireContext(),
+                        requireActivity())
+                translator.translate(apod.explanation).addOnSuccessListener { textTranslated ->
+                    itemBinding.textApodExplanation.text = textTranslated
+                    translator.close()
                 }
             }
         })

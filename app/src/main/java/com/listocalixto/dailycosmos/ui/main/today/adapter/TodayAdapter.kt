@@ -2,23 +2,17 @@ package com.listocalixto.dailycosmos.ui.main.today.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.mlkit.nl.translate.TranslateRemoteModel
-import com.google.mlkit.nl.translate.Translator
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.core.BaseViewHolder
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.databinding.ItemApodDailyBinding
 import com.listocalixto.dailycosmos.core.BaseDiffUtil
-import com.listocalixto.dailycosmos.data.remote.translator.TranslatorDataSource
-import com.listocalixto.dailycosmos.presentation.translator.TranslatorDataStoreViewModel
-import com.listocalixto.dailycosmos.repository.translator.TranslatorDataStore
 
 @Suppress("CAST_NEVER_SUCCEEDS")
 class TodayAdapter(

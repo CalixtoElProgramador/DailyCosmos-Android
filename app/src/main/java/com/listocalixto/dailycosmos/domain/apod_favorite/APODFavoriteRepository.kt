@@ -1,6 +1,5 @@
-package com.listocalixto.dailycosmos.repository.apod_favorite
+package com.listocalixto.dailycosmos.domain.apod_favorite
 
-import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.data.model.APODFavoriteEntity
 

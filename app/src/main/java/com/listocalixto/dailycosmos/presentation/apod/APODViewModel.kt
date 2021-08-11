@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.liveData
 import com.listocalixto.dailycosmos.core.Result
-import com.listocalixto.dailycosmos.repository.apod.APODRepository
+import com.listocalixto.dailycosmos.domain.apod.APODRepository
 import kotlinx.coroutines.Dispatchers
 import java.lang.Exception
 
@@ -17,10 +17,11 @@ class APODViewModel(private val repo: APODRepository) : ViewModel() {
         } catch (e: Exception) {
             emit(Result.Failure(e))
         }
+
     }
 }
 
-class APODViewModelFactory(private val repo: APODRepository): ViewModelProvider.Factory {
+class APODViewModelFactory(private val repo: APODRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return modelClass.getConstructor(APODRepository::class.java).newInstance(repo)
     }

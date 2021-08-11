@@ -15,7 +15,7 @@ import com.listocalixto.dailycosmos.data.remote.auth.AuthDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentSettingsBinding
 import com.listocalixto.dailycosmos.presentation.auth.AuthViewModel
 import com.listocalixto.dailycosmos.presentation.auth.AuthViewModelFactory
-import com.listocalixto.dailycosmos.repository.auth.AuthRepoImpl
+import com.listocalixto.dailycosmos.domain.auth.AuthRepoImpl
 
 @Suppress("DEPRECATION")
 class SettingsFragment : Fragment(R.layout.fragment_settings) {

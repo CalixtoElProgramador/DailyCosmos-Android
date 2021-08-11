@@ -1,4 +1,4 @@
-package com.listocalixto.dailycosmos.repository.apod
+package com.listocalixto.dailycosmos.domain.apod
 
 import com.listocalixto.dailycosmos.data.model.APOD
 

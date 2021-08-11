@@ -1,13 +1,11 @@
 package com.listocalixto.dailycosmos.presentation.apod_favorite
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.liveData
 import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.model.APOD
-import com.listocalixto.dailycosmos.data.model.APODEntity
-import com.listocalixto.dailycosmos.repository.apod_favorite.APODFavoriteRepository
+import com.listocalixto.dailycosmos.domain.apod_favorite.APODFavoriteRepository
 import kotlinx.coroutines.Dispatchers
 import java.lang.Exception
 

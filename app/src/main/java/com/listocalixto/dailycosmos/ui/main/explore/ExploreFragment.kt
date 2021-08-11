@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.listocalixto.dailycosmos.R
+import androidx.lifecycle.Observer
 import com.listocalixto.dailycosmos.data.local.AppDatabase
 import com.listocalixto.dailycosmos.data.local.LocalAPODDataSource
 import com.listocalixto.dailycosmos.data.remote.apod.RemoteAPODDataSource
@@ -18,13 +19,12 @@ import com.listocalixto.dailycosmos.databinding.FragmentExplorerBinding
 import com.listocalixto.dailycosmos.presentation.apod.APODViewModel
 import com.listocalixto.dailycosmos.presentation.apod.APODViewModelFactory
 import com.listocalixto.dailycosmos.presentation.apod.DataStoreViewModel
-import com.listocalixto.dailycosmos.repository.apod.APODRepositoryImpl
-import com.listocalixto.dailycosmos.repository.apod.RetrofitClient
+import com.listocalixto.dailycosmos.domain.apod.APODRepositoryImpl
+import com.listocalixto.dailycosmos.domain.apod.RetrofitClient
 import com.listocalixto.dailycosmos.ui.main.explore.adapter.ExploreAdapter
 import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.data.remote.apod_favorite.RemoteAPODFavoriteDataSource
-import com.listocalixto.dailycosmos.data.remote.translator.TranslatorDataSource
 import com.listocalixto.dailycosmos.databinding.ItemApodBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -171,7 +171,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     private fun getResults(end: String, start: String) {
         isLoading = true
         viewModel.fetchAPODResults(end, start)
-            .observe(viewLifecycleOwner, { result ->
+            .observe(viewLifecycleOwner, Observer { result ->
                 when (result) {
                     is Result.Loading -> {
                         if (!::adapter.isInitialized) {

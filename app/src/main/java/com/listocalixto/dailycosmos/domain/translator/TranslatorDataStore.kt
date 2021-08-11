@@ -1,4 +1,4 @@
-package com.listocalixto.dailycosmos.repository.translator
+package com.listocalixto.dailycosmos.domain.translator
 
 import android.content.Context
 import android.util.Log

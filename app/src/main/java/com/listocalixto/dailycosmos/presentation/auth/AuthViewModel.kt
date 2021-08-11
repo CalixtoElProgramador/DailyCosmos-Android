@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.liveData
-import com.listocalixto.dailycosmos.repository.auth.AuthRepo
+import com.listocalixto.dailycosmos.domain.auth.AuthRepo
 import kotlinx.coroutines.Dispatchers
 import com.listocalixto.dailycosmos.core.Result
 import java.lang.Exception

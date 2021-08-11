@@ -2,7 +2,7 @@ package com.listocalixto.dailycosmos.data.remote.apod
 
 import com.listocalixto.dailycosmos.application.AppConstants
 import com.listocalixto.dailycosmos.data.model.APOD
-import com.listocalixto.dailycosmos.repository.apod.APODWebService
+import com.listocalixto.dailycosmos.domain.apod.APODWebService
 
 class RemoteAPODDataSource (private val webService: APODWebService) {
 

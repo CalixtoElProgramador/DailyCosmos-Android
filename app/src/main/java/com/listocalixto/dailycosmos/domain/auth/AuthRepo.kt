@@ -1,4 +1,4 @@
-package com.listocalixto.dailycosmos.repository.auth
+package com.listocalixto.dailycosmos.domain.auth
 
 import android.graphics.Bitmap
 import com.google.firebase.auth.FirebaseUser

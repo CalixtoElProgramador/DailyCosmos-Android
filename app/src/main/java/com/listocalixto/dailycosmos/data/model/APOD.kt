@@ -98,3 +98,14 @@ fun APOD.toAPODEntity(is_favorite: Int): APODEntity = APODEntity(
     this.url,
     is_favorite = is_favorite
 )
+
+fun APODFavoriteEntity.toAPODEntity(is_favorite: Int): APODEntity = APODEntity(
+    this.date,
+    this.copyright,
+    this.explanation,
+    this.hdurl,
+    this.media_type,
+    this.title,
+    this.url,
+    is_favorite = is_favorite
+)

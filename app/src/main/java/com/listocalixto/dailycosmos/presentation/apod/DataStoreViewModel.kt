@@ -2,10 +2,9 @@ package com.listocalixto.dailycosmos.presentation.apod
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.listocalixto.dailycosmos.repository.apod.APODDataStore
+import com.listocalixto.dailycosmos.domain.apod.APODDataStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
 
 class DataStoreViewModel(application: Application) : AndroidViewModel(application) {
 

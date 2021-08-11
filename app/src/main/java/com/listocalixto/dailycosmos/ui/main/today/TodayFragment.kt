@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.mlkit.nl.translate.Translator
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.data.local.AppDatabase
 import com.listocalixto.dailycosmos.data.local.LocalAPODDataSource
@@ -24,10 +23,11 @@ import com.listocalixto.dailycosmos.databinding.FragmentTodayBinding
 import com.listocalixto.dailycosmos.presentation.apod.APODViewModel
 import com.listocalixto.dailycosmos.presentation.apod.APODViewModelFactory
 import com.listocalixto.dailycosmos.presentation.apod.DataStoreViewModel
-import com.listocalixto.dailycosmos.repository.apod.APODRepositoryImpl
-import com.listocalixto.dailycosmos.repository.apod.RetrofitClient
+import com.listocalixto.dailycosmos.domain.apod.APODRepositoryImpl
+import com.listocalixto.dailycosmos.domain.apod.RetrofitClient
 import com.listocalixto.dailycosmos.ui.main.today.adapter.TodayAdapter
 import java.text.SimpleDateFormat
+import androidx.lifecycle.Observer
 import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.data.remote.apod_favorite.RemoteAPODFavoriteDataSource
@@ -36,7 +36,7 @@ import com.listocalixto.dailycosmos.databinding.ItemApodDailyBinding
 import com.listocalixto.dailycosmos.presentation.apod_favorite.APODFavoriteViewModel
 import com.listocalixto.dailycosmos.presentation.apod_favorite.APODFavoriteViewModelFactory
 import com.listocalixto.dailycosmos.presentation.translator.TranslatorDataStoreViewModel
-import com.listocalixto.dailycosmos.repository.apod_favorite.APODFavoriteRepositoryImpl
+import com.listocalixto.dailycosmos.domain.apod_favorite.APODFavoriteRepositoryImpl
 import java.util.*
 import kotlin.math.abs
 
@@ -129,7 +129,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     private fun getResults(end: String, start: String) {
         isLoading = true
         viewModel.fetchAPODResults(end, start)
-            .observe(viewLifecycleOwner, { result ->
+            .observe(viewLifecycleOwner, Observer { result ->
                 when (result) {
                     is Result.Loading -> {
                         if (!::adapterToday.isInitialized) {
@@ -257,10 +257,10 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                     Log.d("Favorite", "Loading... ")
                 }
                 is Result.Success -> {
-                    Log.d("Favorite", "Se subió exitosamente ")
+                    Log.d("Favorite", "Successfully uploaded")
                 }
                 is Result.Failure -> {
-                    Log.d("Favorite", "No se subió. Error: ${result.exception}")
+                    Log.d("Favorite", "Not uploaded. Error: ${result.exception}")
                 }
             }
         })
@@ -278,9 +278,9 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                     .setTitle(getString(R.string.ask_download_traductor_title))
                     .setIcon(R.drawable.ic_save_alt)
                     .setMessage(resources.getString(R.string.ask_download_traductor))
-                    .setNegativeButton(resources.getString(R.string.decline)) { dialog, which ->
+                    .setNegativeButton(resources.getString(R.string.decline)) { _, _ ->
                     }
-                    .setPositiveButton(resources.getString(R.string.accept)) { dialog, which ->
+                    .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                             Snackbar.make(
                                 binding.vpPhotoToday,
@@ -297,7 +297,8 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                 val translator =
                     TranslatorDataSource().downloadEnglishToOwnerLanguageModel(
                         requireContext(),
-                        requireActivity())
+                        requireActivity()
+                    )
                 translator.translate(apod.explanation).addOnSuccessListener { textTranslated ->
                     itemBinding.textApodExplanation.text = textTranslated
                     translator.close()

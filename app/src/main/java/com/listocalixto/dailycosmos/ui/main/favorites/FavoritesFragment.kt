@@ -3,10 +3,7 @@ package com.listocalixto.dailycosmos.ui.main.favorites
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -17,7 +14,7 @@ import com.listocalixto.dailycosmos.data.remote.apod_favorite.RemoteAPODFavorite
 import com.listocalixto.dailycosmos.databinding.FragmentFavoritesBinding
 import com.listocalixto.dailycosmos.presentation.apod_favorite.APODFavoriteViewModel
 import com.listocalixto.dailycosmos.presentation.apod_favorite.APODFavoriteViewModelFactory
-import com.listocalixto.dailycosmos.repository.apod_favorite.APODFavoriteRepositoryImpl
+import com.listocalixto.dailycosmos.domain.apod_favorite.APODFavoriteRepositoryImpl
 import com.listocalixto.dailycosmos.ui.main.favorites.adapter.FavoritesAdapter
 
 class FavoritesFragment : Fragment(R.layout.fragment_favorites),

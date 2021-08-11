@@ -12,6 +12,8 @@ interface APODDao {
     @Query("SELECT * FROM apodentity ORDER BY date DESC")
     suspend fun getAllAPODs(): List<APODEntity>
 
+    //fun getAllAPODsDistinctUntilChanged() = getAllAPODs().distinctUntilChanged()
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun saveAPOD(apodEntity: APODEntity)
 

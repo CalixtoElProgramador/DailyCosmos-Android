@@ -2,6 +2,7 @@ package com.listocalixto.dailycosmos.ui.main.explore.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
@@ -69,11 +70,10 @@ class ExploreAdapter(
                 titleItemAPOD.text = item.title
                 dateItemAPOD.text = item.date
             }
-
-            if (item.is_favorite == 0) {
-                binding.favoritesItemAPOD.setImageResource(R.drawable.ic_favorite_border)
+            if (item.copyright.isNotEmpty()) {
+                binding.textCopyright.text = item.copyright
             } else {
-                binding.favoritesItemAPOD.setImageResource(R.drawable.ic_favorite)
+                binding.textCopyright.visibility = View.GONE
             }
 
         }

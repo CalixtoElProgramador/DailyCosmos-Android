@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="0dp"
-    android:layout_margin="2dp">
+    android:layout_margin="2dp"
+    app:cardCornerRadius="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -39,19 +40,19 @@
                 android:layout_marginBottom="@dimen/_8sdp"
                 android:text="@string/supporting_text_item_apod"
                 android:textAlignment="center"
-                android:textSize="@dimen/_8sdp"
                 android:textAppearance="?attr/textAppearanceCaption"
-                android:textColor="@color/colorPrimary" />
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_8sdp" />
 
             <TextView
                 android:id="@+id/title_itemAPOD"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:fontFamily="@font/pt_sans_bold"
                 android:text="@string/title_item_apod"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                android:fontFamily="@font/pt_sans_bold"
                 android:textSize="@dimen/_24ssp"
                 android:textStyle="bold" />
 
@@ -60,39 +61,24 @@
 
         <!-- Buttons -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:orientation="horizontal"
             android:paddingTop="@dimen/_16sdp"
-            android:paddingBottom="@dimen/_16sdp">
+            android:paddingStart="@dimen/_16sdp"
+            android:paddingEnd="@dimen/_16sdp"
+            android:paddingBottom="@dimen/_24sdp">
 
-            <ImageButton
-                android:id="@+id/favorites_itemAPOD"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/textCopyright"
+                style="@style/TextAppearance.MaterialComponents.Caption"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:paddingStart="@dimen/_16sdp"
-                android:paddingTop="@dimen/_16sdp"
-                android:paddingEnd="@dimen/_8sdp"
-                android:paddingBottom="@dimen/_16sdp"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/ic_favorite_border"
-                app:tint="@color/colorPrimary" />
-
-            <ImageButton
-                android:id="@+id/share_itemAPOD"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/_8sdp"
-                android:paddingTop="@dimen/_16sdp"
-                android:paddingEnd="@dimen/_16sdp"
-                android:paddingBottom="@dimen/_16sdp"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/ic_share_border"
-                app:tint="@color/colorPrimary" />
+                android:gravity="center"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/_11ssp"
+                tools:text="Copyright: Aarón Calixto" />
 
         </LinearLayout>
 

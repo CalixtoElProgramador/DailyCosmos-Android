@@ -7,6 +7,7 @@ import com.listocalixto.dailycosmos.data.model.toAPODEntity
 import com.listocalixto.dailycosmos.data.remote.apod.RemoteAPODDataSource
 import com.listocalixto.dailycosmos.data.remote.apod_favorite.RemoteAPODFavoriteDataSource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 class APODRepositoryImpl(
     private val dataSourceRemote: RemoteAPODDataSource,

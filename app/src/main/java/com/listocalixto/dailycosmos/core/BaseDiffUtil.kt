@@ -22,6 +22,7 @@ class BaseDiffUtil(private val oldList: List<APOD>, private val newList: List<AP
             oldList[oldItemPosition].copyright != newList[newItemPosition].copyright -> false
             oldList[oldItemPosition].hdurl != newList[newItemPosition].hdurl -> false
             oldList[oldItemPosition].url != newList[newItemPosition].url -> false
+            oldList[oldItemPosition].is_favorite != newList[newItemPosition].is_favorite -> false
             else -> true
         }
     }

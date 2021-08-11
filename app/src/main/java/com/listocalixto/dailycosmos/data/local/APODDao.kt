@@ -11,9 +11,9 @@ interface APODDao {
     suspend fun getAllAPODs(): List<APODEntity>
 
     @Insert(onConflict= OnConflictStrategy.IGNORE)
-    suspend fun saveAPOD(apod: APODEntity)
+    suspend fun saveAPOD(apodEntity: APODEntity)
 
     @Update(entity = APODEntity::class)
-    suspend fun updateFavorite(apod: APODEntity)
+    suspend fun updateFavorite(apodEntity: APODEntity)
 
 }

@@ -3,7 +3,6 @@ package com.listocalixto.dailycosmos.domain.apod
 import com.listocalixto.dailycosmos.core.InternetCheck
 import com.listocalixto.dailycosmos.data.local.LocalAPODDataSource
 import com.listocalixto.dailycosmos.data.model.APOD
-import com.listocalixto.dailycosmos.data.model.APODEntity
 import com.listocalixto.dailycosmos.data.model.toAPODEntity
 import com.listocalixto.dailycosmos.data.remote.apod.RemoteAPODDataSource
 import com.listocalixto.dailycosmos.data.remote.apod_favorite.RemoteAPODFavoriteDataSource
@@ -20,11 +19,15 @@ class APODRepositoryImpl(
                 dataSourceLocal.saveAPOD(apod.toAPODEntity(0))
             }
             dataSourceFireStore.getAPODFavorites().forEach { favorite ->
-                dataSourceLocal.updateAPOD(favorite.toAPODEntity(1))
+                dataSourceLocal.updateFavorite(favorite.toAPODEntity(1))
             }
             dataSourceLocal.getResults()
         } else {
             dataSourceLocal.getResults()
         }
+    }
+
+    override suspend fun updateFavorite(apod: APOD, isFavorite: Int) {
+        dataSourceLocal.updateFavorite(apod.toAPODEntity(isFavorite))
     }
 }

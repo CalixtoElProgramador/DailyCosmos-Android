@@ -14,7 +14,7 @@ class LocalAPODDataSource(private val apodDao: APODDao) {
         apodDao.saveAPOD(apodEntity)
     }
 
-    suspend fun updateAPOD(apodEntity: APODEntity) {
+    suspend fun updateFavorite(apodEntity: APODEntity) {
         apodDao.updateFavorite(apodEntity)
     }
 

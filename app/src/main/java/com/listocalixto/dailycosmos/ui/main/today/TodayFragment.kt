@@ -250,20 +250,28 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    override fun onFabClick(apod: APOD, itemBinding: ItemApodDailyBinding, position: Int) {
-        viewModelFavorite.setAPODFavorite(apod).observe(viewLifecycleOwner, { result ->
-            when (result) {
-                is Result.Loading -> {
-                    Log.d("Favorite", "Loading... ")
-                }
-                is Result.Success -> {
-                    Log.d("Favorite", "Successfully uploaded")
-                }
-                is Result.Failure -> {
-                    Log.d("Favorite", "Not uploaded. Error: ${result.exception}")
-                }
+    override fun onFabClick(
+        apod: APOD,
+        itemBinding: ItemApodDailyBinding,
+        position: Int,
+        apodList: List<APOD>
+    ) {
+        when (apod.is_favorite) {
+            0 -> {
+                apodList[position].is_favorite = 1
+                adapterToday.setData(apodList)
+                viewModel.updateFavorite(apod, 1)
+                viewModelFavorite.setAPODFavorite(apod)
+                itemBinding.fabAddAPODFavorites.setImageResource(R.drawable.ic_favorite)
             }
-        })
+            1 -> {
+                apodList[position].is_favorite = 0
+                adapterToday.setData(apodList)
+                viewModel.updateFavorite(apod, 0)
+                viewModelFavorite.deleteFavorite(apod)
+                itemBinding.fabAddAPODFavorites.setImageResource(R.drawable.ic_favorite_border)
+            }
+        }
     }
 
     @SuppressLint("ShowToast")

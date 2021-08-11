@@ -12,7 +12,7 @@ data class APOD(
     val media_type: String = "",
     val title: String = "",
     val url: String = "",
-    val is_favorite: Int = -1,
+    var is_favorite: Int = -1,
 )
 
 @Entity

@@ -27,7 +27,7 @@ class TodayAdapter(
     }
 
     interface OnFabClickListener {
-        fun onFabClick(apod: APOD, itemBinding: ItemApodDailyBinding, position: Int)
+        fun onFabClick(apod: APOD, itemBinding: ItemApodDailyBinding, position: Int, apodList: List<APOD>)
     }
 
     interface OnButtonClickListener {
@@ -50,7 +50,7 @@ class TodayAdapter(
             val position =
                 holder.bindingAdapterPosition.takeIf { it != DiffUtil.DiffResult.NO_POSITION }
                     ?: return@setOnClickListener
-            fabClickListener.onFabClick(apodList[position], itemBinding, position)
+            fabClickListener.onFabClick(apodList[position], itemBinding, position, apodList)
         }
 
         itemBinding.btnTranslate.setOnClickListener {

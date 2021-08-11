@@ -256,6 +256,8 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
         position: Int,
         apodList: List<APOD>
     ) {
+        //viewModel.getAPOD(apod.date)
+
         when (apod.is_favorite) {
             0 -> {
                 apodList[position].is_favorite = 1

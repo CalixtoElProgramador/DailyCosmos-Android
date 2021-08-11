@@ -6,6 +6,7 @@ import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.data.model.toAPODEntity
 import com.listocalixto.dailycosmos.data.remote.apod.RemoteAPODDataSource
 import com.listocalixto.dailycosmos.data.remote.apod_favorite.RemoteAPODFavoriteDataSource
+import kotlinx.coroutines.flow.Flow
 
 class APODRepositoryImpl(
     private val dataSourceRemote: RemoteAPODDataSource,
@@ -30,4 +31,6 @@ class APODRepositoryImpl(
     override suspend fun updateFavorite(apod: APOD, isFavorite: Int) {
         dataSourceLocal.updateFavorite(apod.toAPODEntity(isFavorite))
     }
+
+    //override fun getAPOD(date: String): Flow<APOD> = dataSourceLocal.getAPOD(date)
 }

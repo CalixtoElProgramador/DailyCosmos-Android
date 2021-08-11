@@ -93,7 +93,7 @@ class Register03Fragment : Fragment(R.layout.fragment_register03) {
             person.name,
             person.lastname,
             person.email,
-            password.passwrod,
+            password.password,
             bitmap
         ).observe(viewLifecycleOwner, { result ->
             when (result) {

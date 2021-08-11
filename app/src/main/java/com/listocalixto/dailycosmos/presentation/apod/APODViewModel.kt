@@ -8,6 +8,7 @@ import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.domain.apod.APODRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
@@ -28,6 +29,17 @@ class APODViewModel(private val repo: APODRepository) : ViewModel() {
             repo.updateFavorite(apod, isFavorite)
         }
     }
+
+    /*fun getAPOD(date: String) = liveData(viewModelScope.coroutineContext + Dispatchers.Main) {
+        emit(Result.Loading())
+        kotlin.runCatching {
+            repo.getAPOD(date)
+        }.onSuccess { apod ->
+            apod.collect { emit(Result.Success(it)) }
+        }.onFailure {
+            Result.Failure(Exception(it.message))
+        }
+    }*/
 
 }
 

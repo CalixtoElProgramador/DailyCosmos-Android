@@ -35,4 +35,4 @@ class RegisterViewModel : ViewModel() {
 
 data class Person(val name: String, val lastname: String, val email: String)
 
-data class Password(val passwrod: String, val passwrodConfirm: String)
+data class Password(val password: String, val passwordConfirm: String)

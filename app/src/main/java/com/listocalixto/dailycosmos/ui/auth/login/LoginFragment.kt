@@ -40,7 +40,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     private fun getInputsFromViewModel() {
         viewModelShared.apply {
             getPerson().value?.let { binding.inputEmail.setText(it.email) }
-            getPassword().value?.let { binding.inputPassword.setText(it.passwrod) }
+            getPassword().value?.let { binding.inputPassword.setText(it.password) }
         }
     }
 

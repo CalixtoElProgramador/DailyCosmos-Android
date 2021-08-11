@@ -80,8 +80,8 @@ class Register02Fragment : Fragment(R.layout.fragment_register02) {
 
     private fun getInputsFromViewModel() {
         viewModelShared.getPassword().value?.let { it ->
-            binding.inputPassword.setText(it.passwrod)
-            binding.inputPasswordConfirm.setText(it.passwrodConfirm)
+            binding.inputPassword.setText(it.password)
+            binding.inputPasswordConfirm.setText(it.passwordConfirm)
         }
     }
 

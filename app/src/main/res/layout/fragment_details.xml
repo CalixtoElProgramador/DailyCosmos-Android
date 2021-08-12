@@ -120,6 +120,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_32sdp"
+                    android:lineSpacingExtra="@dimen/_8sdp"
+                    android:paddingStart="@dimen/_16sdp"
+                    android:paddingEnd="@dimen/_16sdp"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                     android:textColor="@color/colorTextSecondary"
@@ -131,11 +134,11 @@
                     android:id="@+id/btn_translate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/colorSecondary"
-                    android:textColor="@color/colorSurface"
                     android:layout_gravity="center"
                     android:layout_marginTop="@dimen/_32sdp"
-                    android:text="@string/translate" />
+                    android:backgroundTint="@color/colorSecondary"
+                    android:text="@string/translate"
+                    android:textColor="@color/colorSurface" />
 
             </LinearLayout>
 

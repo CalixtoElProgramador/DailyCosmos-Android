@@ -108,7 +108,7 @@ class TodayAdapter(
             }
 
             if (item.copyright.isEmpty()) {
-                binding.textApodCopyright.visibility = View.GONE
+                binding.textApodCopyright.text = "No copyright"
             } else {
                 binding.textApodCopyright.text = "Copyright: ${item.copyright}"
             }

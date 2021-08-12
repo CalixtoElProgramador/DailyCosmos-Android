@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:paddingBottom="?attr/actionBarSize"
     tools:context=".ui.settings.SettingsFragment">
 
     <LinearLayout
@@ -37,9 +39,9 @@
                         android:id="@+id/img_userPhoto"
                         android:layout_width="@dimen/_72sdp"
                         android:layout_height="@dimen/_72sdp"
+                        android:layout_marginStart="@dimen/_8sdp"
                         android:layout_marginTop="@dimen/_16sdp"
                         android:layout_marginBottom="@dimen/_16sdp"
-                        android:layout_marginStart="@dimen/_8sdp"
                         android:scaleType="centerCrop"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

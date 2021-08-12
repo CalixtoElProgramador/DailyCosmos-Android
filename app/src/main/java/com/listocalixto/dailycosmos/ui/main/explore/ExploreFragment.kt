@@ -128,11 +128,14 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                 if (dy > 0) {
                     Log.d("RecyclerView", "onScrolled: First condition")
                     val visibleItemCount = layoutManager.childCount
-                    val pastVisibleItem =
-                        layoutManager.findFirstCompletelyVisibleItemPositions(null)
+                    val pastVisibleItem = layoutManager.findLastVisibleItemPositions(null)
                     val total = adapter.itemCount
                     if (!isLoading) {
                         Log.d("RecyclerView", "onScrolled: Second condition")
+                        Log.d(
+                            "MoreResults",
+                            "visibleItemCount = $visibleItemCount, pastVisibleItem = ${pastVisibleItem[pastVisibleItem.lastIndex]}, total = $total "
+                        )
                         if ((visibleItemCount + pastVisibleItem[pastVisibleItem.lastIndex]) >= total) {
                             Log.d("RecyclerView", "onScrolled: Third condition")
                             getResults(newDates()[0], newDates()[1])

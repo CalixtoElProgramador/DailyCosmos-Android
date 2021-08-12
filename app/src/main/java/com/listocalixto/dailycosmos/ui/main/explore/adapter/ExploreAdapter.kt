@@ -1,5 +1,6 @@
 package com.listocalixto.dailycosmos.ui.main.explore.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -58,6 +59,7 @@ class ExploreAdapter(
 
     private inner class APODViewHolder(val binding: ItemApodBinding, val context: Context) :
         BaseViewHolder<APOD>(binding.root) {
+        @SuppressLint("SetTextI18n", "ResourceAsColor")
         override fun bind(item: APOD) {
 
             if (item.hdurl.isEmpty()) {
@@ -70,10 +72,10 @@ class ExploreAdapter(
                 titleItemAPOD.text = item.title
                 dateItemAPOD.text = item.date
             }
-            if (item.copyright.isNotEmpty()) {
-                binding.textCopyright.text = item.copyright
+            if (item.copyright.isEmpty()) {
+                binding.textCopyright.text = "No copyright"
             } else {
-                binding.textCopyright.visibility = View.GONE
+                binding.textCopyright.text = item.copyright
             }
 
         }

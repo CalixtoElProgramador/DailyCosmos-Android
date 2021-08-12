@@ -75,6 +75,7 @@
                 style="@style/TextAppearance.MaterialComponents.Caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:lineSpacingExtra="@dimen/_2sdp"
                 android:gravity="center"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/_11ssp"

@@ -64,6 +64,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_16sdp"
                     android:hint="@string/search"
+                    android:paddingBottom="@dimen/_8sdp"
                     app:endIconDrawable="@drawable/ic_search"
                     app:endIconMode="custom"
                     app:endIconTintMode="src_atop">

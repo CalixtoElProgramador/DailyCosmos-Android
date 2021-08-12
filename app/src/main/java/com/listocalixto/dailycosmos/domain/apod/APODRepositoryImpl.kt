@@ -1,13 +1,12 @@
 package com.listocalixto.dailycosmos.domain.apod
 
 import com.listocalixto.dailycosmos.core.InternetCheck
-import com.listocalixto.dailycosmos.data.local.LocalAPODDataSource
+import com.listocalixto.dailycosmos.data.local.apod.LocalAPODDataSource
+import com.listocalixto.dailycosmos.data.local.favorites.LocalFavoriteDataSource
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.data.model.toAPODEntity
 import com.listocalixto.dailycosmos.data.remote.apod.RemoteAPODDataSource
-import com.listocalixto.dailycosmos.data.remote.apod_favorite.RemoteAPODFavoriteDataSource
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
+import com.listocalixto.dailycosmos.data.remote.favorites.RemoteAPODFavoriteDataSource
 
 class APODRepositoryImpl(
     private val dataSourceRemote: RemoteAPODDataSource,
@@ -20,14 +19,18 @@ class APODRepositoryImpl(
             dataSourceRemote.getResults(endDate, startDate).forEach { apod ->
                 dataSourceLocal.saveAPOD(apod.toAPODEntity(0))
             }
-            dataSourceFireStore.getAPODFavorites().forEach { favorite ->
+            dataSourceFireStore.getRemoteFavorites().forEach { favorite ->
                 dataSourceLocal.updateFavorite(favorite.toAPODEntity(1))
             }
+
             dataSourceLocal.getResults()
         } else {
             dataSourceLocal.getResults()
         }
     }
+
+    override suspend fun getRandomResults(count: String): List<APOD> =
+        dataSourceRemote.getRandomResults(count)
 
     override suspend fun updateFavorite(apod: APOD, isFavorite: Int) {
         dataSourceLocal.updateFavorite(apod.toAPODEntity(isFavorite))

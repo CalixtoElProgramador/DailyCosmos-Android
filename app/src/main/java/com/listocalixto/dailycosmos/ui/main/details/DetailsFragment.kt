@@ -1,8 +1,9 @@
-package com.listocalixto.dailycosmos.ui.main.item_details
+package com.listocalixto.dailycosmos.ui.main.details
 
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Toast
@@ -16,19 +17,20 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.data.local.AppDatabase
-import com.listocalixto.dailycosmos.data.local.LocalAPODDataSource
+import com.listocalixto.dailycosmos.data.local.apod.LocalAPODDataSource
+import com.listocalixto.dailycosmos.data.local.favorites.LocalFavoriteDataSource
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.data.remote.apod.RemoteAPODDataSource
-import com.listocalixto.dailycosmos.data.remote.apod_favorite.RemoteAPODFavoriteDataSource
+import com.listocalixto.dailycosmos.data.remote.favorites.RemoteAPODFavoriteDataSource
 import com.listocalixto.dailycosmos.data.remote.translator.TranslatorDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentDetailsBinding
 import com.listocalixto.dailycosmos.domain.apod.APODRepositoryImpl
 import com.listocalixto.dailycosmos.domain.apod.RetrofitClient
-import com.listocalixto.dailycosmos.domain.apod_favorite.APODFavoriteRepositoryImpl
+import com.listocalixto.dailycosmos.domain.favorites.FavoritesRepoImpl
 import com.listocalixto.dailycosmos.presentation.apod.APODViewModel
 import com.listocalixto.dailycosmos.presentation.apod.APODViewModelFactory
-import com.listocalixto.dailycosmos.presentation.apod_favorite.APODFavoriteViewModel
-import com.listocalixto.dailycosmos.presentation.apod_favorite.APODFavoriteViewModelFactory
+import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModel
+import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModelFactory
 import com.listocalixto.dailycosmos.presentation.translator.TranslatorDataStoreViewModel
 
 @Suppress("DEPRECATION")
@@ -50,7 +52,13 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         )
     }
     private val viewModelFavorite by activityViewModels<APODFavoriteViewModel> {
-        APODFavoriteViewModelFactory(APODFavoriteRepositoryImpl(RemoteAPODFavoriteDataSource()))
+        APODFavoriteViewModelFactory(
+            FavoritesRepoImpl(
+                RemoteAPODFavoriteDataSource(),
+                LocalFavoriteDataSource(AppDatabase.getDatabase(requireContext()).favoriteDao()),
+                LocalAPODDataSource(AppDatabase.getDatabase(requireContext()).apodDao())
+            )
+        )
     }
 
     private lateinit var translatorDataStore: TranslatorDataStoreViewModel
@@ -69,6 +77,10 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     }
 
     private fun updateFavorite() {
+        Log.d(
+            "Details",
+            "El valor que llega es: ${args.isFavorite} y el isFavorite es: $isFavorite"
+        )
         when (isFavorite) {
             0 -> {
                 viewModel.updateFavorite(apodReceived, 1)
@@ -81,6 +93,12 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                 viewModelFavorite.deleteFavorite(apodReceived)
                 binding.fabAddAPODFavorites.setImageResource(R.drawable.ic_favorite_border)
                 isFavorite = 0
+            }
+            -1 -> {
+                viewModel.updateFavorite(apodReceived, 1)
+                viewModelFavorite.setAPODFavorite(apodReceived)
+                binding.fabAddAPODFavorites.setImageResource(R.drawable.ic_favorite)
+                isFavorite = 1
             }
         }
     }
@@ -156,7 +174,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
     @SuppressLint("SetTextI18n")
     private fun setInformation() {
-        when(isFavorite) {
+        when (isFavorite) {
             0 -> {
                 binding.fabAddAPODFavorites.setImageResource(R.drawable.ic_favorite_border)
             }

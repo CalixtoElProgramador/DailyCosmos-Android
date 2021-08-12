@@ -9,12 +9,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.core.Result
-import com.listocalixto.dailycosmos.data.model.APODFavoriteEntity
-import com.listocalixto.dailycosmos.data.remote.apod_favorite.RemoteAPODFavoriteDataSource
+import com.listocalixto.dailycosmos.data.local.AppDatabase
+import com.listocalixto.dailycosmos.data.local.apod.LocalAPODDataSource
+import com.listocalixto.dailycosmos.data.local.favorites.LocalFavoriteDataSource
+import com.listocalixto.dailycosmos.data.model.FavoriteEntity
+import com.listocalixto.dailycosmos.data.remote.favorites.RemoteAPODFavoriteDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentFavoritesBinding
-import com.listocalixto.dailycosmos.presentation.apod_favorite.APODFavoriteViewModel
-import com.listocalixto.dailycosmos.presentation.apod_favorite.APODFavoriteViewModelFactory
-import com.listocalixto.dailycosmos.domain.apod_favorite.APODFavoriteRepositoryImpl
+import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModel
+import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModelFactory
+import com.listocalixto.dailycosmos.domain.favorites.FavoritesRepoImpl
 import com.listocalixto.dailycosmos.ui.main.favorites.adapter.FavoritesAdapter
 
 class FavoritesFragment : Fragment(R.layout.fragment_favorites),
@@ -22,7 +25,13 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites),
 
     private lateinit var binding: FragmentFavoritesBinding
     private val viewModel by activityViewModels<APODFavoriteViewModel> {
-        APODFavoriteViewModelFactory(APODFavoriteRepositoryImpl(RemoteAPODFavoriteDataSource()))
+        APODFavoriteViewModelFactory(
+            FavoritesRepoImpl(
+                RemoteAPODFavoriteDataSource(),
+                LocalFavoriteDataSource(AppDatabase.getDatabase(requireContext()).favoriteDao()),
+                LocalAPODDataSource(AppDatabase.getDatabase(requireContext()).apodDao())
+            )
+        )
     }
 
     private lateinit var layoutManager: StaggeredGridLayoutManager
@@ -55,7 +64,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites),
 
     }
 
-    override fun onFavoriteClick(favorite: APODFavoriteEntity) {
+    override fun onFavoriteClick(favorite: FavoriteEntity) {
         val action = FavoritesFragmentDirections.actionFavoritesFragmentToDetailsFragment(
             favorite.copyright,
             favorite.date,

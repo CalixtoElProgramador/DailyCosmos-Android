@@ -3,6 +3,7 @@ package com.listocalixto.dailycosmos.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.firebase.auth.FirebaseAuth
 
 data class APOD(
     val copyright: String = "",
@@ -43,7 +44,7 @@ data class APODEntity(
 )
 
 @Entity
-data class APODFavoriteEntity(
+data class FavoriteEntity(
     @PrimaryKey
     val date: String = "",
 
@@ -66,12 +67,12 @@ data class APODFavoriteEntity(
     val url: String = "",
 
     @ColumnInfo(name = "uid")
-    val uid: String = ""
+    val uid: String? = ""
 )
 
 fun List<APODEntity>.toAPODList(): List<APOD> {
     val resultList = mutableListOf<APOD>()
-    this.forEach{apodEntity ->
+    this.forEach { apodEntity ->
         resultList.add(apodEntity.toAPOD())
     }
     return resultList
@@ -88,6 +89,17 @@ fun APODEntity.toAPOD(): APOD = APOD(
     this.is_favorite
 )
 
+fun APODEntity.toFavorite(uid: String?): FavoriteEntity = FavoriteEntity(
+    this.date,
+    this.copyright,
+    this.explanation,
+    this.hdurl,
+    this.media_type,
+    this.title,
+    this.url,
+    uid = uid
+)
+
 fun APOD.toAPODEntity(is_favorite: Int): APODEntity = APODEntity(
     this.date,
     this.copyright,
@@ -99,7 +111,18 @@ fun APOD.toAPODEntity(is_favorite: Int): APODEntity = APODEntity(
     is_favorite = is_favorite
 )
 
-fun APODFavoriteEntity.toAPODEntity(is_favorite: Int): APODEntity = APODEntity(
+fun APOD.toFavorite(uid: String?): FavoriteEntity = FavoriteEntity(
+    this.date,
+    this.copyright,
+    this.explanation,
+    this.hdurl,
+    this.media_type,
+    this.title,
+    this.url,
+    uid = uid
+)
+
+fun FavoriteEntity.toAPODEntity(is_favorite: Int): APODEntity = APODEntity(
     this.date,
     this.copyright,
     this.explanation,

@@ -1,4 +1,4 @@
-package com.listocalixto.dailycosmos.data.local
+package com.listocalixto.dailycosmos.data.local.apod
 
 import androidx.room.*
 import com.listocalixto.dailycosmos.data.model.APOD
@@ -10,7 +10,10 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 interface APODDao {
 
     @Query("SELECT * FROM apodentity ORDER BY date DESC")
-    suspend fun getAllAPODs(): List<APODEntity>
+    suspend fun getAPODs(): List<APODEntity>
+
+    @Query("SELECT * FROM apodentity WHERE is_favorite = 1")
+    suspend fun getFavorites(): List<APODEntity>
 
     //fun getAllAPODsDistinctUntilChanged() = getAllAPODs().distinctUntilChanged()
 

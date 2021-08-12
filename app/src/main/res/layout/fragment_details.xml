@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorBackgroundDetail"
     android:fitsSystemWindows="true"
-    tools:context=".ui.main.item_details.DetailsFragment">
+    tools:context=".ui.main.details.DetailsFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar_details"

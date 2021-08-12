@@ -17,7 +17,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.data.local.AppDatabase
-import com.listocalixto.dailycosmos.data.local.LocalAPODDataSource
+import com.listocalixto.dailycosmos.data.local.apod.LocalAPODDataSource
 import com.listocalixto.dailycosmos.data.remote.apod.RemoteAPODDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentTodayBinding
 import com.listocalixto.dailycosmos.presentation.apod.APODViewModel
@@ -29,14 +29,15 @@ import com.listocalixto.dailycosmos.ui.main.today.adapter.TodayAdapter
 import java.text.SimpleDateFormat
 import androidx.lifecycle.Observer
 import com.listocalixto.dailycosmos.core.Result
+import com.listocalixto.dailycosmos.data.local.favorites.LocalFavoriteDataSource
 import com.listocalixto.dailycosmos.data.model.APOD
-import com.listocalixto.dailycosmos.data.remote.apod_favorite.RemoteAPODFavoriteDataSource
+import com.listocalixto.dailycosmos.data.remote.favorites.RemoteAPODFavoriteDataSource
 import com.listocalixto.dailycosmos.data.remote.translator.TranslatorDataSource
 import com.listocalixto.dailycosmos.databinding.ItemApodDailyBinding
-import com.listocalixto.dailycosmos.presentation.apod_favorite.APODFavoriteViewModel
-import com.listocalixto.dailycosmos.presentation.apod_favorite.APODFavoriteViewModelFactory
+import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModel
+import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModelFactory
 import com.listocalixto.dailycosmos.presentation.translator.TranslatorDataStoreViewModel
-import com.listocalixto.dailycosmos.domain.apod_favorite.APODFavoriteRepositoryImpl
+import com.listocalixto.dailycosmos.domain.favorites.FavoritesRepoImpl
 import java.util.*
 import kotlin.math.abs
 
@@ -59,7 +60,13 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
         )
     }
     private val viewModelFavorite by activityViewModels<APODFavoriteViewModel> {
-        APODFavoriteViewModelFactory(APODFavoriteRepositoryImpl(RemoteAPODFavoriteDataSource()))
+        APODFavoriteViewModelFactory(
+            FavoritesRepoImpl(
+                RemoteAPODFavoriteDataSource(),
+                LocalFavoriteDataSource(AppDatabase.getDatabase(requireContext()).favoriteDao()),
+                LocalAPODDataSource(AppDatabase.getDatabase(requireContext()).apodDao())
+            )
+        )
     }
 
     private var isLoading = false

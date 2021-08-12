@@ -3,7 +3,6 @@ package com.listocalixto.dailycosmos.ui.main
 import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.media.MediaScannerConnection
 import android.net.Uri
@@ -13,7 +12,6 @@ import android.os.Environment
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.View
-import android.widget.ImageButton
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.navigation.fragment.navArgs
@@ -93,7 +91,6 @@ class PictureFragment : Fragment(R.layout.fragment_picture) {
                 //drawable = binding.photoView.drawable as BitmapDrawable
                 //bitmap = drawable?.bitmap
                 checkPermissionsStorage()
-
             }
         }
     }

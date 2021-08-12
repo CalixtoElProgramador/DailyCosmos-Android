@@ -12,4 +12,9 @@ class RemoteAPODDataSource (private val webService: APODWebService) {
         endDate
     )
 
+    suspend fun getRandomResults(count: String): List<APOD> = webService.getRandomResults(
+        AppConstants.API_KEY,
+        count
+    )
+
 }

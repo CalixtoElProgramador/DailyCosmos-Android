@@ -36,7 +36,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailsFragment"
-        android:name="com.listocalixto.dailycosmos.ui.main.item_details.DetailsFragment"
+        android:name="com.listocalixto.dailycosmos.ui.main.details.DetailsFragment"
         android:label="fragment_details"
         tools:layout="@layout/fragment_details">
         <argument

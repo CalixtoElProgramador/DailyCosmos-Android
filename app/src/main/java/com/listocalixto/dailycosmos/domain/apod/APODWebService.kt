@@ -17,6 +17,12 @@ interface APODWebService {
         @Query("end_date") endDate: String
     ): List<APOD>
 
+    @GET("planetary/apod")
+    suspend fun getRandomResults(
+        @Query("api_key") apiKey: String,
+        @Query("count") count: String,
+    ): List<APOD>
+
 }
 
 object RetrofitClient {

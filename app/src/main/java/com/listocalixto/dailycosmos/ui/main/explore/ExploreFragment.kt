@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.listocalixto.dailycosmos.R
 import androidx.lifecycle.Observer
 import com.listocalixto.dailycosmos.data.local.AppDatabase
-import com.listocalixto.dailycosmos.data.local.LocalAPODDataSource
+import com.listocalixto.dailycosmos.data.local.apod.LocalAPODDataSource
 import com.listocalixto.dailycosmos.data.remote.apod.RemoteAPODDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentExplorerBinding
 import com.listocalixto.dailycosmos.presentation.apod.APODViewModel
@@ -23,8 +23,9 @@ import com.listocalixto.dailycosmos.domain.apod.APODRepositoryImpl
 import com.listocalixto.dailycosmos.domain.apod.RetrofitClient
 import com.listocalixto.dailycosmos.ui.main.explore.adapter.ExploreAdapter
 import com.listocalixto.dailycosmos.core.Result
+import com.listocalixto.dailycosmos.data.local.favorites.LocalFavoriteDataSource
 import com.listocalixto.dailycosmos.data.model.APOD
-import com.listocalixto.dailycosmos.data.remote.apod_favorite.RemoteAPODFavoriteDataSource
+import com.listocalixto.dailycosmos.data.remote.favorites.RemoteAPODFavoriteDataSource
 import com.listocalixto.dailycosmos.databinding.ItemApodBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -60,6 +61,8 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     private lateinit var adapter: ExploreAdapter
     private lateinit var layoutManager: StaggeredGridLayoutManager
 
+    private lateinit var adapterRandom: ExploreAdapter
+
     override fun onResume() {
         super.onResume()
         isLoading = false
@@ -80,6 +83,11 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                     findNavController().navigate(R.id.action_exploreFragment_to_settingsActivity)
                     true
                 }
+                R.id.random -> {
+                    getRandomAPODs()
+                    true
+                }
+
                 else -> {
                     false
                 }
@@ -89,6 +97,28 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
 
         }
 
+    }
+
+    private fun getRandomAPODs() {
+        viewModel.fetchRandomResults("10").observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Result.Loading -> {
+                    Log.d("ViewModel", "Loading random... count isNotEmpty")
+                    binding.rvApod.visibility = View.GONE
+                    binding.pbRvAPOD.visibility = View.VISIBLE
+                }
+                is Result.Success -> {
+                    Log.d("ViewModel", "Result random... ${it.data}")
+                    binding.rvApod.visibility = View.VISIBLE
+                    binding.pbRvAPOD.visibility = View.GONE
+                    adapterRandom = ExploreAdapter(it.data, this@ExploreFragment)
+                    binding.rvApod.adapter = adapterRandom
+                }
+                is Result.Failure -> {
+                    Log.d("ViewModel", "Failure random... ${it.exception}")
+                }
+            }
+        })
     }
 
     private fun loadMoreResults() {
@@ -144,7 +174,11 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         if (!::adapter.isInitialized) {
             getResults(sdf.format(endDate.time), sdf.format(startDate.time))
         } else {
-            binding.rvApod.adapter = adapter
+            if (!::adapterRandom.isInitialized) {
+                binding.rvApod.adapter = adapter
+            } else {
+                binding.rvApod.adapter = adapterRandom
+            }
         }
     }
 
@@ -200,6 +234,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                     }
                     is Result.Failure -> {
                         Log.d("ViewModel", "ViewModel error: ${result.exception}")
+
                     }
                 }
             })

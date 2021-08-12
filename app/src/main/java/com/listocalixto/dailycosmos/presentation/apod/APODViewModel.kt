@@ -31,6 +31,17 @@ class APODViewModel(private val repo: APODRepository) : ViewModel() {
 
     }
 
+    fun fetchRandomResults(count: String) = liveData(Dispatchers.IO) {
+        emit(Result.Loading())
+        kotlin.runCatching {
+            repo.getRandomResults(count)
+        }.onSuccess {
+            emit(Result.Success(it))
+        }.onFailure {
+            emit(Result.Failure(Exception(it.message)))
+        }
+    }
+
     fun updateFavorite(apod: APOD, isFavorite: Int) {
         viewModelScope.launch {
             repo.updateFavorite(apod, isFavorite)

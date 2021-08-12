@@ -1,14 +1,15 @@
-package com.listocalixto.dailycosmos.data.local
+package com.listocalixto.dailycosmos.data.local.apod
 
-import com.listocalixto.dailycosmos.data.model.APOD
-import com.listocalixto.dailycosmos.data.model.APODEntity
-import com.listocalixto.dailycosmos.data.model.toAPODList
-import kotlinx.coroutines.flow.Flow
+import com.listocalixto.dailycosmos.data.model.*
 
 class LocalAPODDataSource(private val apodDao: APODDao) {
 
     suspend fun getResults(): List<APOD> {
-        return apodDao.getAllAPODs().toAPODList()
+        return apodDao.getAPODs().toAPODList()
+    }
+
+    suspend fun getFavorites(): List<APODEntity> {
+        return apodDao.getFavorites()
     }
 
     suspend fun saveAPOD(apodEntity: APODEntity) {

@@ -1,23 +1,21 @@
-package com.listocalixto.dailycosmos.data.remote.apod_favorite
+package com.listocalixto.dailycosmos.data.remote.favorites
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.model.APOD
-import com.listocalixto.dailycosmos.data.model.APODEntity
-import com.listocalixto.dailycosmos.data.model.APODFavoriteEntity
+import com.listocalixto.dailycosmos.data.model.FavoriteEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class RemoteAPODFavoriteDataSource {
 
-    suspend fun setAPODFavorite(apod: APOD) {
+    suspend fun setRemoteFavorite(apod: APOD) {
         val user = FirebaseAuth.getInstance().currentUser
         user?.let {
             FirebaseFirestore.getInstance().collection("favorites")
                 .document("${apod.date} ${user.uid}").set(
-                    APODFavoriteEntity(
+                    FavoriteEntity(
                         apod.date,
                         apod.copyright,
                         apod.explanation,
@@ -31,7 +29,7 @@ class RemoteAPODFavoriteDataSource {
         }
     }
 
-    suspend fun deleteFavorite(apod: APOD) {
+    suspend fun deleteRemoteFavorite(apod: APOD) {
         val user = FirebaseAuth.getInstance().currentUser
         user?.let {
             FirebaseFirestore.getInstance().collection("favorites")
@@ -39,9 +37,9 @@ class RemoteAPODFavoriteDataSource {
         }
     }
 
-    suspend fun getAPODFavorites(): List<APODFavoriteEntity> {
+    suspend fun getRemoteFavorites(): List<FavoriteEntity> {
         val user = FirebaseAuth.getInstance().currentUser
-        val favoritesList = mutableListOf<APODFavoriteEntity>()
+        val favoritesList = mutableListOf<FavoriteEntity>()
 
         withContext(Dispatchers.IO) {
             val querySnapshot =
@@ -49,7 +47,7 @@ class RemoteAPODFavoriteDataSource {
                     .whereEqualTo("uid", user?.uid)
                     .get().await()
             for (favorite in querySnapshot.documents) {
-                favorite.toObject(APODFavoriteEntity::class.java)?.let {
+                favorite.toObject(FavoriteEntity::class.java)?.let {
                     favoritesList.add(it)
                 }
             }

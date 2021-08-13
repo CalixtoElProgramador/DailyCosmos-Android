@@ -31,7 +31,8 @@ import com.listocalixto.dailycosmos.presentation.apod.APODViewModel
 import com.listocalixto.dailycosmos.presentation.apod.APODViewModelFactory
 import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModel
 import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModelFactory
-import com.listocalixto.dailycosmos.presentation.translator.TranslatorDataStoreViewModel
+import com.listocalixto.dailycosmos.presentation.preferences.TranslatorViewModel
+import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
 
 @Suppress("DEPRECATION")
 class DetailsFragment : Fragment(R.layout.fragment_details) {
@@ -61,7 +62,8 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         )
     }
 
-    private lateinit var translatorDataStore: TranslatorDataStoreViewModel
+    private lateinit var translatorViewModel: TranslatorViewModel
+    private lateinit var utilsViewModel: UtilsViewModel
 
     @RequiresApi(Build.VERSION_CODES.N)
     @SuppressLint("SetTextI18n")
@@ -103,10 +105,9 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     @SuppressLint("ShowToast")
     private fun translateExplanation() {
-        translatorDataStore.readValue.observe(viewLifecycleOwner, {
+        translatorViewModel.readValue.observe(viewLifecycleOwner, {
             if (it == 0) {
                 showDialog()
             } else {
@@ -115,9 +116,22 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                         requireContext(),
                         requireActivity()
                     )
-                translator.translate(args.explanation).addOnSuccessListener { textTranslated ->
-                    binding.textApodExplanation.text = textTranslated
-                    translator.close()
+                if (translator == null) {
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(resources.getString(R.string.bad_news))
+                        .setIcon(R.drawable.ic_sentiment_dissatisfied)
+                        .setMessage(resources.getString(R.string.languaje_not_available))
+                        .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
+                        }.show()
+                } else {
+                    translator.translate(args.title).addOnSuccessListener { titleTranslated ->
+                        binding.textApodTitle.text = titleTranslated
+                        translator.translate(args.explanation)
+                            .addOnSuccessListener { textTranslated ->
+                                binding.textApodExplanation.text = textTranslated
+                                translator.close()
+                            }
+                    }
                 }
             }
         })
@@ -132,9 +146,9 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             .setTitle(getString(R.string.ask_download_traductor_title))
             .setIcon(R.drawable.ic_save_alt)
             .setMessage(resources.getString(R.string.ask_download_traductor))
-            .setNegativeButton(resources.getString(R.string.decline)) { dialog, which ->
+            .setNegativeButton(resources.getString(R.string.decline)) { _, _ ->
             }
-            .setPositiveButton(resources.getString(R.string.accept)) { dialog, which ->
+            .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     Snackbar.make(
                         binding.imgApodPicture,
@@ -144,7 +158,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                         .setAnchorView(requireActivity().requireViewById(R.id.bottom_navigation))
                         .show()
                 }
-                translatorDataStore.saveValue(1)
+                translatorViewModel.saveValue(1)
             }
             .show()
     }
@@ -158,9 +172,34 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             )
                 .show()
         } else {
-            navigateToPictureFragment()
+            utilsViewModel.readValue.observe(viewLifecycleOwner, {
+                when (it) {
+                    0 -> {
+                        MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(getString(R.string.caution))
+                            .setIcon(R.drawable.ic_error_outline)
+                            .setMessage(resources.getString(R.string.caution_open_image))
+                            .setNeutralButton(resources.getString(R.string.cancel)) { _, _ -> }
+                            .setNegativeButton(resources.getString(R.string.settings)) { _, _ ->
+                                utilsViewModel.saveValue(1)
+                                navigateToSettingsActivity()
+                            }
+                            .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
+                                utilsViewModel.saveValue(1)
+                                navigateToPictureFragment()
+                            }.show()
+                    }
+                    1 -> {
+                        navigateToPictureFragment()
+                    }
+                }
+            })
         }
 
+    }
+
+    private fun navigateToSettingsActivity() {
+        findNavController().navigate(R.id.action_detailsFragment_to_settingsActivity)
     }
 
     private fun navigateToPictureFragment() {
@@ -212,8 +251,9 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
     private fun initVars(view: View) {
         binding = FragmentDetailsBinding.bind(view)
-        translatorDataStore =
-            ViewModelProvider(requireActivity()).get(TranslatorDataStoreViewModel::class.java)
+        translatorViewModel =
+            ViewModelProvider(requireActivity()).get(TranslatorViewModel::class.java)
+        utilsViewModel = ViewModelProvider(requireActivity()).get(UtilsViewModel::class.java)
         isFavorite = args.isFavorite
         apodReceived = APOD(
             args.copyright,

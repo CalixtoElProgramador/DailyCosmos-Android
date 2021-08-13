@@ -1,4 +1,4 @@
-package com.listocalixto.dailycosmos.domain.translator
+package com.listocalixto.dailycosmos.data.local.preferences
 
 import android.content.Context
 import android.util.Log
@@ -8,41 +8,40 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
-import kotlinx.coroutines.flow.Flow
 
-const val STORE_IS_MODEL_DOWNLOADED = "preferences_03"
+const val STORE_DIALOG_CAUTION_OPEN_IMAGE = "preferences_04"
 
-class TranslatorDataStore(context: Context) {
+class UtilsDataStore(context: Context) {
 
     private object PreferencesKeys {
-        val isDownloaded = preferencesKey<Int>("is_model_translator_downloaded")
+        val isAccepted = preferencesKey<Int>("is_dialog_caution_open_image_accepted")
     }
 
-    private val storeIsDownloaded: DataStore<Preferences> =
-        context.createDataStore(name = STORE_IS_MODEL_DOWNLOADED)
+    private val storeIsAccepted: DataStore<Preferences> =
+        context.createDataStore(name = STORE_DIALOG_CAUTION_OPEN_IMAGE)
 
     suspend fun saveValue(value: Int) {
-        storeIsDownloaded.edit { preferences ->
-            preferences[PreferencesKeys.isDownloaded] = value
+        storeIsAccepted.edit { preferences ->
+            preferences[PreferencesKeys.isAccepted] = value
         }
         Log.d("DataStore", "The answer has been saved: $value")
     }
 
-    val readValue: Flow<Int> = storeIsDownloaded.data
+    val readValue: Flow<Int> = storeIsAccepted.data
         .catch { exception ->
             if (exception is IOException) {
-                Log.d("DataStoreTradcutor", exception.message.toString())
                 emit(emptyPreferences())
             } else {
                 throw exception
             }
         }
         .map { preferences ->
-            val value = preferences[PreferencesKeys.isDownloaded] ?: 0
-            Log.d("DataStore", "The value is $value")
+            val value = preferences[PreferencesKeys.isAccepted] ?: 0
             value
         }
+
 }

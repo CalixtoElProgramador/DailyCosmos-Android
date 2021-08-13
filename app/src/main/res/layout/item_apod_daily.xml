@@ -104,7 +104,7 @@
                     android:id="@+id/text_apodExplanation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_40sdp"
+                    android:layout_marginTop="@dimen/_32sdp"
                     android:lineSpacingExtra="@dimen/_8sdp"
                     android:paddingStart="@dimen/_16sdp"
                     android:paddingEnd="@dimen/_16sdp"

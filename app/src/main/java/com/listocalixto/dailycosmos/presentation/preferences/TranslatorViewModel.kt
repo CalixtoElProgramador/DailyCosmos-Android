@@ -1,14 +1,14 @@
-package com.listocalixto.dailycosmos.presentation.translator
+package com.listocalixto.dailycosmos.presentation.preferences
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.listocalixto.dailycosmos.domain.translator.TranslatorDataStore
+import com.listocalixto.dailycosmos.data.local.preferences.TranslatorDataStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class TranslatorDataStoreViewModel(application: Application) : AndroidViewModel(application) {
+class TranslatorViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repo = TranslatorDataStore(application)
 

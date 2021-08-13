@@ -1,12 +1,12 @@
-package com.listocalixto.dailycosmos.presentation.apod
+package com.listocalixto.dailycosmos.presentation.preferences
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.listocalixto.dailycosmos.domain.apod.APODDataStore
+import com.listocalixto.dailycosmos.data.local.preferences.APODDataStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class DataStoreViewModel(application: Application) : AndroidViewModel(application) {
+class APODDataStoreViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repo = APODDataStore(application)
 

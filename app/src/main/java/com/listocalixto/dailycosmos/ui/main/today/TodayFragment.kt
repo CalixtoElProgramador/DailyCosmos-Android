@@ -3,10 +3,12 @@ package com.listocalixto.dailycosmos.ui.main.today
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.WindowManager
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.activityViewModels
@@ -22,12 +24,13 @@ import com.listocalixto.dailycosmos.data.remote.apod.RemoteAPODDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentTodayBinding
 import com.listocalixto.dailycosmos.presentation.apod.APODViewModel
 import com.listocalixto.dailycosmos.presentation.apod.APODViewModelFactory
-import com.listocalixto.dailycosmos.presentation.apod.DataStoreViewModel
+import com.listocalixto.dailycosmos.presentation.preferences.APODDataStoreViewModel
 import com.listocalixto.dailycosmos.domain.apod.APODRepositoryImpl
 import com.listocalixto.dailycosmos.domain.apod.RetrofitClient
 import com.listocalixto.dailycosmos.ui.main.today.adapter.TodayAdapter
 import java.text.SimpleDateFormat
 import androidx.lifecycle.Observer
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.local.favorites.LocalFavoriteDataSource
 import com.listocalixto.dailycosmos.data.model.APOD
@@ -36,8 +39,9 @@ import com.listocalixto.dailycosmos.data.remote.translator.TranslatorDataSource
 import com.listocalixto.dailycosmos.databinding.ItemApodDailyBinding
 import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModel
 import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModelFactory
-import com.listocalixto.dailycosmos.presentation.translator.TranslatorDataStoreViewModel
+import com.listocalixto.dailycosmos.presentation.preferences.TranslatorViewModel
 import com.listocalixto.dailycosmos.domain.favorites.FavoritesRepoImpl
+import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
 import java.util.*
 import kotlin.math.abs
 
@@ -70,7 +74,6 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     }
 
     private var isLoading = false
-    private var sizeList: Int = 0
     private var endDate: Calendar = Calendar.getInstance()
     private var startDate: Calendar = Calendar.getInstance().apply {
         set(
@@ -82,22 +85,24 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     }
 
     private lateinit var binding: FragmentTodayBinding
-    private lateinit var dataStoreViewModel: DataStoreViewModel
+    private lateinit var dataStore: APODDataStoreViewModel
+    private lateinit var translatorViewModel: TranslatorViewModel
+    private lateinit var utilsViewModel: UtilsViewModel
     private lateinit var adapterToday: TodayAdapter
-    private lateinit var translatorDataStore: TranslatorDataStoreViewModel
+
 
     override fun onResume() {
         super.onResume()
         isLoading = false
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initVars(view)
-        configWindow()
+        configViewPager() //And loadMoreResults when ViewPager.currentItem == adapter.itemCount
         readFromDataStore()
         isAdapterInit()
-        configViewPager() //And loadMoreResults when ViewPager.currentItem == results.lastIndex
     }
 
     private fun isAdapterInit() {
@@ -112,24 +117,18 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
         binding.vpPhotoToday.setPageTransformer(this)
     }
 
-    private fun configWindow() {
-        activity?.window?.addFlags((WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS))
-    }
-
     private fun initVars(view: View) {
         binding = FragmentTodayBinding.bind(view)
-        dataStoreViewModel =
-            ViewModelProvider(requireActivity()).get(DataStoreViewModel::class.java)
-        translatorDataStore =
-            ViewModelProvider(requireActivity()).get(TranslatorDataStoreViewModel::class.java)
+        dataStore =
+            ViewModelProvider(requireActivity()).get(APODDataStoreViewModel::class.java)
+        translatorViewModel =
+            ViewModelProvider(requireActivity()).get(TranslatorViewModel::class.java)
+        utilsViewModel = ViewModelProvider(requireActivity()).get(UtilsViewModel::class.java)
     }
 
     private fun readFromDataStore() {
-        dataStoreViewModel.readLastDateFromDataStore.observe(viewLifecycleOwner, { date ->
+        dataStore.readLastDateFromDataStore.observe(viewLifecycleOwner, { date ->
             startDate.time = sdf.parse(date)!!
-        })
-        dataStoreViewModel.readSizeListFromDataStore.observe(viewLifecycleOwner, { size ->
-            sizeList = size
         })
     }
 
@@ -142,6 +141,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                         if (!::adapterToday.isInitialized) {
                             binding.lottieLoading.visibility = View.VISIBLE
                             Log.d("ViewModelDaily", "Loading... Adapter is NOT Initialized")
+                            activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.visibility = View.GONE
                         } else {
                             Log.d("ViewModelDaily", "Loading... Adapter is Initialized")
                         }
@@ -149,10 +149,8 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                     is Result.Success -> {
                         binding.lottieLoading.visibility = View.GONE
                         if (::adapterToday.isInitialized) {
-                            sizeList += 10
                             adapterToday.setData(result.data)
-                            dataStoreViewModel.saveLastDateToDataStore(result.data[result.data.lastIndex].date)
-                            dataStoreViewModel.saveNewSizeListToDataStore(sizeList)
+                            dataStore.saveLastDateToDataStore(result.data[result.data.lastIndex].date)
                             Log.d("ViewModelDaily", "Result... Adapter is Initialized")
                         } else {
                             Log.d("ViewModelDaily", "Result... Adapter is NOT Initialized")
@@ -164,6 +162,15 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                                     this
                                 )
                             binding.vpPhotoToday.adapter = adapterToday
+                            Handler().postDelayed({
+                                activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.apply {
+                                    animation = AnimationUtils.loadAnimation(
+                                        requireContext(),
+                                        R.anim.slide_in_bottom
+                                    )
+                                    visibility = View.VISIBLE
+                                }
+                            }, 1500)
                         }
                         isLoading = false
                         Log.d("ViewModelDaily", "Results: ${result.data}")
@@ -185,13 +192,42 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
             )
                 .show()
         } else {
-            val action = TodayFragmentDirections.actionTodayFragmentToPictureFragment(
-                apod.hdurl,
-                apod.title,
-                apod.url
-            )
-            findNavController().navigate(action)
+            utilsViewModel.readValue.observe(viewLifecycleOwner, {
+                when (it) {
+                    0 -> {
+                        MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(getString(R.string.caution))
+                            .setIcon(R.drawable.ic_error_outline)
+                            .setMessage(resources.getString(R.string.caution_open_image))
+                            .setNeutralButton(resources.getString(R.string.cancel)) { _, _ -> }
+                            .setNegativeButton(resources.getString(R.string.settings)) { _, _ ->
+                                utilsViewModel.saveValue(1)
+                                navigateToSettingsActivity()
+                            }
+                            .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
+                                utilsViewModel.saveValue(1)
+                                navigateToPictureFragment(apod)
+                            }.show()
+                    }
+                    1 -> {
+                        navigateToPictureFragment(apod)
+                    }
+                }
+            })
         }
+    }
+
+    private fun navigateToSettingsActivity() {
+        findNavController().navigate(R.id.action_todayFragment_to_settingsActivity)
+    }
+
+    private fun navigateToPictureFragment(apod: APOD) {
+        val action = TodayFragmentDirections.actionTodayFragmentToPictureFragment(
+            apod.hdurl,
+            apod.title,
+            apod.url
+        )
+        findNavController().navigate(action)
     }
 
     override fun transformPage(page: View, position: Float) {
@@ -215,7 +251,6 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                     val scaleFactor = (MIN_SCALE + (1 - MIN_SCALE) * (1 - abs(position)))
                     scaleX = scaleFactor
                     scaleY = scaleFactor
-
                 }
                 else -> {
                     alpha = 0f
@@ -227,10 +262,10 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
 
     private fun loadMoreResults() {
         Log.d("ViewPager2", "Position of the ViewPager: ${binding.vpPhotoToday.currentItem}")
-        Log.d("ViewPager2", "List size: $sizeList")
+        Log.d("ViewPager2", "List size: ${adapterToday.itemCount}")
         if (!isLoading) {
             Log.d("ViewPager2", "isLoading: $isLoading")
-            if (binding.vpPhotoToday.currentItem >= sizeList - 6) {
+            if (binding.vpPhotoToday.currentItem >= adapterToday.itemCount - 7) {
                 getResults(newDates()[0], newDates()[1])
             }
         }
@@ -284,18 +319,14 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     }
 
     @SuppressLint("ShowToast")
-    @RequiresApi(Build.VERSION_CODES.N)
     override fun onButtonClick(apod: APOD, itemBinding: ItemApodDailyBinding) {
-        translatorDataStore.readValue.observe(viewLifecycleOwner, {
+        translatorViewModel.readValue.observe(viewLifecycleOwner, {
             if (it == 0) {
-                MaterialAlertDialogBuilder(
-                    requireContext(),
-                    R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog
-                )
+                MaterialAlertDialogBuilder(requireContext())
                     .setTitle(getString(R.string.ask_download_traductor_title))
                     .setIcon(R.drawable.ic_save_alt)
                     .setMessage(resources.getString(R.string.ask_download_traductor))
-                    .setNegativeButton(resources.getString(R.string.decline)) { _, _ ->
+                    .setNegativeButton(resources.getString(R.string.no_thanks)) { _, _ ->
                     }
                     .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -314,7 +345,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                             )
                                 .show()
                         }
-                        translatorDataStore.saveValue(1)
+                        translatorViewModel.saveValue(1)
                     }
                     .show()
             } else {
@@ -323,9 +354,22 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                         requireContext(),
                         requireActivity()
                     )
-                translator.translate(apod.explanation).addOnSuccessListener { textTranslated ->
-                    itemBinding.textApodExplanation.text = textTranslated
-                    translator.close()
+                if (translator == null) {
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(resources.getString(R.string.bad_news))
+                        .setIcon(R.drawable.ic_sentiment_dissatisfied)
+                        .setMessage(resources.getString(R.string.languaje_not_available))
+                        .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
+                        }.show()
+                } else {
+                    translator.translate(apod.title).addOnSuccessListener { titleTranslated ->
+                        itemBinding.textApodTitle.text = titleTranslated
+                        translator.translate(apod.explanation)
+                            .addOnSuccessListener { textTranslated ->
+                                itemBinding.textApodExplanation.text = textTranslated
+                                translator.close()
+                            }
+                    }
                 }
             }
         })

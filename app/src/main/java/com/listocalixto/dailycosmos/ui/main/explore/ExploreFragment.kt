@@ -1,6 +1,7 @@
 package com.listocalixto.dailycosmos.ui.main.explore
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -15,13 +16,14 @@ import com.listocalixto.dailycosmos.R
 import androidx.lifecycle.Observer
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.snackbar.Snackbar
 import com.listocalixto.dailycosmos.data.local.AppDatabase
 import com.listocalixto.dailycosmos.data.local.apod.LocalAPODDataSource
 import com.listocalixto.dailycosmos.data.remote.apod.RemoteAPODDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentExplorerBinding
 import com.listocalixto.dailycosmos.presentation.apod.APODViewModel
 import com.listocalixto.dailycosmos.presentation.apod.APODViewModelFactory
-import com.listocalixto.dailycosmos.presentation.apod.DataStoreViewModel
+import com.listocalixto.dailycosmos.presentation.preferences.APODDataStoreViewModel
 import com.listocalixto.dailycosmos.domain.apod.APODRepositoryImpl
 import com.listocalixto.dailycosmos.domain.apod.RetrofitClient
 import com.listocalixto.dailycosmos.ui.main.explore.adapter.ExploreAdapter
@@ -59,7 +61,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     }
 
     private lateinit var binding: FragmentExplorerBinding
-    private lateinit var dataStoreViewModel: DataStoreViewModel
+    private lateinit var dataStore: APODDataStoreViewModel
     private lateinit var adapter: ExploreAdapter
     private lateinit var layoutManager: StaggeredGridLayoutManager
 
@@ -85,19 +87,19 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                     findNavController().navigate(R.id.action_exploreFragment_to_settingsActivity)
                     true
                 }
+                R.id.calendar -> {
+                    openDatePicker()
+                    true
+                }
                 R.id.random -> {
                     getRandomAPODs()
                     true
                 }
-
                 else -> {
                     false
                 }
             }
         }
-
-        binding.fabCalendar.setOnClickListener { openDatePicker() }
-
     }
 
     private fun openDatePicker() {
@@ -133,24 +135,51 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
             .setEnd(today)
     }
 
+    @SuppressLint("ShowToast", "ResourceAsColor")
     private fun eventsDatePicker(dateRangePicker: MaterialDatePicker<Pair<Long, Long>>) {
         dateRangePicker.addOnPositiveButtonClickListener {
+            val today = MaterialDatePicker.todayInUtcMilliseconds()
+            val todayCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             val firstDay = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             val secondDay = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
 
+            todayCalendar.timeInMillis = today
+            todayCalendar[Calendar.DATE] = todayCalendar[Calendar.DATE] + 1
             firstDay.timeInMillis = it.first
             firstDay[Calendar.DATE] = firstDay[Calendar.DATE] + 1
             secondDay.timeInMillis = it.second
             secondDay[Calendar.DATE] = secondDay[Calendar.DATE] + 1
 
-            getCalendarResults(sdf.format(firstDay.time), sdf.format(secondDay.time))
-
+            if (firstDay.timeInMillis <= todayCalendar.timeInMillis &&
+                secondDay.timeInMillis <= todayCalendar.timeInMillis
+            ) {
+                getCalendarResults(sdf.format(firstDay.time), sdf.format(secondDay.time))
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    Snackbar.make(
+                        binding.rvApod,
+                        getString(R.string.error_request_future_dates_today),
+                        Snackbar.LENGTH_LONG
+                    )
+                        .setAnchorView(requireActivity().requireViewById(R.id.bottom_navigation))
+                        .setBackgroundTint(requireContext().resources.getColor(R.color.colorError))
+                        .show()
+                } else {
+                    Snackbar.make(
+                        binding.rvApod,
+                        getString(R.string.error_request_future_dates_today),
+                        Snackbar.LENGTH_LONG
+                    )
+                        .setBackgroundTint(requireContext().resources.getColor(R.color.colorError))
+                        .show()
+                }
+            }
         }
     }
 
     private fun getCalendarResults(start: String, end: String) {
         viewModel.fetchCalendarResults(end, start).observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is Result.Loading -> {
                     Log.d("ViewModel", "Loading calendarResults...")
                     binding.rvApod.visibility = View.GONE
@@ -219,8 +248,8 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
 
     private fun initVars(view: View) {
         binding = FragmentExplorerBinding.bind(view)
-        dataStoreViewModel =
-            ViewModelProvider(requireActivity()).get(DataStoreViewModel::class.java)
+        dataStore =
+            ViewModelProvider(requireActivity()).get(APODDataStoreViewModel::class.java)
     }
 
     private fun configRecyclerView() {
@@ -236,7 +265,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     }*/
 
     private fun readFromDataStore() {
-        dataStoreViewModel.readLastDateFromDataStore.observe(viewLifecycleOwner, { date ->
+        dataStore.readLastDateFromDataStore.observe(viewLifecycleOwner, { date ->
             startDate.time = sdf.parse(date)!!
             /*if (sdf.format(referenceDate.time) == sdf.format(startDate.time)) {
                 binding.titleCollapsingToolBar.text = getString(R.string.title_explore_collapsing_toolbar)
@@ -294,7 +323,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                     is Result.Success -> {
                         if (::adapter.isInitialized) {
                             adapter.setData(result.data)
-                            dataStoreViewModel.saveLastDateToDataStore(result.data[result.data.lastIndex].date)
+                            dataStore.saveLastDateToDataStore(result.data[result.data.lastIndex].date)
                             binding.pbMoreResults.visibility = View.GONE
                             Log.d("ViewModel", "Result... Adapter is Initialized")
                         } else {

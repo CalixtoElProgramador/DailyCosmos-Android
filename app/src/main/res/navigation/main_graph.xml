@@ -17,6 +17,9 @@
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_todayFragment_to_settingsActivity"
+            app:destination="@id/settingsActivity" />
     </fragment>
     <fragment
         android:id="@+id/exploreFragment"
@@ -73,6 +76,9 @@
         <argument
             android:name="is_favorite"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_detailsFragment_to_settingsActivity"
+            app:destination="@id/settingsActivity" />
     </fragment>
     <fragment
         android:id="@+id/pictureFragment"

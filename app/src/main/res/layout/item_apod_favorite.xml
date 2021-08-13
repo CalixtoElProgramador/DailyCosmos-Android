@@ -13,7 +13,7 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/_80sdp">
+        android:layout_height="@dimen/_90sdp">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -48,8 +48,8 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/img_apodFavorite"
-            android:layout_width="@dimen/_80sdp"
-            android:layout_height="@dimen/_80sdp"
+            android:layout_width="@dimen/_90sdp"
+            android:layout_height="@dimen/_90sdp"
             android:contentDescription="@string/app_name"
             app:shapeAppearance="?attr/shapeAppearanceMediumComponent"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Card.Media"

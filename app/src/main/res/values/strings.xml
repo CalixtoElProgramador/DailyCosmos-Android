@@ -80,11 +80,18 @@
     <string name="ask_download_traductor">Would you like to download a translator to switch from English to the language of your phone? It works with and without internet. It is by the Firebase machine learning kit. It\'s not the best but it works. It weighs about 30 Mb</string>
     <string name="decline">Decline</string>
     <string name="accept">Accept</string>
-    <string name="downloading_translator_message">Downloading... this will take a few minutes.</string>
+    <string name="downloading_translator_message">Downloading… this will take a few minutes.</string>
     <string name="translate_download_successfully">Model trained to translate downloaded</string>
     <string name="error_download_translate">There was an error downloading translator.</string>
     <string name="translate">Translate</string>
     <string name="snackbar_download_translator">Download has started</string>
     <string name="ask_download_traductor_title">Download translator</string>
     <string name="no_explanation">No explanation</string>
+    <string name="caution">Cuation</string>
+    <string name="caution_open_image"><![CDATA[Some of these images are in very high resolutions. If some of them don\'t load or you get kicked out of the app, it\'s probably because your phone doesn\'t support the resolution of the photo or because the file was too big. If you want to lower the resolution and be able to see all the images without any problem, you can go to Settings -> Storage -> Image Resolution -> Low. Sorry for the inconvenience.]]></string>
+    <string name="cancel">Cancel</string>
+    <string name="no_thanks">No, thanks</string>
+    <string name="bad_news">Bad news</string>
+    <string name="languaje_not_available">Sorry, the translator from English to the language of your phone is not available, it has not been created yet. We will have to wait for future updates. We apologize for the inconvenience.</string>
+    <string name="error_request_future_dates_today">Hahaha how funny... you can\'t request future dates to today\'s dates!</string>
 </resources>

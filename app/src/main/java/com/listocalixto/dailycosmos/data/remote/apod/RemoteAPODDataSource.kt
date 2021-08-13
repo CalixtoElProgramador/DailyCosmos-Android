@@ -9,22 +9,19 @@ class RemoteAPODDataSource(private val webService: APODWebService) {
     suspend fun getResults(endDate: String, startDate: String): List<APOD> = webService.getResults(
         AppConstants.API_KEY,
         startDate,
-        endDate,
-        "true"
+        endDate
     )
 
     suspend fun getRandomResults(count: String): List<APOD> = webService.getRandomResults(
         AppConstants.API_KEY,
-        count,
-        "true"
+        count
     )
 
     suspend fun getCalendarResults(endDate: String, startDate: String): List<APOD> =
         webService.getResults(
             AppConstants.API_KEY,
             startDate,
-            endDate,
-            "true"
+            endDate
         )
 
 }

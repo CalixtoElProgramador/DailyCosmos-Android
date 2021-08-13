@@ -14,15 +14,13 @@ interface APODWebService {
     suspend fun getResults(
         @Query("api_key") apiKey: String,
         @Query("start_date") starDate: String,
-        @Query("end_date") endDate: String,
-        @Query("thumbs") thumbs: String
+        @Query("end_date") endDate: String
     ): List<APOD>
 
     @GET("planetary/apod")
     suspend fun getRandomResults(
         @Query("api_key") apiKey: String,
-        @Query("count") count: String,
-        @Query("thumbs") thumbs: String
+        @Query("count") count: String
     ): List<APOD>
 
 }

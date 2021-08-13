@@ -50,10 +50,18 @@ class FavoritesAdapter(
         override fun bind(item: FavoriteEntity) {
             binding.titleApodFavorite.text = item.title
             binding.dateApodFavorite.text = item.date
-            if (item.hdurl.isEmpty()) {
-                Glide.with(context).load(item.url).into(binding.imgApodFavorite)
-            } else {
-                Glide.with(context).load(item.hdurl).into(binding.imgApodFavorite)
+
+            when (item.media_type) {
+                "image" -> {
+                    if (item.hdurl.isEmpty()) {
+                        Glide.with(context).load(item.url).into(binding.imgApodFavorite)
+                    } else {
+                        Glide.with(context).load(item.hdurl).into(binding.imgApodFavorite)
+                    }
+                }
+                "video" -> {
+                    Glide.with(context).load(item.thumbnail_url).into(binding.imgApodFavorite)
+                }
             }
         }
     }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.core.util.Pair
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -12,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.listocalixto.dailycosmos.R
 import androidx.lifecycle.Observer
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.listocalixto.dailycosmos.data.local.AppDatabase
 import com.listocalixto.dailycosmos.data.local.apod.LocalAPODDataSource
 import com.listocalixto.dailycosmos.data.remote.apod.RemoteAPODDataSource
@@ -23,7 +26,6 @@ import com.listocalixto.dailycosmos.domain.apod.APODRepositoryImpl
 import com.listocalixto.dailycosmos.domain.apod.RetrofitClient
 import com.listocalixto.dailycosmos.ui.main.explore.adapter.ExploreAdapter
 import com.listocalixto.dailycosmos.core.Result
-import com.listocalixto.dailycosmos.data.local.favorites.LocalFavoriteDataSource
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.data.remote.favorites.RemoteAPODFavoriteDataSource
 import com.listocalixto.dailycosmos.databinding.ItemApodBinding
@@ -93,10 +95,79 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                 }
             }
         }
-        binding.fabGoToFavorites.setOnClickListener {
+
+        binding.fabCalendar.setOnClickListener { openDatePicker() }
+
+    }
+
+    private fun openDatePicker() {
+        val constraintsBuilder = buildConstraint()
+        val dateRangePicker = configDatePicker(constraintsBuilder)
+        dateRangePicker.show(activity?.supportFragmentManager!!, "ExploreFragment")
+        eventsDatePicker(dateRangePicker)
+
+    }
+
+    private fun configDatePicker(constraintsBuilder: CalendarConstraints.Builder): MaterialDatePicker<Pair<Long, Long>> {
+        return MaterialDatePicker.Builder.dateRangePicker()
+            .setTitleText("Select dates")
+            .setSelection(
+                Pair(
+                    MaterialDatePicker.thisMonthInUtcMilliseconds(),
+                    MaterialDatePicker.todayInUtcMilliseconds()
+                )
+            ).setCalendarConstraints(constraintsBuilder.build())
+            .build()
+    }
+
+    private fun buildConstraint(): CalendarConstraints.Builder {
+        val today = MaterialDatePicker.todayInUtcMilliseconds()
+        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+
+        calendar[Calendar.MONTH] = Calendar.JUNE
+        calendar[Calendar.YEAR] = 1995
+        val june1995 = calendar.timeInMillis
+
+        return CalendarConstraints.Builder()
+            .setStart(june1995)
+            .setEnd(today)
+    }
+
+    private fun eventsDatePicker(dateRangePicker: MaterialDatePicker<Pair<Long, Long>>) {
+        dateRangePicker.addOnPositiveButtonClickListener {
+            val firstDay = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+            val secondDay = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+
+            firstDay.timeInMillis = it.first
+            firstDay[Calendar.DATE] = firstDay[Calendar.DATE] + 1
+            secondDay.timeInMillis = it.second
+            secondDay[Calendar.DATE] = secondDay[Calendar.DATE] + 1
+
+            getCalendarResults(sdf.format(firstDay.time), sdf.format(secondDay.time))
 
         }
+    }
 
+    private fun getCalendarResults(start: String, end: String) {
+        viewModel.fetchCalendarResults(end, start).observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is Result.Loading -> {
+                    Log.d("ViewModel", "Loading calendarResults...")
+                    binding.rvApod.visibility = View.GONE
+                    binding.pbRvAPOD.visibility = View.VISIBLE
+                }
+                is Result.Success -> {
+                    Log.d("ViewModel", "Results calendarResults... ${it.data}")
+                    binding.rvApod.visibility = View.VISIBLE
+                    binding.pbRvAPOD.visibility = View.GONE
+                    adapterRandom = ExploreAdapter(it.data, this@ExploreFragment)
+                    binding.rvApod.adapter = adapterRandom
+                }
+                is Result.Failure -> {
+                    Log.d("ViewModel", "Failure calendarResults... ${it.exception}")
+                }
+            }
+        })
     }
 
     private fun getRandomAPODs() {

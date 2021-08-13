@@ -1,5 +1,6 @@
 package com.listocalixto.dailycosmos.ui.main
 
+import android.annotation.SuppressLint
 import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -108,6 +109,7 @@ class PictureFragment : Fragment(R.layout.fragment_picture) {
         startActivity(shareIntent)
     }
 
+    @SuppressLint("ShowToast")
     private fun copyLinkToClipboard() {
         val clipboard = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = if (args.hdurl.isNotEmpty()) {
@@ -156,6 +158,7 @@ class PictureFragment : Fragment(R.layout.fragment_picture) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
+    @SuppressLint("ShowToast")
     private fun saveImage() {
         var outPutStream: OutputStream? = null
         var file: File? = null

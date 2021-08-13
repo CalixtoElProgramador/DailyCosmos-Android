@@ -32,6 +32,10 @@ class APODRepositoryImpl(
     override suspend fun getRandomResults(count: String): List<APOD> =
         dataSourceRemote.getRandomResults(count)
 
+    override suspend fun getCalendarResults(endDate: String, startDate: String): List<APOD> {
+        return dataSourceRemote.getCalendarResults(endDate, startDate)
+    }
+
     override suspend fun updateFavorite(apod: APOD, isFavorite: Int) {
         dataSourceLocal.updateFavorite(apod.toAPODEntity(isFavorite))
     }

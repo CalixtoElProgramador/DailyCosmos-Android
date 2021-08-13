@@ -306,6 +306,13 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                             )
                                 .setAnchorView(requireActivity().requireViewById(R.id.bottom_navigation))
                                 .show()
+                        } else {
+                            Snackbar.make(
+                                binding.vpPhotoToday,
+                                getString(R.string.snackbar_download_translator),
+                                Snackbar.LENGTH_SHORT
+                            )
+                                .show()
                         }
                         translatorDataStore.saveValue(1)
                     }

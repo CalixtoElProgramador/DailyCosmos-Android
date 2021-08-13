@@ -19,4 +19,12 @@ class RemoteAPODDataSource(private val webService: APODWebService) {
         "true"
     )
 
+    suspend fun getCalendarResults(endDate: String, startDate: String): List<APOD> =
+        webService.getResults(
+            AppConstants.API_KEY,
+            startDate,
+            endDate,
+            "true"
+        )
+
 }

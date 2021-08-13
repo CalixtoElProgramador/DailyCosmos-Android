@@ -62,12 +62,18 @@ class ExploreAdapter(
         @SuppressLint("SetTextI18n", "ResourceAsColor")
         override fun bind(item: APOD) {
 
-            if (item.hdurl.isEmpty()) {
-                Glide.with(context).load(item.url).into(binding.imageItemAPOD)
-            } else {
-                Glide.with(context).load(item.hdurl).into(binding.imageItemAPOD)
+            when (item.media_type) {
+                "image" -> {
+                    if (item.hdurl.isEmpty()) {
+                        Glide.with(context).load(item.url).into(binding.imageItemAPOD)
+                    } else {
+                        Glide.with(context).load(item.hdurl).into(binding.imageItemAPOD)
+                    }
+                }
+                "video" -> {
+                    Glide.with(context).load(item.thumbnail_url).into(binding.imageItemAPOD)
+                }
             }
-
             binding.apply {
                 titleItemAPOD.text = item.title
                 dateItemAPOD.text = item.date

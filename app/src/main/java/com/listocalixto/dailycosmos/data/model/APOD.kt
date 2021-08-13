@@ -11,6 +11,7 @@ data class APOD(
     val explanation: String = "",
     val hdurl: String = "",
     val media_type: String = "",
+    val thumbnail_url: String = "",
     val title: String = "",
     val url: String = "",
     var is_favorite: Int = -1,
@@ -32,6 +33,9 @@ data class APODEntity(
 
     @ColumnInfo(name = "media_type")
     val media_type: String = "",
+
+    @ColumnInfo(name = "thumbnail_url")
+    val thumbnail_url: String = "",
 
     @ColumnInfo(name = "title")
     val title: String = "",
@@ -60,6 +64,9 @@ data class FavoriteEntity(
     @ColumnInfo(name = "media_type")
     val media_type: String = "",
 
+    @ColumnInfo(name = "thumbnail_url")
+    val thumbnail_url: String = "",
+
     @ColumnInfo(name = "title")
     val title: String = "",
 
@@ -84,6 +91,7 @@ fun APODEntity.toAPOD(): APOD = APOD(
     this.explanation,
     this.hdurl,
     this.media_type,
+    this.thumbnail_url,
     this.title,
     this.url,
     this.is_favorite
@@ -95,6 +103,7 @@ fun APODEntity.toFavorite(uid: String?): FavoriteEntity = FavoriteEntity(
     this.explanation,
     this.hdurl,
     this.media_type,
+    this.thumbnail_url,
     this.title,
     this.url,
     uid = uid
@@ -106,6 +115,7 @@ fun APOD.toAPODEntity(is_favorite: Int): APODEntity = APODEntity(
     this.explanation,
     this.hdurl,
     this.media_type,
+    this.thumbnail_url,
     this.title,
     this.url,
     is_favorite = is_favorite
@@ -117,6 +127,7 @@ fun APOD.toFavorite(uid: String?): FavoriteEntity = FavoriteEntity(
     this.explanation,
     this.hdurl,
     this.media_type,
+    this.thumbnail_url,
     this.title,
     this.url,
     uid = uid
@@ -128,6 +139,7 @@ fun FavoriteEntity.toAPODEntity(is_favorite: Int): APODEntity = APODEntity(
     this.explanation,
     this.hdurl,
     this.media_type,
+    this.thumbnail_url,
     this.title,
     this.url,
     is_favorite = is_favorite

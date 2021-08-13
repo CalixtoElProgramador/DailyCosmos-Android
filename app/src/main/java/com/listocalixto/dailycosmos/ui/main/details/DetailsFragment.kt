@@ -183,11 +183,19 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             }
         }
 
-        if (args.hdurl.isEmpty()) {
-            Glide.with(requireContext()).load(args.url).into(binding.imgApodPicture)
-        } else {
-            Glide.with(requireContext()).load(args.hdurl).into(binding.imgApodPicture)
+        when (args.mediaType) {
+            "image" -> {
+                if (args.hdurl.isEmpty()) {
+                    Glide.with(requireContext()).load(args.url).into(binding.imgApodPicture)
+                } else {
+                    Glide.with(requireContext()).load(args.hdurl).into(binding.imgApodPicture)
+                }
+            }
+            "video" -> {
+                Glide.with(requireContext()).load(args.thumbnailUrl).into(binding.imgApodPicture)
+            }
         }
+
         binding.textApodTitle.text = args.title
         binding.textApodDate.text = args.date
         if (args.explanation.isEmpty()) {
@@ -213,6 +221,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             args.explanation,
             args.hdurl,
             args.mediaType,
+            args.thumbnailUrl,
             args.title,
             args.url
         )

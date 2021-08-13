@@ -54,7 +54,7 @@
             app:shapeAppearance="?attr/shapeAppearanceMediumComponent"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Card.Media"
             android:scaleType="centerCrop"
-            android:src="@drawable/photo_item_apod" />
+            tools:src="@drawable/photo_item_apod" />
 
     </LinearLayout>
 

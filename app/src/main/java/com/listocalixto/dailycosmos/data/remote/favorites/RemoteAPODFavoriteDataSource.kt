@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.data.model.FavoriteEntity
+import com.listocalixto.dailycosmos.data.model.toFavorite
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -14,18 +15,7 @@ class RemoteAPODFavoriteDataSource {
         val user = FirebaseAuth.getInstance().currentUser
         user?.let {
             FirebaseFirestore.getInstance().collection("favorites")
-                .document("${apod.date} ${user.uid}").set(
-                    FavoriteEntity(
-                        apod.date,
-                        apod.copyright,
-                        apod.explanation,
-                        apod.hdurl,
-                        apod.media_type,
-                        apod.title,
-                        apod.url,
-                        user.uid
-                    )
-                ).await()
+                .document("${apod.date} ${user.uid}").set(apod.toFavorite(user.uid)).await()
         }
     }
 

@@ -90,10 +90,17 @@ class TodayAdapter(
         @SuppressLint("SetTextI18n")
         override fun bind(item: APOD) {
 
-            if (item.hdurl.isEmpty()) {
-                Glide.with(context).load(item.url).into(binding.imgApodPicture)
-            } else {
-                Glide.with(context).load(item.hdurl).into(binding.imgApodPicture)
+            when (item.media_type) {
+                "image" -> {
+                    if (item.hdurl.isEmpty()) {
+                        Glide.with(context).load(item.url).into(binding.imgApodPicture)
+                    } else {
+                        Glide.with(context).load(item.hdurl).into(binding.imgApodPicture)
+                    }
+                }
+                "video" -> {
+                    Glide.with(context).load(item.thumbnail_url).into(binding.imgApodPicture)
+                }
             }
 
             binding.textApodTitle.text = item.title

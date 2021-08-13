@@ -250,6 +250,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
             apod.explanation,
             apod.hdurl,
             apod.media_type,
+            apod.thumbnail_url,
             apod.title,
             apod.url,
             apod.is_favorite

@@ -1,6 +1,5 @@
 package com.listocalixto.dailycosmos.domain.favorites
 
-import com.google.firebase.auth.FirebaseAuth
 import com.listocalixto.dailycosmos.core.InternetCheck
 import com.listocalixto.dailycosmos.data.local.apod.LocalAPODDataSource
 import com.listocalixto.dailycosmos.data.local.favorites.LocalFavoriteDataSource

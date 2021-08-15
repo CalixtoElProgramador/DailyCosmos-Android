@@ -40,6 +40,10 @@ class APODRepositoryImpl(
         return dataSourceLocal.getSearchResults(searchQuery)
     }
 
+    override suspend fun getDataFromDatabase(): List<APOD> {
+        return dataSourceLocal.getDataFromDatabase()
+    }
+
     override suspend fun updateFavorite(apod: APOD, isFavorite: Int) {
         dataSourceLocal.updateFavorite(apod.toAPODEntity(isFavorite))
     }

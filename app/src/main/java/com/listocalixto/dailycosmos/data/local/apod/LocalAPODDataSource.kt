@@ -5,7 +5,7 @@ import com.listocalixto.dailycosmos.data.model.*
 class LocalAPODDataSource(private val apodDao: APODDao) {
 
     suspend fun getResults(): List<APOD> {
-        return apodDao.getAPODs().toAPODList()
+        return apodDao.getResults().toAPODList()
     }
 
     suspend fun getFavorites(): List<APODEntity> {
@@ -14,6 +14,10 @@ class LocalAPODDataSource(private val apodDao: APODDao) {
 
     suspend fun getSearchResults(searchQuery: String): List<APOD> {
         return apodDao.getSearchResults(searchQuery).toAPODList()
+    }
+
+    suspend fun getDataFromDatabase(): List<APOD> {
+        return apodDao.getDataFromDatabase().toAPODList()
     }
 
     suspend fun saveAPOD(apodEntity: APODEntity) {

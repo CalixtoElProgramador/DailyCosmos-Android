@@ -58,25 +58,25 @@
                     android:textSize="@dimen/_14ssp" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                     android:id="@+id/inputLayout_search"
-                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:layout_marginTop="@dimen/_16sdp"
-                     android:hint="@string/search"
-                     app:endIconDrawable="@drawable/ic_search"
-                     app:endIconMode="custom"
-                     app:endIconTintMode="src_atop">
+                    android:id="@+id/inputLayout_search"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_16sdp"
+                    android:hint="@string/search"
+                    app:endIconDrawable="@drawable/ic_search"
+                    app:endIconMode="custom"
+                    app:endIconTintMode="src_atop">
 
-                     <com.google.android.material.textfield.TextInputEditText
-                         android:id="@+id/input_search"
-                         android:layout_width="match_parent"
-                         android:layout_height="match_parent"
-                         android:inputType="text"
-                         android:singleLine="true"
-                         tools:text="Cosmos" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_search"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:inputType="textFilter"
+                        android:singleLine="true"
+                        tools:text="Cosmos" />
 
-                 </com.google.android.material.textfield.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
 
@@ -101,11 +101,14 @@
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/_8sdp"
         android:clipToPadding="false"
+        android:fadeScrollbars="true"
         android:orientation="vertical"
         android:paddingStart="14dp"
         android:paddingTop="@dimen/_8sdp"
         android:paddingEnd="14dp"
         android:paddingBottom="?attr/actionBarSize"
+        android:scrollbarFadeDuration="@integer/material_motion_duration_medium_1"
+        android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:listitem="@layout/item_apod" />
 

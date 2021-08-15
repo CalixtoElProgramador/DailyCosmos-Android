@@ -27,45 +27,21 @@
         android:label="fragment_explorer"
         tools:layout="@layout/fragment_explorer">
         <action
+            android:id="@+id/action_exploreFragment_to_settingsActivity"
+            app:destination="@id/settingsActivity" />
+        <action
             android:id="@+id/action_exploreFragment_to_detailsFragment"
             app:destination="@id/detailsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
-        <action
-            android:id="@+id/action_exploreFragment_to_settingsActivity"
-            app:destination="@id/settingsActivity" />
     </fragment>
     <fragment
         android:id="@+id/detailsFragment"
         android:name="com.listocalixto.dailycosmos.ui.main.details.DetailsFragment"
         android:label="fragment_details"
         tools:layout="@layout/fragment_details">
-        <argument
-            android:name="copyright"
-            app:argType="string" />
-        <argument
-            android:name="date"
-            app:argType="string" />
-        <argument
-            android:name="explanation"
-            app:argType="string" />
-        <argument
-            android:name="hdurl"
-            app:argType="string" />
-        <argument
-            android:name="media_type"
-            app:argType="string" />
-        <argument
-            android:name="thumbnail_url"
-            app:argType="string" />
-        <argument
-            android:name="title"
-            app:argType="string" />
-        <argument
-            android:name="url"
-            app:argType="string" />
         <action
             android:id="@+id/action_detailsFragment_to_pictureFragment"
             app:destination="@id/pictureFragment"

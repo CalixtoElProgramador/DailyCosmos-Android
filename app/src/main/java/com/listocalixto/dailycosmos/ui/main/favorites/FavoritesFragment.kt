@@ -17,11 +17,16 @@ import com.listocalixto.dailycosmos.data.local.AppDatabase
 import com.listocalixto.dailycosmos.data.local.apod.LocalAPODDataSource
 import com.listocalixto.dailycosmos.data.local.favorites.LocalFavoriteDataSource
 import com.listocalixto.dailycosmos.data.model.FavoriteEntity
+import com.listocalixto.dailycosmos.data.model.toAPOD
+import com.listocalixto.dailycosmos.data.model.toAPODEntity
+import com.listocalixto.dailycosmos.data.model.toFavorite
 import com.listocalixto.dailycosmos.data.remote.favorites.RemoteAPODFavoriteDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentFavoritesBinding
 import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModel
 import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModelFactory
 import com.listocalixto.dailycosmos.domain.favorites.FavoritesRepoImpl
+import com.listocalixto.dailycosmos.ui.main.details.DetailsArgs
+import com.listocalixto.dailycosmos.ui.main.details.DetailsViewModel
 import com.listocalixto.dailycosmos.ui.main.favorites.adapter.FavoritesAdapter
 
 class FavoritesFragment : Fragment(R.layout.fragment_favorites),
@@ -37,6 +42,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites),
             )
         )
     }
+    private val viewModelDetails by activityViewModels<DetailsViewModel>()
 
     private lateinit var layoutManager: StaggeredGridLayoutManager
 
@@ -83,18 +89,14 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites),
     }
 
     override fun onFavoriteClick(favorite: FavoriteEntity) {
-        val action = FavoritesFragmentDirections.actionFavoritesFragmentToDetailsFragment(
-            favorite.copyright,
-            favorite.date,
-            favorite.explanation,
-            favorite.hdurl,
-            favorite.media_type,
-            favorite.thumbnail_url,
-            favorite.title,
-            favorite.url,
-            1,
+        viewModelDetails.setArgs(
+            DetailsArgs(
+                favorite.toAPOD(),
+                null,
+                -1
+            )
         )
-        findNavController().navigate(action)
+        findNavController().navigate(R.id.action_favoritesFragment_to_detailsFragment)
     }
 
 }

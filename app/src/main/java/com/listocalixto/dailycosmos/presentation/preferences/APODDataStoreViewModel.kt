@@ -16,11 +16,5 @@ class APODDataStoreViewModel(application: Application) : AndroidViewModel(applic
         repo.saveLastDateToDataStore(newStarDate)
     }
 
-    val readSizeListFromDataStore = repo.readListSizeFromDataStore.asLiveData()
-
-    fun saveNewSizeListToDataStore(size: Int) = viewModelScope.launch {
-        Dispatchers.IO
-        repo.saveNewListSizeToDataStore(size)
-    }
 
 }

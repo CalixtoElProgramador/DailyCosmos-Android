@@ -4,17 +4,14 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -37,15 +34,10 @@ import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModel
 import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModelFactory
 import com.listocalixto.dailycosmos.presentation.preferences.TranslatorViewModel
 import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
+import com.listocalixto.dailycosmos.ui.main.explore.adapter.ExploreAdapter
 
 @Suppress("DEPRECATION")
 class DetailsFragment : Fragment(R.layout.fragment_details) {
-
-    private lateinit var binding: FragmentDetailsBinding
-    private lateinit var apodReceived: APOD
-    private val args by navArgs<DetailsFragmentArgs>()
-
-    private var isFavorite: Int = 0
 
     private val viewModel by activityViewModels<APODViewModel> {
         APODViewModelFactory(
@@ -65,11 +57,15 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             )
         )
     }
-
     private val viewModelDetails by activityViewModels<DetailsViewModel>()
 
-    private lateinit var translatorViewModel: TranslatorViewModel
-    private lateinit var utilsViewModel: UtilsViewModel
+    private var position: Int = -1
+    private var adapterExplore: ExploreAdapter? = null
+
+    private lateinit var binding: FragmentDetailsBinding
+    private lateinit var apodReceived: APOD
+    private lateinit var translatorDataStore: TranslatorViewModel
+    private lateinit var utilsDataStore: UtilsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,8 +83,9 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initVars(view)
+        getArgsFromViewModel()
         getValueFavorite()
-        setInformation()
+        updateViews()
 
         binding.fabAddAPODFavorites.setOnClickListener { updateFavorite() }
         binding.btnTranslate.setOnClickListener { translateExplanation() }
@@ -96,45 +93,57 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
     }
 
+    private fun initVars(view: View) {
+        binding = FragmentDetailsBinding.bind(view)
+        translatorDataStore =
+            ViewModelProvider(requireActivity()).get(TranslatorViewModel::class.java)
+        utilsDataStore = ViewModelProvider(requireActivity()).get(UtilsViewModel::class.java)
+    }
+
+    private fun getArgsFromViewModel() {
+        viewModelDetails.getArgs().value?.let { args ->
+            apodReceived = args.apod
+            adapterExplore = args.adapterExplore
+            position = args.position
+        }
+    }
+
     private fun getValueFavorite() {
-        viewModelDetails.getValue().value?.let {
-            isFavorite = it
+        viewModelDetails.getFavValue().value?.let {
+            apodReceived.is_favorite = it
         }
     }
 
     private fun updateFavorite() {
-        Log.d(
-            "Details",
-            "El valor que llega es: ${args.isFavorite} y el isFavorite es: $isFavorite"
-        )
-        when (isFavorite) {
+        when (apodReceived.is_favorite) {
             0 -> {
-                viewModel.updateFavorite(apodReceived, 1)
-                viewModelFavorite.setAPODFavorite(apodReceived)
-                binding.fabAddAPODFavorites.setImageResource(R.drawable.ic_favorite)
-                viewModelDetails.updateFavorite(1)
-                getValueFavorite()
+                notifyItemChanged(1)
             }
             1 -> {
-                viewModel.updateFavorite(apodReceived, 0)
-                viewModelFavorite.deleteFavorite(apodReceived)
-                binding.fabAddAPODFavorites.setImageResource(R.drawable.ic_favorite_border)
-                viewModelDetails.updateFavorite(0)
-                getValueFavorite()
+                notifyItemChanged(0)
             }
             -1 -> {
-                viewModel.updateFavorite(apodReceived, 1)
-                viewModelFavorite.setAPODFavorite(apodReceived)
-                binding.fabAddAPODFavorites.setImageResource(R.drawable.ic_favorite)
-                viewModelDetails.updateFavorite(1)
-                getValueFavorite()
+                notifyItemChanged(1)
             }
+        }
+    }
+
+    private fun notifyItemChanged(isFavorite: Int) {
+        setDrawableOnFAB(isFavorite)
+        viewModel.updateFavorite(apodReceived, isFavorite)
+        viewModelDetails.setFavValue(isFavorite)
+        getValueFavorite()
+        adapterExplore?.notifyItemChanged(position)
+        when(isFavorite) {
+            -1 -> { }
+            0 -> { viewModelFavorite.deleteFavorite(apodReceived) }
+            1 -> { viewModelFavorite.setAPODFavorite(apodReceived) }
         }
     }
 
     @SuppressLint("ShowToast")
     private fun translateExplanation() {
-        translatorViewModel.readValue.observe(viewLifecycleOwner, {
+        translatorDataStore.readValue.observe(viewLifecycleOwner, {
             if (it == 0) {
                 showDialog()
             } else {
@@ -154,9 +163,9 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                     Snackbar.make(binding.btnTranslate, "Translating...", Snackbar.LENGTH_SHORT)
                         .show()
 
-                    translator.translate(args.title).addOnSuccessListener { titleTranslated ->
+                    translator.translate(apodReceived.title).addOnSuccessListener { titleTranslated ->
                         binding.textApodTitle.text = titleTranslated
-                        translator.translate(args.explanation)
+                        translator.translate(apodReceived.explanation)
                             .addOnSuccessListener { textTranslated ->
                                 binding.textApodExplanation.text = textTranslated
                                 translator.close()
@@ -212,7 +221,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                         .setAnchorView(requireActivity().requireViewById(R.id.bottom_navigation))
                         .show()
                 }
-                translatorViewModel.saveValue(1)
+                translatorDataStore.saveValue(1)
             }
             .show()
     }
@@ -226,22 +235,10 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             )
                 .show()
         } else {
-            utilsViewModel.readValue.observe(viewLifecycleOwner, Observer {
+            utilsDataStore.readValue.observe(viewLifecycleOwner,{
                 if (it == 0) {
-                    MaterialAlertDialogBuilder(requireContext())
-                        .setTitle(getString(R.string.caution))
-                        .setIcon(R.drawable.ic_error_outline)
-                        .setMessage(resources.getString(R.string.caution_open_image))
-                        .setNeutralButton(resources.getString(R.string.cancel)) { _, _ -> }
-                        .setNegativeButton(resources.getString(R.string.settings)) { _, _ ->
-                            navigateToSettingsActivity()
-                            utilsViewModel.saveValue(1)
-                        }
-                        .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
-                            navigateToPictureFragment()
-                            utilsViewModel.saveValue(1)
-                        }.show()
-                    return@Observer
+                    showDialogBeforeOpenImage()
+                    return@observe
                 } else {
                     navigateToPictureFragment()
                 }
@@ -250,21 +247,71 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
     }
 
+    private fun showDialogBeforeOpenImage() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.caution))
+            .setIcon(R.drawable.ic_error_outline)
+            .setMessage(resources.getString(R.string.caution_open_image))
+            .setNeutralButton(resources.getString(R.string.cancel)) { _, _ -> }
+            .setNegativeButton(resources.getString(R.string.settings)) { _, _ ->
+                navigateToSettingsActivity()
+                utilsDataStore.saveValue(1)
+            }
+            .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
+                navigateToPictureFragment()
+                utilsDataStore.saveValue(1)
+            }.show()
+    }
+
     private fun navigateToSettingsActivity() {
         findNavController().navigate(R.id.action_detailsFragment_to_settingsActivity)
     }
 
     private fun navigateToPictureFragment() {
         val action = DetailsFragmentDirections.actionDetailsFragmentToPictureFragment(
-            args.hdurl,
-            args.title,
-            args.url
+            apodReceived.hdurl,
+            apodReceived.title,
+            apodReceived.url
         )
         findNavController().navigate(action)
     }
 
+    private fun updateViews() {
+        setImage()
+        setTexts()
+        setDrawableOnFAB(apodReceived.is_favorite)
+    }
+
     @SuppressLint("SetTextI18n")
-    private fun setInformation() {
+    private fun setTexts() {
+        binding.textApodTitle.text = apodReceived.title
+        binding.textApodDate.text = apodReceived.date
+        if (apodReceived.explanation.isEmpty()) {
+            binding.textApodExplanation.text = getString(R.string.no_description)
+        } else {
+            binding.textApodExplanation.text = apodReceived.explanation
+        }
+        if (apodReceived.copyright.isEmpty()) {
+            binding.textApodCopyright.visibility = View.GONE
+        } else {
+            binding.textApodCopyright.text = "Copyright: ${apodReceived.copyright}"
+        }
+    }
+
+    private fun setImage() {
+        when (apodReceived.media_type) {
+            "image" -> {
+                if (apodReceived.hdurl.isEmpty()) {
+                    Glide.with(requireContext()).load(apodReceived.url).into(binding.imgApodPicture)
+                } else {
+                    Glide.with(requireContext()).load(apodReceived.hdurl)
+                        .into(binding.imgApodPicture)
+                }
+            }
+        }
+    }
+
+    private fun setDrawableOnFAB(isFavorite: Int) {
         when (isFavorite) {
             0 -> {
                 binding.fabAddAPODFavorites.setImageResource(R.drawable.ic_favorite_border)
@@ -273,55 +320,10 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                 binding.fabAddAPODFavorites.setImageResource(R.drawable.ic_favorite)
             }
         }
-
-        when (args.mediaType) {
-            "image" -> {
-                if (args.hdurl.isEmpty()) {
-                    Glide.with(requireContext()).load(args.url).into(binding.imgApodPicture)
-                } else {
-                    Glide.with(requireContext()).load(args.hdurl).into(binding.imgApodPicture)
-                }
-            }
-            "video" -> {
-                Glide.with(requireContext()).load(args.thumbnailUrl).into(binding.imgApodPicture)
-            }
-        }
-
-        binding.textApodTitle.text = args.title
-        binding.textApodDate.text = args.date
-        if (args.explanation.isEmpty()) {
-            binding.textApodExplanation.text = getString(R.string.no_description)
-        } else {
-            binding.textApodExplanation.text = args.explanation
-        }
-        if (args.copyright.isEmpty()) {
-            binding.textApodCopyright.visibility = View.GONE
-        } else {
-            binding.textApodCopyright.text = "Copyright: ${args.copyright}"
-        }
-    }
-
-    private fun initVars(view: View) {
-        binding = FragmentDetailsBinding.bind(view)
-
-        translatorViewModel =
-            ViewModelProvider(requireActivity()).get(TranslatorViewModel::class.java)
-        utilsViewModel = ViewModelProvider(requireActivity()).get(UtilsViewModel::class.java)
-        isFavorite = args.isFavorite
-        apodReceived = APOD(
-            args.copyright,
-            args.date,
-            args.explanation,
-            args.hdurl,
-            args.mediaType,
-            args.thumbnailUrl,
-            args.title,
-            args.url
-        )
     }
 
     override fun onDestroy() {
-        viewModelDetails.updateFavorite(null)
+        viewModelDetails.setFavValue(null)
         activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.apply {
             animation = AnimationUtils.loadAnimation(
                 requireContext(),

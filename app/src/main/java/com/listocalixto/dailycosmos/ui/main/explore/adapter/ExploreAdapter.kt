@@ -18,7 +18,7 @@ class ExploreAdapter(
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
     interface OnAPODClickListener {
-        fun onAPODClick(apod: APOD, binding: ItemApodBinding)
+        fun onAPODClick(apod: APOD, apodList: List<APOD>, position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
@@ -30,7 +30,7 @@ class ExploreAdapter(
             val position =
                 holder.bindingAdapterPosition.takeIf { it != DiffUtil.DiffResult.NO_POSITION }
                     ?: return@setOnClickListener
-            itemClickListener.onAPODClick(apodList[position], itemBinding)
+            itemClickListener.onAPODClick(apodList[position], apodList, position)
         }
         return holder
     }
@@ -50,11 +50,6 @@ class ExploreAdapter(
         val diffResults = DiffUtil.calculateDiff(diffUtil)
         apodList = newAPODList
         diffResults.dispatchUpdatesTo(this)
-    }
-
-    fun setSearchData(searchData: List<APOD>) {
-        apodList = searchData
-        notifyDataSetChanged()
     }
 
     private inner class APODViewHolder(val binding: ItemApodBinding, val context: Context) :

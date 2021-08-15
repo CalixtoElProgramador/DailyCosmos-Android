@@ -66,27 +66,4 @@ class APODDataStore(context: Context) {
             Log.d("DataStore", "The date is being read: $newStartDate")
             newStartDate
         }
-
-    //STORE LIST SIZE //
-    suspend fun saveNewListSizeToDataStore(size: Int) {
-        storeListSize.edit { preferences ->
-            preferences[PreferencesKeys.sizeList] = size
-        }
-        Log.d("DataStore", "The new list size is: $size")
-    }
-
-    val readListSizeFromDataStore: Flow<Int> = storeListSize.data
-        .catch { exception ->
-            if (exception is IOException) {
-                Log.d("DataStore", exception.message.toString())
-                emit(emptyPreferences())
-            } else {
-                throw exception
-            }
-        }
-        .map { preferences ->
-            val sizeList = preferences[PreferencesKeys.sizeList] ?: 10
-            Log.d("DataStore", "The size of the list is: $sizeList")
-            sizeList
-        }
 }

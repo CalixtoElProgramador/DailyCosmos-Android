@@ -1,8 +1,10 @@
 package com.listocalixto.dailycosmos.data.model
 
+import android.view.View
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 
 data class APOD(
@@ -143,4 +145,16 @@ fun FavoriteEntity.toAPODEntity(is_favorite: Int): APODEntity = APODEntity(
     this.title,
     this.url,
     is_favorite = is_favorite
+)
+
+fun FavoriteEntity.toAPOD(): APOD = APOD(
+    this.copyright,
+    this.date,
+    this.explanation,
+    this.hdurl,
+    this.media_type,
+    this.thumbnail_url,
+    this.title,
+    this.url,
+    1
 )

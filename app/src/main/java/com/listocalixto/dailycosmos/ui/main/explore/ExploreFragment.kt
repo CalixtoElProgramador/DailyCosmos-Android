@@ -3,7 +3,6 @@ package com.listocalixto.dailycosmos.ui.main.explore
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -16,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.listocalixto.dailycosmos.R
-import androidx.lifecycle.Observer
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -34,7 +32,8 @@ import com.listocalixto.dailycosmos.ui.main.explore.adapter.ExploreAdapter
 import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.data.remote.favorites.RemoteAPODFavoriteDataSource
-import com.listocalixto.dailycosmos.databinding.ItemApodBinding
+import com.listocalixto.dailycosmos.ui.main.details.DetailsArgs
+import com.listocalixto.dailycosmos.ui.main.details.DetailsViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -52,12 +51,24 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
             )
         )
     }
+    private val viewModelDetails by activityViewModels<DetailsViewModel>()
+
     private var thisMonthMilliseconds = MaterialDatePicker.thisMonthInUtcMilliseconds()
     private var todayMilliseconds = MaterialDatePicker.todayInUtcMilliseconds()
 
     private var isLoading = false
+    private var isSearchResults = false
     private var endDate: Calendar = Calendar.getInstance()
     private var startDate: Calendar = Calendar.getInstance().apply {
+        set(
+            endDate.get(Calendar.YEAR),
+            endDate.get(Calendar.MONTH),
+            endDate.get(Calendar.DATE)
+        )
+        add(Calendar.DATE, -10)
+    }
+
+    private var referenceDate: Calendar = Calendar.getInstance().apply {
         set(
             endDate.get(Calendar.YEAR),
             endDate.get(Calendar.MONTH),
@@ -71,13 +82,6 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     private lateinit var adapter: ExploreAdapter
     private lateinit var layoutManager: StaggeredGridLayoutManager
 
-    private lateinit var adapterExtra: ExploreAdapter
-
-    override fun onResume() {
-        super.onResume()
-        isLoading = false
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initVars(view)
@@ -87,10 +91,32 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         isAdapterInit()
         loadMoreResults()
 
+        activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)
+            ?.setOnItemReselectedListener { item ->
+                when (item.itemId) {
+                    R.id.exploreFragment -> {
+                        binding.rvApod.smoothScrollToPosition(0)
+                    }
+                }
+            }
+
         binding.inputLayoutSearch.setEndIconOnClickListener {
-            if (binding.inputSearch.text.toString().isEmpty()) {
-                adapterExtra = adapter
-                binding.rvApod.adapter = adapter
+            if (binding.inputSearch.text.toString().trim().isEmpty()) {
+                isLoading = false
+                isSearchResults = false
+                viewModel.fetchDataFromDatabase().observe(viewLifecycleOwner, {
+                    when (it) {
+                        is Result.Loading -> {
+                        }
+                        is Result.Success -> {
+                            adapter = ExploreAdapter(it.data, this)
+                            binding.rvApod.adapter = adapter
+                        }
+                        is Result.Failure -> {
+                        }
+                    }
+                })
+
             } else {
                 searchDatabase(binding.inputSearch.text.toString())
             }
@@ -103,10 +129,14 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                     true
                 }
                 R.id.calendar -> {
+                    isLoading = true
+                    isSearchResults = true
                     openDatePicker()
                     true
                 }
                 R.id.random -> {
+                    isSearchResults = true
+                    isLoading = true
                     getRandomAPODs()
                     true
                 }
@@ -192,7 +222,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     }
 
     private fun getCalendarResults(start: String, end: String) {
-        viewModel.fetchCalendarResults(end, start).observe(viewLifecycleOwner, Observer {
+        viewModel.fetchCalendarResults(end, start).observe(viewLifecycleOwner, {
             when (it) {
                 is Result.Loading -> {
                     Log.d("ViewModel", "Loading calendarResults...")
@@ -203,8 +233,8 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                     Log.d("ViewModel", "Results calendarResults... ${it.data}")
                     binding.rvApod.visibility = View.VISIBLE
                     binding.pbRvAPOD.visibility = View.GONE
-                    adapterExtra = ExploreAdapter(it.data, this@ExploreFragment)
-                    binding.rvApod.adapter = adapterExtra
+                    adapter = ExploreAdapter(it.data, this@ExploreFragment)
+                    binding.rvApod.adapter = adapter
                 }
                 is Result.Failure -> {
                     Log.d("ViewModel", "Failure calendarResults... ${it.exception}")
@@ -214,7 +244,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     }
 
     private fun getRandomAPODs() {
-        viewModel.fetchRandomResults("10").observe(viewLifecycleOwner, Observer {
+        viewModel.fetchRandomResults("10").observe(viewLifecycleOwner, {
             when (it) {
                 is Result.Loading -> {
                     Log.d("ViewModel", "Loading random... count isNotEmpty")
@@ -225,8 +255,8 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                     Log.d("ViewModel", "Result random... ${it.data}")
                     binding.rvApod.visibility = View.VISIBLE
                     binding.pbRvAPOD.visibility = View.GONE
-                    adapterExtra = ExploreAdapter(it.data, this@ExploreFragment)
-                    binding.rvApod.adapter = adapterExtra
+                    adapter = ExploreAdapter(it.data, this@ExploreFragment)
+                    binding.rvApod.adapter = adapter
                 }
                 is Result.Failure -> {
                     Log.d("ViewModel", "Failure random... ${it.exception}")
@@ -281,9 +311,10 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     private fun readFromDataStore() {
         dataStore.readLastDateFromDataStore.observe(viewLifecycleOwner, { date ->
             startDate.time = sdf.parse(date)!!
-            /*if (sdf.format(referenceDate.time) == sdf.format(startDate.time)) {
+            Log.d("DataStoreExplore", "readFromDataStore: ${sdf.format(referenceDate.time)}, ${sdf.format(startDate.time)}")
+            if (sdf.format(referenceDate.time) == sdf.format(startDate.time)) {
                 binding.titleCollapsingToolBar.text = getString(R.string.title_explore_collapsing_toolbar)
-            }*/
+            }
         })
     }
 
@@ -291,11 +322,11 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         if (!::adapter.isInitialized) {
             getResults(sdf.format(endDate.time), sdf.format(startDate.time))
         } else {
-            if (!::adapterExtra.isInitialized) {
-                binding.rvApod.adapter = adapter
-            } else {
-                binding.rvApod.adapter = adapterExtra
-            }
+            //if (!::adapterExtra.isInitialized) {
+            binding.rvApod.adapter = adapter
+            //} else {
+            //    binding.rvApod.adapter = adapterExtra
+            //}
         }
     }
 
@@ -322,7 +353,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     private fun getResults(end: String, start: String) {
         isLoading = true
         viewModel.fetchAPODResults(end, start)
-            .observe(viewLifecycleOwner, Observer { result ->
+            .observe(viewLifecycleOwner, { result ->
                 when (result) {
                     is Result.Loading -> {
                         if (!::adapter.isInitialized) {
@@ -372,32 +403,25 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         }
     }
 
-    override fun onAPODClick(apod: APOD, binding: ItemApodBinding) {
-        val action = ExploreFragmentDirections.actionExploreFragmentToDetailsFragment(
-            apod.copyright,
-            apod.date,
-            apod.explanation,
-            apod.hdurl,
-            apod.media_type,
-            apod.thumbnail_url,
-            apod.title,
-            apod.url,
-            apod.is_favorite
-        )
-        findNavController().navigate(action)
-
+    override fun onAPODClick(apod: APOD, apodList: List<APOD>, position: Int) {
+        if (isLoading && !isSearchResults) {
+            isLoading = false
+        }
+        viewModelDetails.setArgs(DetailsArgs(apod, adapter, position))
+        findNavController().navigate(R.id.action_exploreFragment_to_detailsFragment)
     }
 
     private fun searchDatabase(query: String?) {
         val searchQuery = "%$query%"
-
         viewModel.fetchSearchResults(searchQuery).observe(viewLifecycleOwner, {
             when (it) {
                 is Result.Loading -> {
                 }
                 is Result.Success -> {
-                    adapterExtra = ExploreAdapter(it.data, this)
-                    binding.rvApod.adapter = adapterExtra
+                    adapter = ExploreAdapter(it.data, this)
+                    binding.rvApod.adapter = adapter
+                    isSearchResults = true
+                    isLoading = true
                 }
                 is Result.Failure -> {
                 }

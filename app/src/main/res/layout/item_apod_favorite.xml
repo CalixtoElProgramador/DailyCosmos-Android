@@ -6,8 +6,8 @@
     style="@style/Widget.App.CardView.Favorites"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/_6sdp"
-    android:layout_marginBottom="@dimen/_6sdp"
+    android:layout_marginTop="@dimen/_8sdp"
+    android:layout_marginBottom="@dimen/_8sdp"
     app:cardPreventCornerOverlap="false"
     tools:ignore="RtlSymmetry">
 
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="2"
                 android:textColor="@color/colorTextPrimary"
-                android:textSize="@dimen/_16ssp"
+                android:textSize="@dimen/_15ssp"
                 android:textStyle="bold"
                 tools:text="Mima asdasda sasds asdasd asda sdasdasd" />
 
@@ -41,14 +41,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_2sdp"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/_12ssp"
+                android:textSize="@dimen/_11ssp"
                 tools:text="2021-08-09" />
 
         </LinearLayout>
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/img_apodFavorite"
-            android:layout_width="@dimen/_90sdp"
+            android:layout_width="@dimen/_110sdp"
             android:layout_height="@dimen/_90sdp"
             android:contentDescription="@string/app_name"
             app:shapeAppearance="?attr/shapeAppearanceMediumComponent"

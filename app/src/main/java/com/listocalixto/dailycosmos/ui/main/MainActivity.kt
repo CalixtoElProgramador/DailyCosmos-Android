@@ -34,11 +34,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.pictureFragment -> { binding.bottomNavigation.visibility = View.GONE }
                 R.id.todayFragment -> { binding.bottomNavigation.visibility = View.VISIBLE }
 
-                R.id.detailsFragment -> { binding.bottomNavigation.visibility = View.VISIBLE }
-
-                else -> {
-                    binding.bottomNavigation.visibility = View.VISIBLE
-                }
+                else -> {}
             }
         }
     }

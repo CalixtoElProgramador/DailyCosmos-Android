@@ -51,22 +51,6 @@ class TranslatorDataSource {
                     // Model downloaded successfully. Okay to start translating.
                     // (Set a flag, unhide the translation UI, etc.)
                     Log.d("Translator", "Translator was downloaded successfully ")
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        Snackbar.make(
-                            activity.findViewById(R.id.bottom_navigation),
-                            "Translating...",
-                            Snackbar.LENGTH_SHORT
-                        )
-                            .setAnchorView(activity.requireViewById(R.id.bottom_navigation))
-                            .show()
-                    } else {
-                        Snackbar.make(
-                            activity.findViewById(R.id.bottom_navigation),
-                            "Translating...",
-                            Snackbar.LENGTH_SHORT
-                        ).show()
-                    }
-
                 }
                 .addOnFailureListener { exception ->
                     Log.d("Translator", "Was happen an error: $exception ")
@@ -90,23 +74,6 @@ class TranslatorDataSource {
                             downloadEnglishToOwnerLanguageModel(context, activity)
                         }
                             .show()
-                    }
-                }
-                .addOnCanceledListener {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        Snackbar.make(
-                            activity.findViewById(R.id.bottom_navigation),
-                            "Download cancelled",
-                            Snackbar.LENGTH_LONG
-                        )
-                            .setAnchorView(activity.requireViewById(R.id.bottom_navigation))
-                            .show()
-                    } else {
-                        Snackbar.make(
-                            activity.findViewById(R.id.bottom_navigation),
-                            "Download cancelled",
-                            Snackbar.LENGTH_LONG
-                        ).show()
                     }
                 }
         }

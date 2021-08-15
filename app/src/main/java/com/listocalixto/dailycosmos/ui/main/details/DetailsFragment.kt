@@ -3,16 +3,20 @@ package com.listocalixto.dailycosmos.ui.main.details
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.listocalixto.dailycosmos.R
@@ -62,20 +66,40 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         )
     }
 
+    private val viewModelDetails by activityViewModels<DetailsViewModel>()
+
     private lateinit var translatorViewModel: TranslatorViewModel
     private lateinit var utilsViewModel: UtilsViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.apply {
+            animation = AnimationUtils.loadAnimation(
+                requireContext(),
+                R.anim.slide_out_bottom
+            )
+            visibility = View.GONE
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.N)
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initVars(view)
+        getValueFavorite()
         setInformation()
 
         binding.fabAddAPODFavorites.setOnClickListener { updateFavorite() }
         binding.btnTranslate.setOnClickListener { translateExplanation() }
         binding.imgApodPicture.setOnClickListener { verifyDrawable() }
 
+    }
+
+    private fun getValueFavorite() {
+        viewModelDetails.getValue().value?.let {
+            isFavorite = it
+        }
     }
 
     private fun updateFavorite() {
@@ -88,19 +112,22 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                 viewModel.updateFavorite(apodReceived, 1)
                 viewModelFavorite.setAPODFavorite(apodReceived)
                 binding.fabAddAPODFavorites.setImageResource(R.drawable.ic_favorite)
-                isFavorite = 1
+                viewModelDetails.updateFavorite(1)
+                getValueFavorite()
             }
             1 -> {
                 viewModel.updateFavorite(apodReceived, 0)
                 viewModelFavorite.deleteFavorite(apodReceived)
                 binding.fabAddAPODFavorites.setImageResource(R.drawable.ic_favorite_border)
-                isFavorite = 0
+                viewModelDetails.updateFavorite(0)
+                getValueFavorite()
             }
             -1 -> {
                 viewModel.updateFavorite(apodReceived, 1)
                 viewModelFavorite.setAPODFavorite(apodReceived)
                 binding.fabAddAPODFavorites.setImageResource(R.drawable.ic_favorite)
-                isFavorite = 1
+                viewModelDetails.updateFavorite(1)
+                getValueFavorite()
             }
         }
     }
@@ -124,12 +151,39 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                         .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
                         }.show()
                 } else {
+                    Snackbar.make(binding.btnTranslate, "Translating...", Snackbar.LENGTH_SHORT)
+                        .show()
+
                     translator.translate(args.title).addOnSuccessListener { titleTranslated ->
                         binding.textApodTitle.text = titleTranslated
                         translator.translate(args.explanation)
                             .addOnSuccessListener { textTranslated ->
                                 binding.textApodExplanation.text = textTranslated
                                 translator.close()
+                                Handler().postDelayed({
+                                    binding.textShowOriginal.apply {
+                                        animation = AnimationUtils.loadAnimation(
+                                            requireContext(),
+                                            R.anim.fade_in_main
+                                        )
+                                        visibility = View.VISIBLE
+                                    }
+                                }, 400)
+
+                                binding.textShowOriginal.setOnClickListener {
+                                    binding.textApodTitle.text = apodReceived.title
+                                    binding.textApodExplanation.text = apodReceived.explanation
+
+                                    Handler().postDelayed({
+                                        binding.textShowOriginal.apply {
+                                            animation = AnimationUtils.loadAnimation(
+                                                requireContext(),
+                                                R.anim.fade_out_main
+                                            )
+                                            visibility = View.GONE
+                                        }
+                                    }, 400)
+                                }
                             }
                     }
                 }
@@ -172,26 +226,24 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             )
                 .show()
         } else {
-            utilsViewModel.readValue.observe(viewLifecycleOwner, {
-                when (it) {
-                    0 -> {
-                        MaterialAlertDialogBuilder(requireContext())
-                            .setTitle(getString(R.string.caution))
-                            .setIcon(R.drawable.ic_error_outline)
-                            .setMessage(resources.getString(R.string.caution_open_image))
-                            .setNeutralButton(resources.getString(R.string.cancel)) { _, _ -> }
-                            .setNegativeButton(resources.getString(R.string.settings)) { _, _ ->
-                                utilsViewModel.saveValue(1)
-                                navigateToSettingsActivity()
-                            }
-                            .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
-                                utilsViewModel.saveValue(1)
-                                navigateToPictureFragment()
-                            }.show()
-                    }
-                    1 -> {
-                        navigateToPictureFragment()
-                    }
+            utilsViewModel.readValue.observe(viewLifecycleOwner, Observer {
+                if (it == 0) {
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(getString(R.string.caution))
+                        .setIcon(R.drawable.ic_error_outline)
+                        .setMessage(resources.getString(R.string.caution_open_image))
+                        .setNeutralButton(resources.getString(R.string.cancel)) { _, _ -> }
+                        .setNegativeButton(resources.getString(R.string.settings)) { _, _ ->
+                            navigateToSettingsActivity()
+                            utilsViewModel.saveValue(1)
+                        }
+                        .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
+                            navigateToPictureFragment()
+                            utilsViewModel.saveValue(1)
+                        }.show()
+                    return@Observer
+                } else {
+                    navigateToPictureFragment()
                 }
             })
         }
@@ -251,6 +303,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
     private fun initVars(view: View) {
         binding = FragmentDetailsBinding.bind(view)
+
         translatorViewModel =
             ViewModelProvider(requireActivity()).get(TranslatorViewModel::class.java)
         utilsViewModel = ViewModelProvider(requireActivity()).get(UtilsViewModel::class.java)
@@ -266,4 +319,17 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             args.url
         )
     }
+
+    override fun onDestroy() {
+        viewModelDetails.updateFavorite(null)
+        activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.apply {
+            animation = AnimationUtils.loadAnimation(
+                requireContext(),
+                R.anim.slide_in_bottom
+            )
+            visibility = View.VISIBLE
+        }
+        super.onDestroy()
+    }
+
 }

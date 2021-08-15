@@ -3,10 +3,13 @@ package com.listocalixto.dailycosmos.ui.main.explore
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.core.util.Pair
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -14,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.listocalixto.dailycosmos.R
 import androidx.lifecycle.Observer
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
@@ -48,6 +52,8 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
             )
         )
     }
+    private var thisMonthMilliseconds = MaterialDatePicker.thisMonthInUtcMilliseconds()
+    private var todayMilliseconds = MaterialDatePicker.todayInUtcMilliseconds()
 
     private var isLoading = false
     private var endDate: Calendar = Calendar.getInstance()
@@ -65,7 +71,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     private lateinit var adapter: ExploreAdapter
     private lateinit var layoutManager: StaggeredGridLayoutManager
 
-    private lateinit var adapterRandom: ExploreAdapter
+    private lateinit var adapterExtra: ExploreAdapter
 
     override fun onResume() {
         super.onResume()
@@ -80,6 +86,15 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         readFromDataStore()
         isAdapterInit()
         loadMoreResults()
+
+        binding.inputLayoutSearch.setEndIconOnClickListener {
+            if (binding.inputSearch.text.toString().isEmpty()) {
+                adapterExtra = adapter
+                binding.rvApod.adapter = adapter
+            } else {
+                searchDatabase(binding.inputSearch.text.toString())
+            }
+        }
 
         binding.topAppBar.setOnMenuItemClickListener {
             when (it.itemId) {
@@ -114,10 +129,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         return MaterialDatePicker.Builder.dateRangePicker()
             .setTitleText("Select dates")
             .setSelection(
-                Pair(
-                    MaterialDatePicker.thisMonthInUtcMilliseconds(),
-                    MaterialDatePicker.todayInUtcMilliseconds()
-                )
+                Pair(thisMonthMilliseconds, todayMilliseconds)
             ).setCalendarConstraints(constraintsBuilder.build())
             .build()
     }
@@ -154,6 +166,8 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                 secondDay.timeInMillis <= todayCalendar.timeInMillis
             ) {
                 getCalendarResults(sdf.format(firstDay.time), sdf.format(secondDay.time))
+                thisMonthMilliseconds = dateRangePicker.selection?.first!!
+                todayMilliseconds = dateRangePicker.selection?.second!!
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     Snackbar.make(
@@ -189,8 +203,8 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                     Log.d("ViewModel", "Results calendarResults... ${it.data}")
                     binding.rvApod.visibility = View.VISIBLE
                     binding.pbRvAPOD.visibility = View.GONE
-                    adapterRandom = ExploreAdapter(it.data, this@ExploreFragment)
-                    binding.rvApod.adapter = adapterRandom
+                    adapterExtra = ExploreAdapter(it.data, this@ExploreFragment)
+                    binding.rvApod.adapter = adapterExtra
                 }
                 is Result.Failure -> {
                     Log.d("ViewModel", "Failure calendarResults... ${it.exception}")
@@ -211,8 +225,8 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                     Log.d("ViewModel", "Result random... ${it.data}")
                     binding.rvApod.visibility = View.VISIBLE
                     binding.pbRvAPOD.visibility = View.GONE
-                    adapterRandom = ExploreAdapter(it.data, this@ExploreFragment)
-                    binding.rvApod.adapter = adapterRandom
+                    adapterExtra = ExploreAdapter(it.data, this@ExploreFragment)
+                    binding.rvApod.adapter = adapterExtra
                 }
                 is Result.Failure -> {
                     Log.d("ViewModel", "Failure random... ${it.exception}")
@@ -277,10 +291,10 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         if (!::adapter.isInitialized) {
             getResults(sdf.format(endDate.time), sdf.format(startDate.time))
         } else {
-            if (!::adapterRandom.isInitialized) {
+            if (!::adapterExtra.isInitialized) {
                 binding.rvApod.adapter = adapter
             } else {
-                binding.rvApod.adapter = adapterRandom
+                binding.rvApod.adapter = adapterExtra
             }
         }
     }
@@ -328,6 +342,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                             Log.d("ViewModel", "Result... Adapter is Initialized")
                         } else {
                             Log.d("ViewModel", "Result... Adapter is NOT Initialized")
+                            isBottomNavVisible()
                             binding.pbRvAPOD.visibility = View.GONE
                             adapter = ExploreAdapter(result.data, this@ExploreFragment)
                             binding.rvApod.adapter = adapter
@@ -336,11 +351,25 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                         Log.d("ViewModel", "Results: ${result.data}")
                     }
                     is Result.Failure -> {
+                        isBottomNavVisible()
                         Log.d("ViewModel", "ViewModel error: ${result.exception}")
 
                     }
                 }
             })
+    }
+
+    private fun isBottomNavVisible() {
+        if (!activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible!!) {
+            activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)
+                ?.apply {
+                    animation = AnimationUtils.loadAnimation(
+                        requireContext(),
+                        R.anim.slide_in_bottom
+                    )
+                    visibility = View.VISIBLE
+                }
+        }
     }
 
     override fun onAPODClick(apod: APOD, binding: ItemApodBinding) {
@@ -359,4 +388,20 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
 
     }
 
+    private fun searchDatabase(query: String?) {
+        val searchQuery = "%$query%"
+
+        viewModel.fetchSearchResults(searchQuery).observe(viewLifecycleOwner, {
+            when (it) {
+                is Result.Loading -> {
+                }
+                is Result.Success -> {
+                    adapterExtra = ExploreAdapter(it.data, this)
+                    binding.rvApod.adapter = adapterExtra
+                }
+                is Result.Failure -> {
+                }
+            }
+        })
+    }
 }

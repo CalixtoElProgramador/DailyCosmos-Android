@@ -36,6 +36,10 @@ class APODRepositoryImpl(
         return dataSourceRemote.getCalendarResults(endDate, startDate)
     }
 
+    override suspend fun getSearchResults(searchQuery: String): List<APOD> {
+        return dataSourceLocal.getSearchResults(searchQuery)
+    }
+
     override suspend fun updateFavorite(apod: APOD, isFavorite: Int) {
         dataSourceLocal.updateFavorite(apod.toAPODEntity(isFavorite))
     }

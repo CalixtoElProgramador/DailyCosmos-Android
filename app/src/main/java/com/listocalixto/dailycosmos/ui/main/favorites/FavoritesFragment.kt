@@ -1,12 +1,16 @@
 package com.listocalixto.dailycosmos.ui.main.favorites
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.animation.AnimationUtils
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.local.AppDatabase
@@ -54,14 +58,28 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites),
                     Log.d("ViewModelFireStore", "Results... ${result.data} ")
                     binding.rvFavorites.adapter =
                         FavoritesAdapter(result.data, this@FavoritesFragment)
+                    isBottomNavVisible()
                 }
                 is Result.Failure -> {
                     binding.lottieLoading.visibility = View.GONE
+                    isBottomNavVisible()
                     Log.d("ViewModelFireStore", "Hubo un error... ${result.exception} ")
                 }
             }
         })
 
+    }
+
+    private fun isBottomNavVisible() {
+        if (!activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible!!) {
+            activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.apply {
+                animation = AnimationUtils.loadAnimation(
+                    requireContext(),
+                    R.anim.slide_in_bottom
+                )
+                visibility = View.VISIBLE
+            }
+        }
     }
 
     override fun onFavoriteClick(favorite: FavoriteEntity) {

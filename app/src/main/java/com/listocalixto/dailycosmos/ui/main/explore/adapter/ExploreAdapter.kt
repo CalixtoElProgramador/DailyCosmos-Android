@@ -3,14 +3,10 @@ package com.listocalixto.dailycosmos.ui.main.explore.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.firebase.auth.FirebaseAuth
-import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.core.BaseDiffUtil
 import com.listocalixto.dailycosmos.core.BaseViewHolder
 import com.listocalixto.dailycosmos.data.model.APOD
@@ -24,7 +20,6 @@ class ExploreAdapter(
     interface OnAPODClickListener {
         fun onAPODClick(apod: APOD, binding: ItemApodBinding)
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
         val itemBinding =
@@ -55,6 +50,11 @@ class ExploreAdapter(
         val diffResults = DiffUtil.calculateDiff(diffUtil)
         apodList = newAPODList
         diffResults.dispatchUpdatesTo(this)
+    }
+
+    fun setSearchData(searchData: List<APOD>) {
+        apodList = searchData
+        notifyDataSetChanged()
     }
 
     private inner class APODViewHolder(val binding: ItemApodBinding, val context: Context) :

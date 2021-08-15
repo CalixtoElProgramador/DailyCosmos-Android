@@ -13,8 +13,57 @@
         android:id="@+id/calendar"
         android:enabled="true"
         android:icon="@drawable/ic_calendar"
-        android:title="@string/random"
+        android:title="@string/calendar"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/design"
+        android:contentDescription="@string/content_description_settings"
+        android:title="@string/design"
+        app:showAsAction="never">
+
+        <menu>
+
+            <item
+                android:id="@+id/staggered"
+                android:title="@string/staggered"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/lineal"
+                android:title="@string/lineal"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/only_images"
+                android:title="@string/only_images"
+                app:showAsAction="never" />
+
+        </menu>
+
+    </item>
+
+    <item
+        android:id="@+id/sortBy"
+        android:contentDescription="@string/content_description_settings"
+        android:title="@string/sort_by"
+        app:showAsAction="never">
+
+        <menu>
+
+            <item
+                android:id="@+id/newFirst"
+                android:title="@string/new_first"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/oldFirst"
+                android:title="@string/old_first"
+                app:showAsAction="never" />
+
+        </menu>
+
+    </item>
 
     <item
         android:id="@+id/settingsActivity"

@@ -15,6 +15,9 @@ interface APODDao {
     @Query("SELECT * FROM apodentity WHERE is_favorite = 1")
     suspend fun getFavorites(): List<APODEntity>
 
+    @Query("SELECT * FROM apodentity WHERE title LIKE :searchQuery OR date LIKE :searchQuery ORDER BY date DESC")
+    suspend fun getSearchResults(searchQuery: String): List<APODEntity>
+
     //fun getAllAPODsDistinctUntilChanged() = getAllAPODs().distinctUntilChanged()
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

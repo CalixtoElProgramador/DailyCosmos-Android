@@ -94,4 +94,12 @@
     <string name="bad_news">Bad news</string>
     <string name="languaje_not_available">Sorry, the translator from English to the language of your phone is not available, it has not been created yet. We will have to wait for future updates. We apologize for the inconvenience.</string>
     <string name="error_request_future_dates_today">Hahaha how funny... you can\'t request future dates to today\'s dates!</string>
+    <string name="show_original">Show original</string>
+    <string name="sort_by">Sort by</string>
+    <string name="new_first">New First</string>
+    <string name="old_first">Old First</string>
+    <string name="design">Design</string>
+    <string name="staggered">Staggered</string>
+    <string name="lineal">Lineal</string>
+    <string name="only_images">Only images</string>
 </resources>

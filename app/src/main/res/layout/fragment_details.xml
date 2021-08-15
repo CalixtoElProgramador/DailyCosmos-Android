@@ -140,6 +140,17 @@
                     android:text="@string/translate"
                     android:textColor="@color/colorSurface" />
 
+                <TextView
+                    android:id="@+id/textShowOriginal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_4sdp"
+                    android:text="@string/show_original"
+                    android:textColor="@color/colorTextSecondary"
+                    android:textSize="@dimen/_13ssp"
+                    android:visibility="gone" />
+
             </LinearLayout>
 
         </LinearLayout>

@@ -7,10 +7,8 @@ import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
-import android.view.WindowManager
 import android.view.animation.AnimationUtils
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -141,7 +139,8 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                         if (!::adapterToday.isInitialized) {
                             binding.lottieLoading.visibility = View.VISIBLE
                             Log.d("ViewModelDaily", "Loading... Adapter is NOT Initialized")
-                            activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.visibility = View.GONE
+                            activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.visibility =
+                                View.GONE
                         } else {
                             Log.d("ViewModelDaily", "Loading... Adapter is Initialized")
                         }
@@ -163,14 +162,15 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                                 )
                             binding.vpPhotoToday.adapter = adapterToday
                             Handler().postDelayed({
-                                activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.apply {
-                                    animation = AnimationUtils.loadAnimation(
-                                        requireContext(),
-                                        R.anim.slide_in_bottom
-                                    )
-                                    visibility = View.VISIBLE
-                                }
-                            }, 1500)
+                                activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)
+                                    ?.apply {
+                                        animation = AnimationUtils.loadAnimation(
+                                            requireContext(),
+                                            R.anim.slide_in_bottom
+                                        )
+                                        visibility = View.VISIBLE
+                                    }
+                            }, 1200)
                         }
                         isLoading = false
                         Log.d("ViewModelDaily", "Results: ${result.data}")
@@ -322,32 +322,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     override fun onButtonClick(apod: APOD, itemBinding: ItemApodDailyBinding) {
         translatorViewModel.readValue.observe(viewLifecycleOwner, {
             if (it == 0) {
-                MaterialAlertDialogBuilder(requireContext())
-                    .setTitle(getString(R.string.ask_download_traductor_title))
-                    .setIcon(R.drawable.ic_save_alt)
-                    .setMessage(resources.getString(R.string.ask_download_traductor))
-                    .setNegativeButton(resources.getString(R.string.no_thanks)) { _, _ ->
-                    }
-                    .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                            Snackbar.make(
-                                binding.vpPhotoToday,
-                                getString(R.string.snackbar_download_translator),
-                                Snackbar.LENGTH_SHORT
-                            )
-                                .setAnchorView(requireActivity().requireViewById(R.id.bottom_navigation))
-                                .show()
-                        } else {
-                            Snackbar.make(
-                                binding.vpPhotoToday,
-                                getString(R.string.snackbar_download_translator),
-                                Snackbar.LENGTH_SHORT
-                            )
-                                .show()
-                        }
-                        translatorViewModel.saveValue(1)
-                    }
-                    .show()
+                permissionToDownloadTranslator()
             } else {
                 val translator =
                     TranslatorDataSource().downloadEnglishToOwnerLanguageModel(
@@ -362,16 +337,78 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                         .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
                         }.show()
                 } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        Snackbar.make(binding.vpPhotoToday, "Translating...", Snackbar.LENGTH_SHORT)
+                            .setAnchorView(activity?.requireViewById(R.id.bottom_navigation))
+                            .show()
+                    } else {
+                        Snackbar.make(binding.vpPhotoToday, "Translating...", Snackbar.LENGTH_SHORT)
+                            .show()
+                    }
                     translator.translate(apod.title).addOnSuccessListener { titleTranslated ->
                         itemBinding.textApodTitle.text = titleTranslated
                         translator.translate(apod.explanation)
                             .addOnSuccessListener { textTranslated ->
                                 itemBinding.textApodExplanation.text = textTranslated
                                 translator.close()
+                                Handler().postDelayed({
+                                    itemBinding.textShowOriginal.apply {
+                                        animation = AnimationUtils.loadAnimation(
+                                            requireContext(),
+                                            R.anim.fade_in_main
+                                        )
+                                        visibility = View.VISIBLE
+                                    }
+                                }, 400)
+
+                                itemBinding.textShowOriginal.setOnClickListener {
+                                    itemBinding.textApodTitle.text = apod.title
+                                    itemBinding.textApodExplanation.text = apod.explanation
+
+                                    Handler().postDelayed({
+                                        itemBinding.textShowOriginal.apply {
+                                            animation = AnimationUtils.loadAnimation(
+                                                requireContext(),
+                                                R.anim.fade_out_main
+                                            )
+                                            visibility = View.GONE
+                                        }
+                                    }, 400)
+                                }
                             }
                     }
                 }
             }
         })
+    }
+
+    @SuppressLint("ShowToast")
+    private fun permissionToDownloadTranslator() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.ask_download_traductor_title))
+            .setIcon(R.drawable.ic_save_alt)
+            .setMessage(resources.getString(R.string.ask_download_traductor))
+            .setNegativeButton(resources.getString(R.string.no_thanks)) { _, _ ->
+            }
+            .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    Snackbar.make(
+                        binding.vpPhotoToday,
+                        getString(R.string.snackbar_download_translator),
+                        Snackbar.LENGTH_SHORT
+                    )
+                        .setAnchorView(requireActivity().requireViewById(R.id.bottom_navigation))
+                        .show()
+                } else {
+                    Snackbar.make(
+                        binding.vpPhotoToday,
+                        getString(R.string.snackbar_download_translator),
+                        Snackbar.LENGTH_SHORT
+                    )
+                        .show()
+                }
+                translatorViewModel.saveValue(1)
+            }
+            .show()
     }
 }

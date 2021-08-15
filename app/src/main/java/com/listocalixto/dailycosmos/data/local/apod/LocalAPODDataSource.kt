@@ -12,6 +12,10 @@ class LocalAPODDataSource(private val apodDao: APODDao) {
         return apodDao.getFavorites()
     }
 
+    suspend fun getSearchResults(searchQuery: String): List<APOD> {
+        return apodDao.getSearchResults(searchQuery).toAPODList()
+    }
+
     suspend fun saveAPOD(apodEntity: APODEntity) {
         apodDao.saveAPOD(apodEntity)
     }

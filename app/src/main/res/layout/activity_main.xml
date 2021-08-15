@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         app:labelVisibilityMode="selected"
         android:layout_gravity="bottom"
+        android:visibility="gone"
         app:menu="@menu/bottom_navigation_menu" />
 
 </FrameLayout>

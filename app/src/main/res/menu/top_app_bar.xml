@@ -34,10 +34,6 @@
                 android:title="@string/lineal"
                 app:showAsAction="never" />
 
-            <item
-                android:id="@+id/only_images"
-                android:title="@string/only_images"
-                app:showAsAction="never" />
 
         </menu>
 

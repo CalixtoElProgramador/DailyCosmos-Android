@@ -75,7 +75,7 @@
     <string name="content_description_settings">This option is intended to go to the application settings fragment.</string>
     <string name="title_explore_collapsing_toolbar">Find wonderful images of the cosmos and add them to your favorites</string>
     <string name="subtitle_explore_collapsing_toolbar">From June 16, 1995 to the present</string>
-    <string name="helper_text_search_view">Click on the icon to search</string>
+    <string name="helper_text_search_view">Click on the icon to search for images that are stored in your local database. For example, search for today\'s date in this format: YYYY-MM-DD</string>
     <string name="image_favorite">Image favorite</string>
     <string name="ask_download_traductor">Would you like to download a translator to switch from English to the language of your phone? It works with and without internet. It is by the Firebase machine learning kit. It\'s not the best but it works. It weighs about 30 Mb</string>
     <string name="decline">Decline</string>
@@ -102,4 +102,7 @@
     <string name="staggered">Staggered</string>
     <string name="lineal">Lineal</string>
     <string name="only_images">Only images</string>
+    <string name="textNoResultsSubtitle">Check that everything is spelled correctly or try different keywords.</string>
+    <string name="textNoResultsTitle">No results were found for:</string>
+    <string name="helper_text_search_view_02">To reload all the images, press the icon but without text</string>
 </resources>

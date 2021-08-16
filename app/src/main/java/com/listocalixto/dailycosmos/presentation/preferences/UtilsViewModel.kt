@@ -18,4 +18,9 @@ class UtilsViewModel(application: Application) : AndroidViewModel(application) {
         dataStore.saveValue(value)
     }
 
+    val readValueSearch = dataStore.readValueSearch.asLiveData()
+    fun saveValueSearch(value: Int) = viewModelScope.launch(Dispatchers.IO) {
+        dataStore.saveValueSearch(value)
+    }
+
 }

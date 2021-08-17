@@ -1,21 +1,29 @@
 package com.listocalixto.dailycosmos.ui.settings
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.WindowManager
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.model.User
 import com.listocalixto.dailycosmos.data.remote.auth.AuthDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentSettingsBinding
+import com.listocalixto.dailycosmos.domain.auth.AuthRepoImpl
 import com.listocalixto.dailycosmos.presentation.auth.AuthViewModel
 import com.listocalixto.dailycosmos.presentation.auth.AuthViewModelFactory
-import com.listocalixto.dailycosmos.domain.auth.AuthRepoImpl
+import com.listocalixto.dailycosmos.ui.main.MainActivity
+import kotlinx.coroutines.channels.BroadcastChannel
+
 
 @Suppress("DEPRECATION")
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
@@ -37,6 +45,14 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         binding = FragmentSettingsBinding.bind(view)
 
         configWindow()
+
+        binding.buttonSignOut.setOnClickListener {
+            Firebase.auth.signOut()
+            val intent = Intent("finish_activity")
+            activity?.sendBroadcast(intent)
+            findNavController().navigate(R.id.action_settingsFragment_to_authActivity)
+            requireActivity().finish()
+        }
 
         viewModel.getCurrentUser().observe(viewLifecycleOwner, { result ->
             when (result) {

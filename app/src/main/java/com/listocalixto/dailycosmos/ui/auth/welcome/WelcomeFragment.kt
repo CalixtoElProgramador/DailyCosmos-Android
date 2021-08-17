@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
@@ -33,6 +35,25 @@ class WelcomeFragment : Fragment(R.layout.fragment_welcome) {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 setCurrentOnBoardingIndicator(position)
+                if (position == 2) {
+                    binding.buttonNext.apply {
+                        animation = AnimationUtils.loadAnimation(
+                            requireContext(),
+                            R.anim.fade_in_main
+                        )
+                        visibility = View.VISIBLE
+                    }
+                } else {
+                    if (binding.buttonNext.isVisible) {
+                        binding.buttonNext.apply {
+                            animation = AnimationUtils.loadAnimation(
+                                requireContext(),
+                                R.anim.fade_out_main
+                            )
+                            visibility = View.GONE
+                        }
+                    }
+                }
             }
         })
 
@@ -74,7 +95,7 @@ class WelcomeFragment : Fragment(R.layout.fragment_welcome) {
 
     @SuppressLint("SetTextI18n")
     private fun setCurrentOnBoardingIndicator(index: Int) {
-        val childCount: Int = binding.layoutOnBoardingIndicators.getChildCount()
+        val childCount: Int = binding.layoutOnBoardingIndicators.childCount
         for (i in 0 until childCount) {
             val imageView = binding.layoutOnBoardingIndicators.getChildAt(i) as ImageView
             if (i == index) {
@@ -92,11 +113,6 @@ class WelcomeFragment : Fragment(R.layout.fragment_welcome) {
                     )
                 )
             }
-        }
-        if (index == adapter.itemCount - 1) {
-            binding.buttonNext.text = getString(R.string.start_now)
-        } else {
-            binding.buttonNext.text = getString(R.string.next)
         }
     }
 

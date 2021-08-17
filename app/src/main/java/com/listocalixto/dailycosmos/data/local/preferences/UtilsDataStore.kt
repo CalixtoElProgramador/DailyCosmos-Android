@@ -16,18 +16,22 @@ import java.io.IOException
 
 const val STORE_DIALOG_CAUTION_OPEN_IMAGE = "preferences_04"
 const val STORE_IS_THE_FIRST_SEARCH = "preferences_is_the_first_search"
+const val STORE_IS_THE_FIRST_TIME_ON_THE_APP = "preferences_is_the_first_time_in_the_app"
 
 class UtilsDataStore(context: Context) {
 
     private object PreferencesKeys {
         val isAccepted = preferencesKey<Int>("is_dialog_caution_open_image_accepted")
         val isFirstSearch = preferencesKey<Int>("is_the_first_search")
+        val isFirstTime = preferencesKey<Int>("is_the_first_time_on_the_app")
     }
 
     private val storeIsAccepted: DataStore<Preferences> =
         context.createDataStore(name = STORE_DIALOG_CAUTION_OPEN_IMAGE)
     private val isFirstSearch: DataStore<Preferences> =
         context.createDataStore(name = STORE_IS_THE_FIRST_SEARCH)
+    private val isFirstTime: DataStore<Preferences> =
+        context.createDataStore(name = STORE_IS_THE_FIRST_TIME_ON_THE_APP)
 
     suspend fun saveValue(value: Int) {
         storeIsAccepted.edit { preferences -> preferences[PreferencesKeys.isAccepted] = value }
@@ -62,6 +66,23 @@ class UtilsDataStore(context: Context) {
         }
         .map { preferences ->
             val value = preferences[PreferencesKeys.isFirstSearch] ?: 0
+            value
+        }
+
+    suspend fun saveValueFirstTime(value: Int) {
+        isFirstTime.edit { preferences -> preferences[PreferencesKeys.isFirstTime] = value }
+    }
+
+    val readValueFirstTime: Flow<Int> = isFirstTime.data.distinctUntilChanged()
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }
+        .map { preferences ->
+            val value = preferences[PreferencesKeys.isFirstTime] ?: 0
             value
         }
 }

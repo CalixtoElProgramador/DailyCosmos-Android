@@ -11,12 +11,16 @@
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" >
         <action
-            android:id="@+id/action_settingsFragment_to_mainActivity2"
-            app:destination="@id/mainActivity2" />
+            android:id="@+id/action_settingsFragment_to_authActivity"
+            app:destination="@id/authActivity"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popUpTo="@id/settingsFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <activity
-        android:id="@+id/mainActivity2"
-        android:name="com.listocalixto.dailycosmos.ui.main.MainActivity"
-        android:label="activity_main"
-        tools:layout="@layout/activity_main" />
+        android:id="@+id/authActivity"
+        android:name="com.listocalixto.dailycosmos.ui.auth.AuthActivity"
+        android:label="activity_auth"
+        tools:layout="@layout/activity_auth" />
 </navigation>

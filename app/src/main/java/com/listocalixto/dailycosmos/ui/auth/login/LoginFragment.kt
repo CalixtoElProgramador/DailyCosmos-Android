@@ -3,9 +3,10 @@ package com.listocalixto.dailycosmos.ui.auth.login
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
-import android.view.WindowManager
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
@@ -20,6 +21,7 @@ import com.listocalixto.dailycosmos.presentation.auth.AuthViewModelFactory
 import com.listocalixto.dailycosmos.domain.auth.AuthRepoImpl
 import com.listocalixto.dailycosmos.ui.auth.register.RegisterViewModel
 import com.listocalixto.dailycosmos.core.Result
+import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
 
 @Suppress("DEPRECATION")
 class LoginFragment : Fragment(R.layout.fragment_login) {
@@ -27,6 +29,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     private val patternEmail = Patterns.EMAIL_ADDRESS.toRegex()
     private lateinit var binding: FragmentLoginBinding
     private val viewModelShared: RegisterViewModel by activityViewModels()
+    private val dataStoreUtils by viewModels<UtilsViewModel>()
     private val viewModel by viewModels<AuthViewModel> {
         AuthViewModelFactory(AuthRepoImpl(AuthDataSource()))
     }
@@ -47,27 +50,24 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentLoginBinding.bind(view)
-        configWindow()
-        isUserLoggedIn()
         setErrorEnabledAfterChanges()
 
-        binding.buttonSignIn.setOnClickListener {
-            validateInputs()
-        }
-
+        binding.buttonSignIn.setOnClickListener { validateInputs() }
         binding.textSingInAnon.setOnClickListener {
-            createAnonCount()
             isEnabledViews(false)
             firebaseAuth.signInAnonymously().addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
                     isEnabledViews(true)
                     Log.d("FirebaseAuth", "Usuario anónimo creado ")
-                    findNavController().navigate(R.id.action_loginFragment_to_mainActivity)
-                    requireActivity().finish()
+                    navigateToMainActivity()
                 } else {
                     isEnabledViews(true)
                     Log.d("FirebaseAuth", "Usuario anónimo NO creado: ${task.exception}")
-                    Toast.makeText(context, "Ha ocurrido un error... inténtalo más tarde", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        context,
+                        "Ha ocurrido un error... inténtalo más tarde",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         }
@@ -75,10 +75,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         binding.layoutTextRegister.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_register01Fragment)
         }
-    }
-
-    private fun createAnonCount() {
-
     }
 
     private fun setErrorEnabledAfterChanges() {
@@ -120,8 +116,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 }
                 is Result.Success -> {
                     isEnabledViews(true)
-                    findNavController().navigate(R.id.action_loginFragment_to_mainActivity)
-                    requireActivity().finish()
+                    navigateToMainActivity()
 
                 }
                 is Result.Failure -> {
@@ -136,15 +131,10 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         })
     }
 
-    private fun configWindow() {
-        activity?.window?.addFlags((WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS))
-    }
-
-    private fun isUserLoggedIn() {
-        firebaseAuth.currentUser?.let {
-            findNavController().navigate(R.id.action_loginFragment_to_mainActivity)
-            requireActivity().finish()
-        }
+    private fun navigateToMainActivity() {
+        dataStoreUtils.saveValueFirstTime(1)
+        findNavController().navigate(R.id.action_loginFragment_to_mainActivity)
+        requireActivity().finish()
     }
 
     private fun isEnabledViews(boolean: Boolean) {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,11 +9,13 @@
     android:orientation="vertical"
     tools:context=".ui.auth.welcome.pages.WelcomeFragmentPage03">
 
-    <pl.droidsonroids.gif.GifImageView
+    <com.airbnb.lottie.LottieAnimationView
         android:layout_width="@dimen/_210sdp"
         android:layout_height="@dimen/_210sdp"
-        android:contentDescription="@string/app_name"
-        android:src="@drawable/nasa_logo_animation" />
+        android:layout_gravity="center"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/welcome_page_03" />
 
     <LinearLayout
         android:id="@+id/layoutTexts"
@@ -40,6 +43,5 @@
             android:textColor="@color/colorTextSecondary" />
 
     </LinearLayout>
-
 
 </LinearLayout>

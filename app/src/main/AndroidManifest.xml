@@ -19,11 +19,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DailyCosmos">
-        <activity android:name=".ui.settings.SettingsActivity"></activity>
+        <activity android:name=".ui.settings.SettingsActivity">
+
+        </activity>
         <activity
             android:name=".ui.auth.AuthActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.DailyCosmos.Login"
+            android:theme="@style/SplashTheme"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,7 +35,8 @@
         </activity>
         <activity
             android:name=".ui.main.MainActivity"
-            android:theme="@style/Theme.DailyCosmos"></activity>
+            android:theme="@style/Theme.DailyCosmos">
+        </activity>
     </application>
 
 </manifest>

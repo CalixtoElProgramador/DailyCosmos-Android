@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.SplashFragment">
+
+    <ImageView
+        android:layout_width="@dimen/_124sdp"
+        android:layout_height="@dimen/_139sdp"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_6sdp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_dailycosmos" />
+
+</FrameLayout>

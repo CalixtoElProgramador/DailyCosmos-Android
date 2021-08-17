@@ -15,31 +15,21 @@
         android:id="@+id/buttonNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/_16sdp"
-        android:layout_marginBottom="@dimen/_16sdp"
-        android:text="@string/next"
+        android:layout_marginBottom="@dimen/_56sdp"
+        android:text="@string/start_now"
+        android:visibility="gone"
         app:layout_anchor="@id/viewPager"
-        app:layout_anchorGravity="bottom|end" />
+        app:layout_anchorGravity="bottom|center" />
 
     <LinearLayout
         android:id="@+id/layoutOnBoardingIndicators"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_16sdp"
         android:orientation="horizontal"
         android:padding="@dimen/_16sdp"
-        app:layout_anchor="@id/buttonNextFake"
-        app:layout_anchorGravity="center|start" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonNextFake"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_16sdp"
-        android:layout_marginBottom="@dimen/_16sdp"
-        android:text="@string/next"
-        android:visibility="invisible"
         app:layout_anchor="@id/viewPager"
-        app:layout_anchorGravity="bottom|start" />
+        app:layout_anchorGravity="bottom|center" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

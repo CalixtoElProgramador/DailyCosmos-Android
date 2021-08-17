@@ -1,15 +1,18 @@
 package com.listocalixto.dailycosmos.ui.main
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AnimationUtils
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.databinding.ActivityMainBinding
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,15 +29,30 @@ class MainActivity : AppCompatActivity() {
 
         binding.bottomNavigation.setupWithNavController(navController)
         observeDestinationChange(navController)
+
+        val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(arg0: Context?, intent: Intent) {
+                val action = intent.action
+                if (action == "finish_activity") {
+                    finish()
+                }
+            }
+        }
+        registerReceiver(broadcastReceiver, IntentFilter("finish_activity"))
     }
 
     private fun observeDestinationChange(navController: NavController) {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.pictureFragment -> { binding.bottomNavigation.visibility = View.GONE }
-                R.id.todayFragment -> { binding.bottomNavigation.visibility = View.VISIBLE }
+                R.id.pictureFragment -> {
+                    binding.bottomNavigation.visibility = View.GONE
+                }
+                R.id.todayFragment -> {
+                    binding.bottomNavigation.visibility = View.VISIBLE
+                }
 
-                else -> {}
+                else -> {
+                }
             }
         }
     }

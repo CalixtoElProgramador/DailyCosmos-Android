@@ -40,8 +40,6 @@ class Register03Fragment : Fragment(R.layout.fragment_register03) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentRegister03Binding.bind(view)
-
-        configWindow()
         getInputsFromViewModel()
 
         binding.profilePicture.setOnClickListener {
@@ -126,13 +124,6 @@ class Register03Fragment : Fragment(R.layout.fragment_register03) {
                 viewModelShared.setBitmap(bitmap!!)
             }
         }
-    }
-
-    private fun configWindow() {
-        activity?.window?.addFlags((WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS))
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        activity?.window?.statusBarColor =
-            requireActivity().resources.getColor(R.color.colorPrimaryVariantLogin)
     }
 
     private fun getInputsFromViewModel() {

@@ -55,7 +55,6 @@ class Register01Fragment : Fragment(R.layout.fragment_register01) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentRegister01Binding.bind(view)
-        configWindow()
         getInputsFromViewModel()
         setErrorEnabledAfterChanges()
 
@@ -163,11 +162,16 @@ class Register01Fragment : Fragment(R.layout.fragment_register01) {
         findNavController().navigate(R.id.action_register01Fragment_to_register02Fragment)
     }
 
-    private fun configWindow() {
-        activity?.window?.addFlags((WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS))
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        activity?.window?.statusBarColor =
-            requireActivity().resources.getColor(R.color.colorPrimaryVariantLogin)
+    override fun onDestroy() {
+        /*activity?.findViewById<LinearLayout>(R.id.buttons_register)?.apply {
+            animation =
+                AnimationUtils.loadAnimation(
+                    requireContext(),
+                    R.anim.fade_out_main
+                )
+            visibility = View.GONE
+        }*/
+        super.onDestroy()
     }
 
 }

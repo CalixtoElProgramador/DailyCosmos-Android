@@ -20,7 +20,6 @@ class Register02Fragment : Fragment(R.layout.fragment_register02) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentRegister02Binding.bind(view)
-        configWindow()
         getInputsFromViewModel()
         setErrorEnabledAfterChanges()
 
@@ -71,12 +70,6 @@ class Register02Fragment : Fragment(R.layout.fragment_register02) {
         findNavController().navigate(R.id.action_register02Fragment_to_register03Fragment)
     }
 
-    private fun configWindow() {
-        activity?.window?.addFlags((WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS))
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        activity?.window?.statusBarColor =
-            requireActivity().resources.getColor(R.color.colorPrimaryVariantLogin)
-    }
 
     private fun getInputsFromViewModel() {
         viewModelShared.getPassword().value?.let { it ->

@@ -105,4 +105,11 @@
     <string name="textNoResultsSubtitle">Check that everything is spelled correctly or try different keywords.</string>
     <string name="textNoResultsTitle">No results were found for:</string>
     <string name="helper_text_search_view_02">To reload all the images, press the icon but without text</string>
+    <string name="welcome_page_01_title">Welcome to DailyCosmos.</string>
+    <string name="welcome_page_01_subtitle">DailyCosmos is an application that brings a new photograph of the cosmos every day. Free and without ads</string>
+    <string name="welcome_page_02_title">Explore among the stars.</string>
+    <string name="welcome_page_02_subtitle">Discover more than 100,000 photos of the universe from the comfort of your cell phone. Download the image if you like it or add it to your favorites saved in the cloud.</string>
+    <string name="welcome_page_03_title">Thank you NASA.</string>
+    <string name="welcome_page_03_subtitle">For giving developers the possibility to use your databases and create applications of this style, in order to spread and promote interest in our beautiful universe.</string>
+    <string name="start_now">Start Now</string>
 </resources>

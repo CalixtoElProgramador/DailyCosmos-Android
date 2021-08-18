@@ -62,7 +62,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_16sdp"
+                    android:layout_marginTop="@dimen/_8sdp"
                     android:hint="@string/search"
                     app:endIconDrawable="@drawable/ic_search"
                     app:endIconMode="custom"

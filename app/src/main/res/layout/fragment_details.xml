@@ -65,22 +65,22 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="center"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/text_apodDate"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_32sdp"
                 android:layout_marginBottom="@dimen/_8sdp"
-                android:gravity="center"
                 android:textSize="@dimen/_12sdp"
                 android:textStyle="bold"
                 tools:text="2021-07-31" />
 
             <TextView
                 android:id="@+id/text_apodTitle"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/pt_sans_bold"
                 android:paddingStart="@dimen/_16sdp"
@@ -97,12 +97,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/_32sdp"
+                android:gravity="center"
                 android:orientation="vertical"
                 android:paddingBottom="?attr/actionBarSize">
 
                 <TextView
                     android:id="@+id/text_apodExplanation"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_32sdp"
                     android:lineSpacingExtra="@dimen/_8sdp"
@@ -117,7 +118,7 @@
 
                 <TextView
                     android:id="@+id/text_apodCopyright"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_32sdp"
                     android:lineSpacingExtra="@dimen/_8sdp"
@@ -130,11 +131,37 @@
                     android:textSize="@dimen/_15ssp"
                     tools:text="Copyright: Aarón Calixto" />
 
+                <TextView
+                    android:id="@+id/textVideoMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_32sdp"
+                    android:lineSpacingExtra="@dimen/_8sdp"
+                    android:paddingStart="@dimen/_16sdp"
+                    android:paddingEnd="@dimen/_16sdp"
+                    android:text="@string/in_case_if_media_type_is_video"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    android:textColor="@color/colorSecondary"
+                    android:textSize="@dimen/_13ssp"
+                    android:visibility="gone" />
+
+                <ImageButton
+                    android:id="@+id/iconCopyLink"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/app_name"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:padding="@dimen/_8sdp"
+                    android:src="@drawable/ic_link"
+                    android:visibility="gone"
+                    app:tint="@color/colorTextPrimary" />
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_translate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:layout_marginTop="@dimen/_32sdp"
                     android:backgroundTint="@color/colorSecondary"
                     android:text="@string/translate"
@@ -144,7 +171,6 @@
                     android:id="@+id/textShowOriginal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:layout_marginTop="@dimen/_4sdp"
                     android:text="@string/show_original"
                     android:textColor="@color/colorTextSecondary"

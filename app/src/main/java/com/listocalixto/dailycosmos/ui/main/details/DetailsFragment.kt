@@ -1,6 +1,9 @@
 package com.listocalixto.dailycosmos.ui.main.details
 
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -16,6 +19,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.mlkit.nl.translate.Translator
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.data.local.AppDatabase
 import com.listocalixto.dailycosmos.data.local.apod.LocalAPODDataSource
@@ -61,11 +65,13 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
     private var position: Int = -1
     private var adapterExplore: ExploreAdapter? = null
+    private var isDownloadTheTranslator: Int = -1
+    private var isFirstTimeToOpenImage: Int = -1
 
     private lateinit var binding: FragmentDetailsBinding
     private lateinit var apodReceived: APOD
-    private lateinit var translatorDataStore: TranslatorViewModel
-    private lateinit var utilsDataStore: UtilsViewModel
+    private lateinit var dataStoreTranslator: TranslatorViewModel
+    private lateinit var dataStoreUtils: UtilsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +89,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initVars(view)
+        readFromDataStore()
         getArgsFromViewModel()
         getValueFavorite()
         updateViews()
@@ -90,14 +97,32 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         binding.fabAddAPODFavorites.setOnClickListener { updateFavorite() }
         binding.btnTranslate.setOnClickListener { translateExplanation() }
         binding.imgApodPicture.setOnClickListener { verifyDrawable() }
+        binding.iconCopyLink.setOnClickListener { copyLinkToClipboard() }
 
+    }
+
+    @SuppressLint("ShowToast")
+    private fun copyLinkToClipboard() {
+        val clipboard = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("Video link", apodReceived.url)
+        clipboard.setPrimaryClip(clip)
+        Snackbar.make(binding.imgApodPicture,"Link copied", Snackbar.LENGTH_SHORT).show()
+    }
+
+    private fun readFromDataStore() {
+        dataStoreTranslator.readValue.observe(viewLifecycleOwner, {
+            isDownloadTheTranslator = it
+        })
+        dataStoreUtils.readValue.observe(viewLifecycleOwner, {
+            isFirstTimeToOpenImage = it
+        })
     }
 
     private fun initVars(view: View) {
         binding = FragmentDetailsBinding.bind(view)
-        translatorDataStore =
+        dataStoreTranslator =
             ViewModelProvider(requireActivity()).get(TranslatorViewModel::class.java)
-        utilsDataStore = ViewModelProvider(requireActivity()).get(UtilsViewModel::class.java)
+        dataStoreUtils = ViewModelProvider(requireActivity()).get(UtilsViewModel::class.java)
     }
 
     private fun getArgsFromViewModel() {
@@ -134,133 +159,193 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         viewModelDetails.setFavValue(isFavorite)
         getValueFavorite()
         adapterExplore?.notifyItemChanged(position)
-        when(isFavorite) {
-            -1 -> { }
-            0 -> { viewModelFavorite.deleteFavorite(apodReceived) }
-            1 -> { viewModelFavorite.setAPODFavorite(apodReceived) }
+        when (isFavorite) {
+            -1 -> {
+            }
+            0 -> {
+                viewModelFavorite.deleteFavorite(apodReceived)
+            }
+            1 -> {
+                viewModelFavorite.setAPODFavorite(apodReceived)
+            }
         }
     }
 
     @SuppressLint("ShowToast")
     private fun translateExplanation() {
-        translatorDataStore.readValue.observe(viewLifecycleOwner, {
-            if (it == 0) {
-                showDialog()
-            } else {
-                val translator =
-                    TranslatorDataSource().downloadEnglishToOwnerLanguageModel(
-                        requireContext(),
-                        requireActivity()
-                    )
+        when (isDownloadTheTranslator) {
+            0 -> {
+                permissionToDownloadTranslator()
+            }
+            1 -> {
+                val translator = TranslatorDataSource().downloadEnglishToOwnerLanguageModel(
+                    requireContext(),
+                    requireActivity()
+                )
                 if (translator == null) {
-                    MaterialAlertDialogBuilder(requireContext())
-                        .setTitle(resources.getString(R.string.bad_news))
-                        .setIcon(R.drawable.ic_sentiment_dissatisfied)
-                        .setMessage(resources.getString(R.string.languaje_not_available))
-                        .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
-                        }.show()
+                    showDialogTranslatorNotExits()
+                    return
                 } else {
-                    Snackbar.make(binding.btnTranslate, "Translating...", Snackbar.LENGTH_SHORT)
-                        .show()
-
-                    translator.translate(apodReceived.title).addOnSuccessListener { titleTranslated ->
-                        binding.textApodTitle.text = titleTranslated
-                        translator.translate(apodReceived.explanation)
-                            .addOnSuccessListener { textTranslated ->
-                                binding.textApodExplanation.text = textTranslated
-                                translator.close()
-                                Handler().postDelayed({
-                                    binding.textShowOriginal.apply {
-                                        animation = AnimationUtils.loadAnimation(
-                                            requireContext(),
-                                            R.anim.fade_in_main
-                                        )
-                                        visibility = View.VISIBLE
-                                    }
-                                }, 400)
-
-                                binding.textShowOriginal.setOnClickListener {
-                                    binding.textApodTitle.text = apodReceived.title
-                                    binding.textApodExplanation.text = apodReceived.explanation
-
-                                    Handler().postDelayed({
-                                        binding.textShowOriginal.apply {
-                                            animation = AnimationUtils.loadAnimation(
-                                                requireContext(),
-                                                R.anim.fade_out_main
-                                            )
-                                            visibility = View.GONE
-                                        }
-                                    }, 400)
-                                }
-                            }
+                    translator.translate("a").addOnFailureListener {
+                        showSnackbarDownloadIsNotFinish()
+                    }.addOnSuccessListener {
+                        showSnackbarTranslating()
+                        translateTitleAndExplanation(translator, apodReceived)
+                        binding.textShowOriginal.setOnClickListener {
+                            showOriginalText(apodReceived)
+                        }
                     }
                 }
             }
-        })
+        }
+    }
+
+    private fun showOriginalText(apod: APOD) {
+        binding.textApodTitle.text = apod.title
+        binding.textApodExplanation.text = apod.explanation
+        hideTextViewShowOriginal()
+    }
+
+    private fun hideTextViewShowOriginal() {
+        Handler().postDelayed({
+            binding.textShowOriginal.apply {
+                animation = AnimationUtils.loadAnimation(
+                    requireContext(),
+                    R.anim.fade_out_main
+                )
+                visibility = View.GONE
+            }
+        }, 400)
+    }
+
+    private fun translateTitleAndExplanation(
+        translator: Translator,
+        apod: APOD
+    ) {
+        translator.translate(apod.title).addOnSuccessListener { titleTranslated ->
+            binding.textApodTitle.text = titleTranslated
+        }
+
+        translator.translate(apod.explanation).addOnSuccessListener { textTranslated ->
+            binding.textApodExplanation.text = textTranslated
+            translator.close()
+        }
+        showTextViewShowOriginal()
+    }
+
+    private fun showTextViewShowOriginal() {
+        Handler().postDelayed({
+            binding.textShowOriginal.apply {
+                animation = AnimationUtils.loadAnimation(
+                    requireContext(),
+                    R.anim.fade_in_main
+                )
+                visibility = View.VISIBLE
+            }
+        }, 400)
     }
 
     @SuppressLint("ShowToast")
-    private fun showDialog() {
-        MaterialAlertDialogBuilder(
-            requireContext(),
-            R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog
+    private fun showSnackbarTranslating() {
+        Snackbar.make(
+            binding.imgApodPicture,
+            getString(R.string.translating),
+            Snackbar.LENGTH_SHORT
         )
+            .show()
+    }
+
+    @SuppressLint("ShowToast")
+    private fun showSnackbarDownloadIsNotFinish() {
+        Snackbar.make(
+            binding.imgApodPicture,
+            getString(R.string.wait_to_translator_download_is_finish),
+            Snackbar.LENGTH_SHORT
+        )
+            .show()
+    }
+
+    private fun showDialogTranslatorNotExits() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(resources.getString(R.string.bad_news))
+            .setIcon(R.drawable.ic_sentiment_dissatisfied)
+            .setMessage(resources.getString(R.string.languaje_not_available))
+            .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
+            }.show()
+    }
+
+    @SuppressLint("ShowToast")
+    private fun permissionToDownloadTranslator() {
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.ask_download_traductor_title))
             .setIcon(R.drawable.ic_save_alt)
             .setMessage(resources.getString(R.string.ask_download_traductor))
-            .setNegativeButton(resources.getString(R.string.decline)) { _, _ ->
+            .setNegativeButton(resources.getString(R.string.no_thanks)) { _, _ ->
             }
             .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    Snackbar.make(
-                        binding.imgApodPicture,
-                        getString(R.string.snackbar_download_translator),
-                        Snackbar.LENGTH_SHORT
-                    )
-                        .setAnchorView(requireActivity().requireViewById(R.id.bottom_navigation))
-                        .show()
-                }
-                translatorDataStore.saveValue(1)
+                TranslatorDataSource().downloadEnglishToOwnerLanguageModel(
+                    requireContext(),
+                    requireActivity()
+                )
+                showSnackbarDownloadStarted()
+                dataStoreTranslator.saveValue(1)
+                isDownloadTheTranslator = 1
             }
+            .show()
+    }
+
+    private fun showSnackbarDownloadStarted() {
+        Snackbar.make(
+            binding.imgApodPicture,
+            getString(R.string.snackbar_download_translator),
+            Snackbar.LENGTH_SHORT
+        )
             .show()
     }
 
     private fun verifyDrawable() {
         if (binding.imgApodPicture.drawable == null) {
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.wait_for_the_image_to_load),
-                Toast.LENGTH_SHORT
-            )
-                .show()
+            showToastWaitToLoadImage()
         } else {
-            utilsDataStore.readValue.observe(viewLifecycleOwner,{
-                if (it == 0) {
-                    showDialogBeforeOpenImage()
-                    return@observe
-                } else {
-                    navigateToPictureFragment()
+            if (apodReceived.media_type != "video") {
+                when (isFirstTimeToOpenImage) {
+                    0 -> {
+                        showDialogWarningForResolutionImages()
+                    }
+                    1 -> {
+                        navigateToPictureFragment()
+                    }
                 }
-            })
+            }
         }
 
     }
 
-    private fun showDialogBeforeOpenImage() {
+    private fun showDialogWarningForResolutionImages() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.caution))
             .setIcon(R.drawable.ic_error_outline)
             .setMessage(resources.getString(R.string.caution_open_image))
             .setNeutralButton(resources.getString(R.string.cancel)) { _, _ -> }
             .setNegativeButton(resources.getString(R.string.settings)) { _, _ ->
+                dataStoreUtils.saveValue(1)
+                isFirstTimeToOpenImage = 1
                 navigateToSettingsActivity()
-                utilsDataStore.saveValue(1)
             }
             .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
+                dataStoreUtils.saveValue(1)
+                isFirstTimeToOpenImage = 1
                 navigateToPictureFragment()
-                utilsDataStore.saveValue(1)
             }.show()
+    }
+
+    private fun showToastWaitToLoadImage() {
+        Toast.makeText(
+            requireContext(),
+            getString(R.string.wait_for_the_image_to_load),
+            Toast.LENGTH_SHORT
+        )
+            .show()
     }
 
     private fun navigateToSettingsActivity() {
@@ -280,6 +365,14 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         setImage()
         setTexts()
         setDrawableOnFAB(apodReceived.is_favorite)
+        if (apodReceived.media_type == "video") {
+            showMessageInCaseOfVideo()
+        }
+    }
+
+    private fun showMessageInCaseOfVideo() {
+        binding.textVideoMessage.visibility = View.VISIBLE
+        binding.iconCopyLink.visibility = View.VISIBLE
     }
 
     @SuppressLint("SetTextI18n")
@@ -292,7 +385,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             binding.textApodExplanation.text = apodReceived.explanation
         }
         if (apodReceived.copyright.isEmpty()) {
-            binding.textApodCopyright.visibility = View.GONE
+            binding.textApodCopyright.text = getString(R.string.no_copyright)
         } else {
             binding.textApodCopyright.text = "Copyright: ${apodReceived.copyright}"
         }

@@ -118,7 +118,7 @@ class PictureFragment : Fragment(R.layout.fragment_picture) {
             ClipData.newPlainText("Image link", args.url)
         }
         clipboard.setPrimaryClip(clip)
-        Snackbar.make(binding.photoView,"Link copied", Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.photoView, getString(R.string.link_copied), Snackbar.LENGTH_SHORT).show()
     }
 
     private fun checkPermissionsStorage() {

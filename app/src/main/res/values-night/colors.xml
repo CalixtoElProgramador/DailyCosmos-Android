@@ -19,6 +19,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="colorWarning">#8E7915</color>
     <color name="colorTextPrimary">#FFF</color>
     <color name="colorTextSecondary">#757575</color>
     <color name="colorIcons">#A4A4A4</color>

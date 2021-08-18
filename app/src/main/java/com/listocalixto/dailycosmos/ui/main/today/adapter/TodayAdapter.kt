@@ -19,7 +19,8 @@ class TodayAdapter(
     private var apodList: List<APOD>,
     private val imageClickListener: OnImageAPODClickListener,
     private val fabClickListener: OnFabClickListener,
-    private val buttonClickListener: OnButtonClickListener
+    private val buttonClickListener: OnButtonClickListener,
+    private val iconClickListener: OnIconClickListener
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
     interface OnImageAPODClickListener {
@@ -32,6 +33,10 @@ class TodayAdapter(
 
     interface OnButtonClickListener {
         fun onButtonClick(apod: APOD, itemBinding: ItemApodDailyBinding)
+    }
+
+    interface OnIconClickListener {
+        fun onIconClick(apod: APOD)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
@@ -58,6 +63,13 @@ class TodayAdapter(
                 holder.bindingAdapterPosition.takeIf { it != DiffUtil.DiffResult.NO_POSITION }
                     ?: return@setOnClickListener
             buttonClickListener.onButtonClick(apodList[position], itemBinding)
+        }
+
+        itemBinding.iconCopyLink.setOnClickListener {
+            val position =
+                holder.bindingAdapterPosition.takeIf { it != DiffUtil.DiffResult.NO_POSITION }
+                    ?: return@setOnClickListener
+            iconClickListener.onIconClick(apodList[position])
         }
 
         return holder
@@ -99,7 +111,9 @@ class TodayAdapter(
                     }
                 }
                 "video" -> {
-                    Glide.with(context).load(item.thumbnail_url).into(binding.imgApodPicture)
+                    binding.imgApodPicture.setImageResource(R.drawable.photo_cover)
+                    binding.textVideoMessage.visibility = View.VISIBLE
+                    binding.iconCopyLink.visibility = View.VISIBLE
                 }
             }
 
@@ -115,7 +129,7 @@ class TodayAdapter(
             }
 
             if (item.copyright.isEmpty()) {
-                binding.textApodCopyright.text = "No copyright"
+                binding.textApodCopyright.text = context.getString(R.string.no_copyright)
             } else {
                 binding.textApodCopyright.text = "Copyright: ${item.copyright}"
             }

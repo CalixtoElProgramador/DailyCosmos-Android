@@ -93,7 +93,7 @@
     <string name="no_thanks">No, thanks</string>
     <string name="bad_news">Bad news</string>
     <string name="languaje_not_available">Sorry, the translator from English to the language of your phone is not available, it has not been created yet. We will have to wait for future updates. We apologize for the inconvenience.</string>
-    <string name="error_request_future_dates_today">Hahaha how funny... you can\'t request future dates to today\'s dates!</string>
+    <string name="error_request_future_dates_today">Hahaha how funny… you can\'t request future dates to today\'s dates!</string>
     <string name="show_original">Show original</string>
     <string name="sort_by">Sort by</string>
     <string name="new_first">New First</string>
@@ -114,4 +114,14 @@
     <string name="start_now">Start Now</string>
     <string name="close_session">Close session</string>
     <string name="sign_out">Sign out</string>
+    <string name="translating">Translating…</string>
+    <string name="wait_to_translator_download_is_finish">Wait until the download is finished</string>
+    <string name="a_mistake_has_occurred">A mistake has occurred :c</string>
+    <string name="press_the_button_below_to_try_again">Press the button below to try again</string>
+    <string name="reload">Reload</string>
+    <string name="error_request_before_dates_june_16_1995">No data before 16 June 1995</string>
+    <string name="error_request_more_31_days">Please don\'t request more than 31 days</string>
+    <string name="in_case_if_media_type_is_video">This time it\'s a video/animation/simulation. Unfortunately it\'s not possible to play them from here, but if you like, you can press the icon below to copy the link and visit the site from your browser.</string>
+    <string name="link_copied">Link copied</string>
+    <string name="no_copyright">No copyright</string>
 </resources>

@@ -19,6 +19,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
+import com.listocalixto.dailycosmos.application.AppConstants
 import com.listocalixto.dailycosmos.data.local.AppDatabase
 import com.listocalixto.dailycosmos.data.local.apod.LocalAPODDataSource
 import com.listocalixto.dailycosmos.data.remote.apod.RemoteAPODDataSource
@@ -191,6 +192,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         val dateRangePicker = configDatePicker(constraintsBuilder)
         dateRangePicker.show(activity?.supportFragmentManager!!, "ExploreFragment")
         eventsDatePicker(dateRangePicker)
+        binding.topAppBar.menu.findItem(R.id.calendar).isEnabled = true
 
     }
 
@@ -209,6 +211,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
 
         calendar[Calendar.MONTH] = Calendar.JUNE
         calendar[Calendar.YEAR] = 1995
+        calendar[Calendar.DATE] = 16
         val june1995 = calendar.timeInMillis
 
         return CalendarConstraints.Builder()
@@ -218,55 +221,115 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
 
     @SuppressLint("ShowToast", "ResourceAsColor")
     private fun eventsDatePicker(dateRangePicker: MaterialDatePicker<Pair<Long, Long>>) {
-        dateRangePicker.addOnCancelListener {
-            binding.topAppBar.menu.findItem(R.id.calendar).isEnabled = true
+        val today = MaterialDatePicker.todayInUtcMilliseconds()
+        val todayCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+            timeInMillis = today
+            this[Calendar.DATE] = this[Calendar.DATE] + 1
         }
-        dateRangePicker.addOnDismissListener {
-            binding.topAppBar.menu.findItem(R.id.calendar).isEnabled = true
-        }
-        dateRangePicker.addOnNegativeButtonClickListener {
-            binding.topAppBar.menu.findItem(R.id.calendar).isEnabled = true
+        val june161995 = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+            this[Calendar.DATE] = 16
+            this[Calendar.MONTH] = Calendar.JUNE
+            this[Calendar.YEAR] = 1995
         }
 
         dateRangePicker.addOnPositiveButtonClickListener {
-            val today = MaterialDatePicker.todayInUtcMilliseconds()
-            val todayCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             val firstDay = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             val secondDay = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
 
-            todayCalendar.timeInMillis = today
-            todayCalendar[Calendar.DATE] = todayCalendar[Calendar.DATE] + 1
             firstDay.timeInMillis = it.first
             firstDay[Calendar.DATE] = firstDay[Calendar.DATE] + 1
             secondDay.timeInMillis = it.second
             secondDay[Calendar.DATE] = secondDay[Calendar.DATE] + 1
 
-            if (firstDay.timeInMillis <= todayCalendar.timeInMillis &&
-                secondDay.timeInMillis <= todayCalendar.timeInMillis
-            ) {
-                getCalendarResults(sdf.format(firstDay.time), sdf.format(secondDay.time))
-                thisMonthMilliseconds = dateRangePicker.selection?.first!!
-                todayMilliseconds = dateRangePicker.selection?.second!!
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    Snackbar.make(
-                        binding.rvApod,
-                        getString(R.string.error_request_future_dates_today),
-                        Snackbar.LENGTH_LONG
-                    )
-                        .setAnchorView(requireActivity().requireViewById(R.id.bottom_navigation))
-                        .setBackgroundTint(requireContext().resources.getColor(R.color.colorError))
-                        .show()
-                } else {
-                    Snackbar.make(
-                        binding.rvApod,
-                        getString(R.string.error_request_future_dates_today),
-                        Snackbar.LENGTH_LONG
-                    )
-                        .setBackgroundTint(requireContext().resources.getColor(R.color.colorError))
-                        .show()
+            val firstDayInMillis = firstDay.timeInMillis
+            val secondDayInMillis = secondDay.timeInMillis
+            val todayInMillis = todayCalendar.timeInMillis
+
+            when {
+                firstDayInMillis > todayInMillis || secondDayInMillis > todayInMillis -> {
+                    showSnackbarErrorFutureDays()
+                }
+                firstDayInMillis < june161995.timeInMillis || secondDayInMillis < june161995.timeInMillis -> {
+                    showSnackbarErrorLastDays()
+                }
+
+                secondDayInMillis - firstDayInMillis > AppConstants.MILLISECONDS_IN_A_MONTH -> {
+                    showSnackbarWarningNotMore31Days()
+                }
+                else -> {
+                    getCalendarResults(sdf.format(firstDay.time), sdf.format(secondDay.time))
+                    thisMonthMilliseconds = dateRangePicker.selection?.first!!
+                    todayMilliseconds = dateRangePicker.selection?.second!!
                 }
             }
+        }
+    }
+
+    @SuppressLint("ShowToast")
+    private fun showSnackbarWarningNotMore31Days() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            Snackbar.make(
+                binding.topAppBar,
+                getString(R.string.error_request_more_31_days),
+                Snackbar.LENGTH_LONG
+            )
+                .setTextColor(requireContext().resources.getColor(R.color.colorTextPrimary))
+                .setAnchorView(requireActivity().requireViewById(R.id.bottom_navigation))
+                .setBackgroundTint(requireContext().resources.getColor(R.color.colorWarning))
+                .show()
+        } else {
+            Snackbar.make(
+                binding.topAppBar,
+                getString(R.string.error_request_more_31_days),
+                Snackbar.LENGTH_LONG
+            )
+                .setTextColor(requireContext().resources.getColor(R.color.colorTextPrimary))
+                .setBackgroundTint(requireContext().resources.getColor(R.color.colorWarning))
+                .show()
+        }
+    }
+
+    @SuppressLint("ShowToast")
+    private fun showSnackbarErrorLastDays() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            Snackbar.make(
+                binding.topAppBar,
+                getString(R.string.error_request_before_dates_june_16_1995),
+                Snackbar.LENGTH_LONG
+            )
+                .setAnchorView(requireActivity().requireViewById(R.id.bottom_navigation))
+                .setBackgroundTint(requireContext().resources.getColor(R.color.colorError))
+                .show()
+        } else {
+            Snackbar.make(
+                binding.topAppBar,
+                getString(R.string.error_request_before_dates_june_16_1995),
+                Snackbar.LENGTH_LONG
+            )
+                .setBackgroundTint(requireContext().resources.getColor(R.color.colorError))
+                .show()
+        }
+    }
+
+    @SuppressLint("ShowToast")
+    private fun showSnackbarErrorFutureDays() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            Snackbar.make(
+                binding.topAppBar,
+                getString(R.string.error_request_future_dates_today),
+                Snackbar.LENGTH_LONG
+            )
+                .setAnchorView(requireActivity().requireViewById(R.id.bottom_navigation))
+                .setBackgroundTint(requireContext().resources.getColor(R.color.colorError))
+                .show()
+        } else {
+            Snackbar.make(
+                binding.topAppBar,
+                getString(R.string.error_request_future_dates_today),
+                Snackbar.LENGTH_LONG
+            )
+                .setBackgroundTint(requireContext().resources.getColor(R.color.colorError))
+                .show()
         }
     }
 
@@ -305,13 +368,16 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         viewModel.fetchRandomResults("10").observe(viewLifecycleOwner, {
             when (it) {
                 is Result.Loading -> {
+                    binding.inputLayoutSearch.isEnabled = false
                     onLoadingRandomResults()
                 }
                 is Result.Success -> {
+                    binding.inputLayoutSearch.isEnabled = true
                     onSuccessRandomResults(it)
                 }
                 is Result.Failure -> {
                     isLoading = true
+                    binding.inputLayoutSearch.isEnabled = true
                     binding.topAppBar.menu.findItem(R.id.random).isEnabled = true
                 }
             }

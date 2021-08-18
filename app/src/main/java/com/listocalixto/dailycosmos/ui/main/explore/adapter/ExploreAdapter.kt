@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.core.BaseDiffUtil
 import com.listocalixto.dailycosmos.core.BaseViewHolder
 import com.listocalixto.dailycosmos.data.model.APOD
@@ -66,7 +67,7 @@ class ExploreAdapter(
                     }
                 }
                 "video" -> {
-                    Glide.with(context).load(item.thumbnail_url).into(binding.imageItemAPOD)
+                    binding.imageItemAPOD.setImageResource(R.drawable.photo_cover)
                 }
             }
             binding.apply {

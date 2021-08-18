@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 const val STORE_IS_MODEL_DOWNLOADED = "preferences_03"
 
@@ -31,7 +32,7 @@ class TranslatorDataStore(context: Context) {
         Log.d("DataStore", "The answer has been saved: $value")
     }
 
-    val readValue: Flow<Int> = storeIsDownloaded.data
+    val readValue: Flow<Int> = storeIsDownloaded.data.distinctUntilChanged()
         .catch { exception ->
             if (exception is IOException) {
                 Log.d("DataStoreTradcutor", exception.message.toString())

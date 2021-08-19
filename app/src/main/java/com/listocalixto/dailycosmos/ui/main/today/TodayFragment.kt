@@ -8,8 +8,10 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.view.isVisible
@@ -64,7 +66,8 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
             APODRepositoryImpl(
                 RemoteAPODDataSource(RetrofitClient.webservice),
                 LocalAPODDataSource(AppDatabase.getDatabase(requireContext()).apodDao()),
-                RemoteAPODFavoriteDataSource()
+                RemoteAPODFavoriteDataSource(),
+                LocalFavoriteDataSource(AppDatabase.getDatabase(requireContext()).favoriteDao())
             )
         )
     }
@@ -72,8 +75,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
         APODFavoriteViewModelFactory(
             FavoritesRepoImpl(
                 RemoteAPODFavoriteDataSource(),
-                LocalFavoriteDataSource(AppDatabase.getDatabase(requireContext()).favoriteDao()),
-                LocalAPODDataSource(AppDatabase.getDatabase(requireContext()).apodDao())
+                LocalFavoriteDataSource(AppDatabase.getDatabase(requireContext()).favoriteDao())
             )
         )
     }
@@ -81,6 +83,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     private var isLoading = false
     private var isDownloadTheTranslator: Int = -1
     private var isFirstTimeToOpenImage: Int = -1
+    private var isFirstTimeGetResults: Int = -1
     private var endDate: Calendar = Calendar.getInstance()
     private var startDate: Calendar = Calendar.getInstance().apply {
         set(
@@ -95,6 +98,17 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     private lateinit var adapterToday: TodayAdapter
     private lateinit var bottomNavigation: BottomNavigationView
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        if (::bottomNavigation.isInitialized && !bottomNavigation.isVisible) {
+            Handler().postDelayed({ showBottomNavView() }, 500)
+        }
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun onResume() {
         super.onResume()
         isLoading = false
@@ -103,10 +117,9 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initVars(view)
+        binding = FragmentTodayBinding.bind(view)
         configViewPager() //And loadMoreResults when ViewPager.currentItem == adapter.itemCount
         readFromDataStore()
-        isAdapterInit()
 
         binding.buttonReload.setOnClickListener {
             getResults(
@@ -114,6 +127,27 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                 sdf.format(startDate.time)
             )
         }
+
+    }
+
+    private fun configViewPager() {
+        binding.vpPhotoToday.setPageTransformer(this)
+    }
+
+    private fun readFromDataStore() {
+        dataStoreUtils.readValueFirstTimeGetResults.observe(viewLifecycleOwner) {
+            isFirstTimeGetResults = it
+            isAdapterInit()
+        }
+        dataStoreAPOD.readLastDateFromDataStore.observe(viewLifecycleOwner, { date ->
+            startDate.time = sdf.parse(date)!!
+        })
+        dataStoreTranslator.readValue.observe(viewLifecycleOwner, {
+            isDownloadTheTranslator = it
+        })
+        dataStoreUtils.readValue.observe(viewLifecycleOwner, {
+            isFirstTimeToOpenImage = it
+        })
 
     }
 
@@ -125,79 +159,70 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
         }
     }
 
-    private fun configViewPager() {
-        binding.vpPhotoToday.setPageTransformer(this)
-    }
-
-    private fun initVars(view: View) {
-        binding = FragmentTodayBinding.bind(view)
-        bottomNavigation = activity?.findViewById(R.id.bottom_navigation)!!
-
-    }
-
-    private fun readFromDataStore() {
-        dataStoreAPOD.readLastDateFromDataStore.observe(viewLifecycleOwner, { date ->
-            startDate.time = sdf.parse(date)!!
-        })
-        dataStoreTranslator.readValue.observe(viewLifecycleOwner, {
-            isDownloadTheTranslator = it
-        })
-        dataStoreUtils.readValue.observe(viewLifecycleOwner, {
-            isFirstTimeToOpenImage = it
-        })
-    }
-
+    @SuppressLint("CutPasteId")
     private fun getResults(end: String, start: String) {
         isLoading = true
-        viewModel.fetchAPODResults(end, start)
-            .observe(viewLifecycleOwner, Observer { result ->
-                when (result) {
-                    is Result.Loading -> {
-                        binding.layoutErrorNoResults.visibility = View.GONE
-                        if (!::adapterToday.isInitialized) {
+        when(isFirstTimeGetResults) {
+            0 -> {
+                Log.d("Results", "First Time Getting Results")
+                viewModel.fetchFirstTimeResults(end, start).observe(viewLifecycleOwner, Observer {
+                    when(it) {
+                        is Result.Loading -> {
+                            binding.layoutErrorNoResults.visibility = View.GONE
                             binding.lottieLoading.visibility = View.VISIBLE
-                            Log.d("ViewModelDaily", "Loading... Adapter is NOT Initialized")
-                            activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.visibility =
-                                View.GONE
-                        } else {
-                            Log.d("ViewModelDaily", "Loading... Adapter is Initialized")
+                            if (activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible!!) {
+                                activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.visibility = View.GONE
+                            }
                         }
-                    }
-                    is Result.Success -> {
-                        binding.lottieLoading.visibility = View.GONE
-                        if (::adapterToday.isInitialized) {
-                            adapterToday.setData(result.data)
-                            dataStoreAPOD.saveLastDateToDataStore(result.data[result.data.lastIndex].date)
-                            Log.d("ViewModelDaily", "Result... Adapter is Initialized")
-                        } else {
-                            if (result.data.isEmpty()) {
+                        is Result.Success -> {
+                            bottomNavigation = activity?.findViewById(R.id.bottom_navigation)!!
+                            binding.lottieLoading.visibility = View.GONE
+                            if (it.data.isEmpty()) {
                                 binding.layoutErrorNoResults.visibility = View.VISIBLE
                                 return@Observer
                             }
-
-                            Log.d("ViewModelDaily", "Result... Adapter is NOT Initialized")
-                            adapterToday =
-                                TodayAdapter(
-                                    result.data,
-                                    this,
-                                    this,
-                                    this,
-                                    this
-                                )
+                            adapterToday = TodayAdapter(it.data, this, this, this, this)
                             binding.vpPhotoToday.adapter = adapterToday
-                            if (!bottomNavigation.isVisible) {
-                                Handler().postDelayed({ showBottomNavView() }, 1200)
+                            if (!bottomNavigation.isVisible) { Handler().postDelayed({ showBottomNavView() }, 1200) }
+                            dataStoreUtils.saveValueFirstTimeGetResults(1)
+                            isFirstTimeGetResults = 1
+                            isLoading = false
+                        }
+                        is Result.Failure -> { binding.lottieLoading.visibility = View.GONE }
+                    }
+                })
+            }
+            1 -> {
+                Log.d("Results", "This is NOT the First Time Getting Results")
+                viewModel.fetchMoreResults(end, start).observe(viewLifecycleOwner, {
+                    when(it) {
+                        is Result.Loading -> {
+                            if (!::adapterToday.isInitialized) {
+                                binding.layoutErrorNoResults.visibility = View.GONE
+                                binding.lottieLoading.visibility = View.VISIBLE
+                                if (activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible!!) {
+                                    activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.visibility = View.GONE
+                                }
                             }
                         }
-                        isLoading = false
-                        Log.d("ViewModelDaily", "Results: ${result.data}")
+                        is Result.Success -> {
+                            bottomNavigation = activity?.findViewById(R.id.bottom_navigation)!!
+                            isLoading = false
+                            binding.lottieLoading.visibility = View.GONE
+                            if (!::adapterToday.isInitialized) {
+                                adapterToday = TodayAdapter(it.data, this, this, this, this)
+                                binding.vpPhotoToday.adapter = adapterToday
+                                if (!bottomNavigation.isVisible) { Handler().postDelayed({ showBottomNavView() }, 1200) }
+                            } else {
+                                adapterToday.setData(it.data)
+                                dataStoreAPOD.saveLastDateToDataStore(it.data[it.data.lastIndex].date)
+                            }
+                        }
+                        is Result.Failure -> { binding.lottieLoading.visibility = View.GONE }
                     }
-                    is Result.Failure -> {
-                        binding.lottieLoading.visibility = View.GONE
-                        Log.d("ViewModelDaily", "ViewModel error: ${result.exception}")
-                    }
-                }
-            })
+                })
+            }
+        }
     }
 
     private fun showBottomNavView() {

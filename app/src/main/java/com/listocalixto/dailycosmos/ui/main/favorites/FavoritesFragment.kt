@@ -37,8 +37,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites),
         APODFavoriteViewModelFactory(
             FavoritesRepoImpl(
                 RemoteAPODFavoriteDataSource(),
-                LocalFavoriteDataSource(AppDatabase.getDatabase(requireContext()).favoriteDao()),
-                LocalAPODDataSource(AppDatabase.getDatabase(requireContext()).apodDao())
+                LocalFavoriteDataSource(AppDatabase.getDatabase(requireContext()).favoriteDao())
             )
         )
     }

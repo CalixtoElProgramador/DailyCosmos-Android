@@ -8,27 +8,31 @@ import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.domain.apod.APODRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
 class APODViewModel(private val repo: APODRepository) : ViewModel() {
 
-    fun fetchAPODResults(endDate: String, startDate: String) = liveData(Dispatchers.IO) {
+    fun fetchFirstTimeResults(endDate: String, startDate: String) = liveData(Dispatchers.IO) {
         emit(Result.Loading())
         kotlin.runCatching {
-            repo.getResults(endDate, startDate)
+            repo.getFirstTimeResults(endDate, startDate)
         }.onSuccess { apodList ->
             emit(Result.Success(apodList))
         }.onFailure {
             Result.Failure(Exception(it.message))
         }
-        /*try {
-            emit(Result.Success(repo.getResults(endDate, startDate)))
-        } catch (e: Exception) {
-            emit(Result.Failure(e))
-        }*/
+    }
 
+    fun fetchMoreResults(endDate: String, startDate: String) = liveData(Dispatchers.IO) {
+        emit(Result.Loading())
+        kotlin.runCatching {
+            repo.getMoreResults(endDate, startDate)
+        }.onSuccess { apodList ->
+            emit(Result.Success(apodList))
+        }.onFailure {
+            Result.Failure(Exception(it.message))
+        }
     }
 
     fun fetchRandomResults(count: String) = liveData(Dispatchers.IO) {
@@ -80,18 +84,6 @@ class APODViewModel(private val repo: APODRepository) : ViewModel() {
             repo.updateFavorite(apod, isFavorite)
         }
     }
-
-    /*fun getAPOD(date: String) = liveData(viewModelScope.coroutineContext + Dispatchers.Main) {
-        emit(Result.Loading())
-        kotlin.runCatching {
-            repo.getAPOD(date)
-        }.onSuccess { apod ->
-            apod.collect { emit(Result.Success(it)) }
-        }.onFailure {
-            Result.Failure(Exception(it.message))
-        }
-    }*/
-
 }
 
 class APODViewModelFactory(private val repo: APODRepository) : ViewModelProvider.Factory {

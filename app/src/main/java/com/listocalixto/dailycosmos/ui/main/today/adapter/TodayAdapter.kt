@@ -104,6 +104,8 @@ class TodayAdapter(
 
             when (item.media_type) {
                 "image" -> {
+                    binding.textVideoMessage.visibility = View.GONE
+                    binding.iconCopyLink.visibility = View.GONE
                     if (item.hdurl.isEmpty()) {
                         Glide.with(context).load(item.url).into(binding.imgApodPicture)
                     } else {

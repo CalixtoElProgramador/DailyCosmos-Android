@@ -42,7 +42,6 @@ class RemoteAPODFavoriteDataSource {
                 }
             }
         }
-
         return favoritesList
     }
 }

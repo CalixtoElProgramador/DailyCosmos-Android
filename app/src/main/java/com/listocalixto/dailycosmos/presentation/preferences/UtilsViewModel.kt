@@ -28,4 +28,9 @@ class UtilsViewModel(application: Application) : AndroidViewModel(application) {
         dataStore.saveValueFirstTime(value)
     }
 
+    val readValueFirstTimeGetResults = dataStore.readValueFirstTimeGetResults.asLiveData()
+    fun saveValueFirstTimeGetResults(value: Int) = viewModelScope.launch(Dispatchers.IO) {
+        dataStore.saveValueFirstTimeGetResults(value)
+    }
+
 }

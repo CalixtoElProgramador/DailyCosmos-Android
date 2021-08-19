@@ -17,6 +17,7 @@ import java.io.IOException
 const val STORE_DIALOG_CAUTION_OPEN_IMAGE = "preferences_04"
 const val STORE_IS_THE_FIRST_SEARCH = "preferences_is_the_first_search"
 const val STORE_IS_THE_FIRST_TIME_ON_THE_APP = "preferences_is_the_first_time_in_the_app"
+const val STORE_IS_THE_FIRST_TIME_GET_RESULTS = "preferences_first_time_get_results"
 
 class UtilsDataStore(context: Context) {
 
@@ -24,6 +25,7 @@ class UtilsDataStore(context: Context) {
         val isAccepted = preferencesKey<Int>("is_dialog_caution_open_image_accepted")
         val isFirstSearch = preferencesKey<Int>("is_the_first_search")
         val isFirstTime = preferencesKey<Int>("is_the_first_time_on_the_app")
+        val isFirstTimeGetResults = preferencesKey<Int>("is_the_first_time_get_results")
     }
 
     private val storeIsAccepted: DataStore<Preferences> =
@@ -32,6 +34,8 @@ class UtilsDataStore(context: Context) {
         context.createDataStore(name = STORE_IS_THE_FIRST_SEARCH)
     private val isFirstTime: DataStore<Preferences> =
         context.createDataStore(name = STORE_IS_THE_FIRST_TIME_ON_THE_APP)
+    private val isFirstTimeGetResults: DataStore<Preferences> =
+        context.createDataStore(name = STORE_IS_THE_FIRST_TIME_GET_RESULTS)
 
     suspend fun saveValue(value: Int) {
         storeIsAccepted.edit { preferences -> preferences[PreferencesKeys.isAccepted] = value }
@@ -85,4 +89,22 @@ class UtilsDataStore(context: Context) {
             val value = preferences[PreferencesKeys.isFirstTime] ?: 0
             value
         }
+
+    suspend fun saveValueFirstTimeGetResults(value: Int) {
+        isFirstTimeGetResults.edit { preferences -> preferences[PreferencesKeys.isFirstTimeGetResults] = value }
+    }
+
+    val readValueFirstTimeGetResults: Flow<Int> = isFirstTimeGetResults.data.distinctUntilChanged()
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }
+        .map { preferences ->
+            val value = preferences[PreferencesKeys.isFirstTimeGetResults] ?: 0
+            value
+        }
+
 }

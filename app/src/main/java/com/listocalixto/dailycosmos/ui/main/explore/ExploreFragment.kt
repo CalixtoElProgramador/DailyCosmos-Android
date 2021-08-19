@@ -3,10 +3,13 @@ package com.listocalixto.dailycosmos.ui.main.explore
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.core.util.Pair
 import androidx.core.view.isVisible
@@ -31,6 +34,7 @@ import com.listocalixto.dailycosmos.domain.apod.APODRepositoryImpl
 import com.listocalixto.dailycosmos.domain.apod.RetrofitClient
 import com.listocalixto.dailycosmos.ui.main.explore.adapter.ExploreAdapter
 import com.listocalixto.dailycosmos.core.Result
+import com.listocalixto.dailycosmos.data.local.favorites.LocalFavoriteDataSource
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.data.remote.favorites.RemoteAPODFavoriteDataSource
 import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
@@ -52,7 +56,8 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
             APODRepositoryImpl(
                 RemoteAPODDataSource(RetrofitClient.webservice),
                 LocalAPODDataSource(AppDatabase.getDatabase(requireContext()).apodDao()),
-                RemoteAPODFavoriteDataSource()
+                RemoteAPODFavoriteDataSource(),
+                LocalFavoriteDataSource(AppDatabase.getDatabase(requireContext()).favoriteDao())
             )
         )
     }
@@ -84,20 +89,39 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     private lateinit var binding: FragmentExplorerBinding
     private lateinit var adapter: ExploreAdapter
     private lateinit var layoutManager: StaggeredGridLayoutManager
+    private lateinit var bottomNavigation: BottomNavigationView
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        bottomNavigation = activity?.findViewById(R.id.bottom_navigation)!!
+        Handler().postDelayed({ showBottomNavView(bottomNavigation) }, 400)
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun showBottomNavView(bottomNavigation: BottomNavigationView) {
+        if (!bottomNavigation.isVisible) {
+            bottomNavigation.apply {
+                animation = AnimationUtils.loadAnimation(
+                    requireContext(),
+                    R.anim.slide_in_bottom
+                )
+                visibility = View.VISIBLE
+            }
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentExplorerBinding.bind(view)
-        val bottomNavigationView =
-            activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)
-
-        //configWindow()
         configRecyclerView()
-        readFromDataStore()
         isAdapterInit()
+        readFromDataStore()
         loadMoreResults()
 
-        bottomNavigationView?.setOnItemReselectedListener { item -> smoothScrollToStart(item) }
+        bottomNavigation.setOnItemReselectedListener { item -> smoothScrollToStart(item) }
         binding.inputLayoutSearch.setEndIconOnClickListener { setHelperText(); validateQuery() }
         binding.topAppBar.setOnMenuItemClickListener { onMenuItemClick(it) }
     }
@@ -416,7 +440,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                     val total = adapter.itemCount
                     if (!isLoading) {
                         if ((visibleItemCount + pastVisibleItem[pastVisibleItem.lastIndex]) >= total) {
-                            getResults(newDates()[0], newDates()[1])
+                            getMoreResults(newDates()[0], newDates()[1])
                         }
                     }
                 }
@@ -455,7 +479,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
 
     private fun isAdapterInit() {
         if (!::adapter.isInitialized) {
-            getResults(sdf.format(endDate.time), sdf.format(startDate.time))
+            getAllFromDatabase()
         } else {
             binding.rvApod.adapter = adapter
         }
@@ -481,9 +505,9 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         return arrayOf(sdf.format(newEndDate.time), sdf.format(newStartDate.time))
     }
 
-    private fun getResults(end: String, start: String) {
+    private fun getMoreResults(end: String, start: String) {
         isLoading = true
-        viewModel.fetchAPODResults(end, start)
+        viewModel.fetchMoreResults(end, start)
             .observe(viewLifecycleOwner, { result ->
                 when (result) {
                     is Result.Loading -> {
@@ -512,7 +536,6 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                     }
                     is Result.Failure -> {
                         binding.inputLayoutSearch.isEnabled = true
-                        isBottomNavVisible()
                         Log.d("ViewModel", "ViewModel error: ${result.exception}")
 
                     }
@@ -521,22 +544,8 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     }
 
     private fun onSuccessAPODResults(result: Result<List<APOD>>?) {
-        isBottomNavVisible()
         setViewsInSuccess()
         setDataInRecyclerView(result as Result.Success<List<APOD>>)
-    }
-
-    private fun isBottomNavVisible() {
-        if (!activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible!!) {
-            activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)
-                ?.apply {
-                    animation = AnimationUtils.loadAnimation(
-                        requireContext(),
-                        R.anim.slide_in_bottom
-                    )
-                    visibility = View.VISIBLE
-                }
-        }
     }
 
     override fun onAPODClick(apod: APOD, apodList: List<APOD>, position: Int) {

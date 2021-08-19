@@ -7,11 +7,14 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -48,7 +51,8 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             APODRepositoryImpl(
                 RemoteAPODDataSource(RetrofitClient.webservice),
                 LocalAPODDataSource(AppDatabase.getDatabase(requireContext()).apodDao()),
-                RemoteAPODFavoriteDataSource()
+                RemoteAPODFavoriteDataSource(),
+                LocalFavoriteDataSource(AppDatabase.getDatabase(requireContext()).favoriteDao())
             )
         )
     }
@@ -56,8 +60,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         APODFavoriteViewModelFactory(
             FavoritesRepoImpl(
                 RemoteAPODFavoriteDataSource(),
-                LocalFavoriteDataSource(AppDatabase.getDatabase(requireContext()).favoriteDao()),
-                LocalAPODDataSource(AppDatabase.getDatabase(requireContext()).apodDao())
+                LocalFavoriteDataSource(AppDatabase.getDatabase(requireContext()).favoriteDao())
             )
         )
     }
@@ -73,15 +76,23 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     private lateinit var dataStoreTranslator: TranslatorViewModel
     private lateinit var dataStoreUtils: UtilsViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.apply {
-            animation = AnimationUtils.loadAnimation(
-                requireContext(),
-                R.anim.slide_out_bottom
-            )
-            visibility = View.GONE
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val bottomNavigation =
+            activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)!!
+        if (bottomNavigation.isVisible) {
+            bottomNavigation.apply {
+                animation = AnimationUtils.loadAnimation(
+                    requireContext(),
+                    R.anim.slide_out_bottom
+                )
+                visibility = View.GONE
+            }
         }
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -103,10 +114,11 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
     @SuppressLint("ShowToast")
     private fun copyLinkToClipboard() {
-        val clipboard = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboard =
+            requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Video link", apodReceived.url)
         clipboard.setPrimaryClip(clip)
-        Snackbar.make(binding.imgApodPicture,"Link copied", Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.imgApodPicture, "Link copied", Snackbar.LENGTH_SHORT).show()
     }
 
     private fun readFromDataStore() {
@@ -414,17 +426,4 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             }
         }
     }
-
-    override fun onDestroy() {
-        viewModelDetails.setFavValue(null)
-        activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.apply {
-            animation = AnimationUtils.loadAnimation(
-                requireContext(),
-                R.anim.slide_in_bottom
-            )
-            visibility = View.VISIBLE
-        }
-        super.onDestroy()
-    }
-
 }

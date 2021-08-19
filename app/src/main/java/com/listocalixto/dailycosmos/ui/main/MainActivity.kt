@@ -44,13 +44,6 @@ class MainActivity : AppCompatActivity() {
     private fun observeDestinationChange(navController: NavController) {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.pictureFragment -> {
-                    binding.bottomNavigation.visibility = View.GONE
-                }
-                R.id.todayFragment -> {
-                    binding.bottomNavigation.visibility = View.VISIBLE
-                }
-
                 else -> {
                 }
             }

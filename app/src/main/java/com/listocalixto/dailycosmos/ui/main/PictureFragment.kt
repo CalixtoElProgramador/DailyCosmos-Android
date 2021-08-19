@@ -11,14 +11,19 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.databinding.FragmentPictureBinding
@@ -33,6 +38,25 @@ class PictureFragment : Fragment(R.layout.fragment_picture) {
     private var bitmap: Bitmap? = null
 
     private val args by navArgs<PictureFragmentArgs>()
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val bottomNavigation =
+            activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)!!
+        if (bottomNavigation.isVisible) {
+            bottomNavigation.apply {
+                animation = AnimationUtils.loadAnimation(
+                    requireContext(),
+                    R.anim.slide_out_bottom
+                )
+                visibility = View.GONE
+            }
+        }
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -77,7 +101,7 @@ class PictureFragment : Fragment(R.layout.fragment_picture) {
             activity?.onBackPressed()
         }
 
-        binding.btnCopyLink.setOnClickListener {copyLinkToClipboard()}
+        binding.btnCopyLink.setOnClickListener { copyLinkToClipboard() }
 
         binding.btnShareImage.setOnClickListener { shareLink() }
 
@@ -111,14 +135,16 @@ class PictureFragment : Fragment(R.layout.fragment_picture) {
 
     @SuppressLint("ShowToast")
     private fun copyLinkToClipboard() {
-        val clipboard = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipboard =
+            requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = if (args.hdurl.isNotEmpty()) {
             ClipData.newPlainText("Image link", args.hdurl)
         } else {
             ClipData.newPlainText("Image link", args.url)
         }
         clipboard.setPrimaryClip(clip)
-        Snackbar.make(binding.photoView, getString(R.string.link_copied), Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.photoView, getString(R.string.link_copied), Snackbar.LENGTH_SHORT)
+            .show()
     }
 
     private fun checkPermissionsStorage() {

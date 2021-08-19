@@ -16,7 +16,6 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -64,6 +63,8 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             )
         )
     }
+    private val dataStoreUtils by activityViewModels<UtilsViewModel>()
+    private val dataStoreTranslator by activityViewModels<TranslatorViewModel>()
     private val viewModelDetails by activityViewModels<DetailsViewModel>()
 
     private var position: Int = -1
@@ -73,8 +74,6 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
     private lateinit var binding: FragmentDetailsBinding
     private lateinit var apodReceived: APOD
-    private lateinit var dataStoreTranslator: TranslatorViewModel
-    private lateinit var dataStoreUtils: UtilsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -99,10 +98,9 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initVars(view)
+        binding = FragmentDetailsBinding.bind(view)
         readFromDataStore()
         getArgsFromViewModel()
-        getValueFavorite()
         updateViews()
 
         binding.fabAddAPODFavorites.setOnClickListener { updateFavorite() }
@@ -128,13 +126,6 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         dataStoreUtils.readValue.observe(viewLifecycleOwner, {
             isFirstTimeToOpenImage = it
         })
-    }
-
-    private fun initVars(view: View) {
-        binding = FragmentDetailsBinding.bind(view)
-        dataStoreTranslator =
-            ViewModelProvider(requireActivity()).get(TranslatorViewModel::class.java)
-        dataStoreUtils = ViewModelProvider(requireActivity()).get(UtilsViewModel::class.java)
     }
 
     private fun getArgsFromViewModel() {
@@ -168,8 +159,9 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     private fun notifyItemChanged(isFavorite: Int) {
         setDrawableOnFAB(isFavorite)
         viewModel.updateFavorite(apodReceived, isFavorite)
-        viewModelDetails.setFavValue(isFavorite)
-        getValueFavorite()
+        apodReceived.is_favorite = isFavorite
+        //viewModelDetails.setFavValue(isFavorite)
+        //getValueFavorite()
         adapterExplore?.notifyItemChanged(position)
         when (isFavorite) {
             -1 -> {

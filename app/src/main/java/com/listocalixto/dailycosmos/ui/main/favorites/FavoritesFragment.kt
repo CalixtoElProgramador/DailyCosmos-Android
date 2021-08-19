@@ -1,7 +1,6 @@
 package com.listocalixto.dailycosmos.ui.main.favorites
 
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -14,12 +13,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.local.AppDatabase
-import com.listocalixto.dailycosmos.data.local.apod.LocalAPODDataSource
 import com.listocalixto.dailycosmos.data.local.favorites.LocalFavoriteDataSource
 import com.listocalixto.dailycosmos.data.model.FavoriteEntity
 import com.listocalixto.dailycosmos.data.model.toAPOD
-import com.listocalixto.dailycosmos.data.model.toAPODEntity
-import com.listocalixto.dailycosmos.data.model.toFavorite
 import com.listocalixto.dailycosmos.data.remote.favorites.RemoteAPODFavoriteDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentFavoritesBinding
 import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModel
@@ -32,7 +28,7 @@ import com.listocalixto.dailycosmos.ui.main.favorites.adapter.FavoritesAdapter
 class FavoritesFragment : Fragment(R.layout.fragment_favorites),
     FavoritesAdapter.OnFavoriteClickListener {
 
-    private lateinit var binding: FragmentFavoritesBinding
+    private val viewModelDetails by activityViewModels<DetailsViewModel>()
     private val viewModel by activityViewModels<APODFavoriteViewModel> {
         APODFavoriteViewModelFactory(
             FavoritesRepoImpl(
@@ -41,17 +37,20 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites),
             )
         )
     }
-    private val viewModelDetails by activityViewModels<DetailsViewModel>()
 
+    private lateinit var binding: FragmentFavoritesBinding
     private lateinit var layoutManager: StaggeredGridLayoutManager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentFavoritesBinding.bind(view)
-
         layoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
         binding.rvFavorites.layoutManager = layoutManager
+        getAllFavorites()
 
+    }
+
+    private fun getAllFavorites() {
         viewModel.getAPODFavorites().observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Result.Loading -> {
@@ -68,11 +67,9 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites),
                 is Result.Failure -> {
                     binding.lottieLoading.visibility = View.GONE
                     isBottomNavVisible()
-                    Log.d("ViewModelFireStore", "Hubo un error... ${result.exception} ")
                 }
             }
         })
-
     }
 
     private fun isBottomNavVisible() {
@@ -90,7 +87,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites),
     override fun onFavoriteClick(favorite: FavoriteEntity) {
         viewModelDetails.setArgs(
             DetailsArgs(
-                favorite.toAPOD(),
+                favorite.toAPOD(1),
                 null,
                 -1
             )

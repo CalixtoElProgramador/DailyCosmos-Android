@@ -147,7 +147,7 @@ fun FavoriteEntity.toAPODEntity(is_favorite: Int): APODEntity = APODEntity(
     is_favorite = is_favorite
 )
 
-fun FavoriteEntity.toAPOD(): APOD = APOD(
+fun FavoriteEntity.toAPOD(is_favorite: Int): APOD = APOD(
     this.copyright,
     this.date,
     this.explanation,
@@ -156,5 +156,5 @@ fun FavoriteEntity.toAPOD(): APOD = APOD(
     this.thumbnail_url,
     this.title,
     this.url,
-    1
+    is_favorite = is_favorite
 )

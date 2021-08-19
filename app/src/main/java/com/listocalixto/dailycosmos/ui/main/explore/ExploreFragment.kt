@@ -97,7 +97,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         savedInstanceState: Bundle?
     ): View? {
         bottomNavigation = activity?.findViewById(R.id.bottom_navigation)!!
-        Handler().postDelayed({ showBottomNavView(bottomNavigation) }, 400)
+        showBottomNavView(bottomNavigation)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -271,14 +271,14 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
 
             when {
                 firstDayInMillis > todayInMillis || secondDayInMillis > todayInMillis -> {
-                    showSnackbarErrorFutureDays()
+                    showSnackbarMessage(getString(R.string.error_request_future_dates_today))
                 }
                 firstDayInMillis < june161995.timeInMillis || secondDayInMillis < june161995.timeInMillis -> {
-                    showSnackbarErrorLastDays()
+                    showSnackbarMessage(getString(R.string.error_request_before_dates_june_16_1995))
                 }
 
                 secondDayInMillis - firstDayInMillis > AppConstants.MILLISECONDS_IN_A_MONTH -> {
-                    showSnackbarWarningNotMore31Days()
+                    showSnackbarMessage(getString(R.string.error_request_more_31_days))
                 }
                 else -> {
                     getCalendarResults(sdf.format(firstDay.time), sdf.format(secondDay.time))
@@ -290,71 +290,11 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     }
 
     @SuppressLint("ShowToast")
-    private fun showSnackbarWarningNotMore31Days() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            Snackbar.make(
-                binding.topAppBar,
-                getString(R.string.error_request_more_31_days),
-                Snackbar.LENGTH_LONG
-            )
-                .setTextColor(requireContext().resources.getColor(R.color.colorTextPrimary))
-                .setAnchorView(requireActivity().requireViewById(R.id.bottom_navigation))
-                .setBackgroundTint(requireContext().resources.getColor(R.color.colorWarning))
-                .show()
-        } else {
-            Snackbar.make(
-                binding.topAppBar,
-                getString(R.string.error_request_more_31_days),
-                Snackbar.LENGTH_LONG
-            )
-                .setTextColor(requireContext().resources.getColor(R.color.colorTextPrimary))
-                .setBackgroundTint(requireContext().resources.getColor(R.color.colorWarning))
-                .show()
-        }
-    }
-
-    @SuppressLint("ShowToast")
-    private fun showSnackbarErrorLastDays() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            Snackbar.make(
-                binding.topAppBar,
-                getString(R.string.error_request_before_dates_june_16_1995),
-                Snackbar.LENGTH_LONG
-            )
-                .setAnchorView(requireActivity().requireViewById(R.id.bottom_navigation))
+    private fun showSnackbarMessage(message: String) {
+            Snackbar.make(binding.topAppBar, message, Snackbar.LENGTH_LONG)
+                .setAnchorView(bottomNavigation)
                 .setBackgroundTint(requireContext().resources.getColor(R.color.colorError))
                 .show()
-        } else {
-            Snackbar.make(
-                binding.topAppBar,
-                getString(R.string.error_request_before_dates_june_16_1995),
-                Snackbar.LENGTH_LONG
-            )
-                .setBackgroundTint(requireContext().resources.getColor(R.color.colorError))
-                .show()
-        }
-    }
-
-    @SuppressLint("ShowToast")
-    private fun showSnackbarErrorFutureDays() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            Snackbar.make(
-                binding.topAppBar,
-                getString(R.string.error_request_future_dates_today),
-                Snackbar.LENGTH_LONG
-            )
-                .setAnchorView(requireActivity().requireViewById(R.id.bottom_navigation))
-                .setBackgroundTint(requireContext().resources.getColor(R.color.colorError))
-                .show()
-        } else {
-            Snackbar.make(
-                binding.topAppBar,
-                getString(R.string.error_request_future_dates_today),
-                Snackbar.LENGTH_LONG
-            )
-                .setBackgroundTint(requireContext().resources.getColor(R.color.colorError))
-                .show()
-        }
     }
 
     private fun getCalendarResults(start: String, end: String) {

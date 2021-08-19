@@ -5,12 +5,5 @@
     android:layout_height="match_parent"
     tools:context=".ui.SplashFragment">
 
-    <ImageView
-        android:layout_marginTop="@dimen/_6sdp"
-        android:layout_width="@dimen/_124sdp"
-        android:layout_height="@dimen/_139sdp"
-        android:layout_gravity="center"
-        android:src="@drawable/ic_dailycosmos_dark"
-        android:contentDescription="@string/app_name" />
 
 </FrameLayout>

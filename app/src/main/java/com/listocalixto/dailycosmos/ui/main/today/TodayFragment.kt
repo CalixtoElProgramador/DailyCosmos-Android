@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -104,7 +103,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
         savedInstanceState: Bundle?
     ): View? {
         if (::bottomNavigation.isInitialized && !bottomNavigation.isVisible) {
-            Handler().postDelayed({ showBottomNavView() }, 500)
+            showBottomNavView()
         }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -161,17 +160,16 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
 
     @SuppressLint("CutPasteId")
     private fun getResults(end: String, start: String) {
-        isLoading = true
-        when(isFirstTimeGetResults) {
+        when (isFirstTimeGetResults) {
             0 -> {
-                Log.d("Results", "First Time Getting Results")
                 viewModel.fetchFirstTimeResults(end, start).observe(viewLifecycleOwner, Observer {
-                    when(it) {
+                    when (it) {
                         is Result.Loading -> {
                             binding.layoutErrorNoResults.visibility = View.GONE
                             binding.lottieLoading.visibility = View.VISIBLE
                             if (activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible!!) {
-                                activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.visibility = View.GONE
+                                activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.visibility =
+                                    View.GONE
                             }
                         }
                         is Result.Success -> {
@@ -183,46 +181,68 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                             }
                             adapterToday = TodayAdapter(it.data, this, this, this, this)
                             binding.vpPhotoToday.adapter = adapterToday
-                            if (!bottomNavigation.isVisible) { Handler().postDelayed({ showBottomNavView() }, 1200) }
+                            if (!bottomNavigation.isVisible) { showBottomNavView() }
                             dataStoreUtils.saveValueFirstTimeGetResults(1)
                             isFirstTimeGetResults = 1
-                            isLoading = false
                         }
-                        is Result.Failure -> { binding.lottieLoading.visibility = View.GONE }
+                        is Result.Failure -> {
+                            binding.lottieLoading.visibility = View.GONE
+                        }
                     }
                 })
             }
             1 -> {
-                Log.d("Results", "This is NOT the First Time Getting Results")
-                viewModel.fetchMoreResults(end, start).observe(viewLifecycleOwner, {
-                    when(it) {
-                        is Result.Loading -> {
-                            if (!::adapterToday.isInitialized) {
-                                binding.layoutErrorNoResults.visibility = View.GONE
-                                binding.lottieLoading.visibility = View.VISIBLE
-                                if (activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible!!) {
-                                    activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.visibility = View.GONE
-                                }
-                            }
-                        }
+                viewModel.fetchDataFromDatabase().observe(viewLifecycleOwner, {
+                    when (it) {
+                        is Result.Loading -> {}
                         is Result.Success -> {
                             bottomNavigation = activity?.findViewById(R.id.bottom_navigation)!!
-                            isLoading = false
-                            binding.lottieLoading.visibility = View.GONE
-                            if (!::adapterToday.isInitialized) {
-                                adapterToday = TodayAdapter(it.data, this, this, this, this)
-                                binding.vpPhotoToday.adapter = adapterToday
-                                if (!bottomNavigation.isVisible) { Handler().postDelayed({ showBottomNavView() }, 1200) }
-                            } else {
-                                adapterToday.setData(it.data)
-                                dataStoreAPOD.saveLastDateToDataStore(it.data[it.data.lastIndex].date)
-                            }
+                            adapterToday = TodayAdapter(it.data, this, this, this, this)
+                            binding.vpPhotoToday.adapter = adapterToday
+                            if (!bottomNavigation.isVisible) { showBottomNavView() }
                         }
-                        is Result.Failure -> { binding.lottieLoading.visibility = View.GONE }
+                        is Result.Failure -> {}
                     }
                 })
             }
         }
+    }
+
+    @SuppressLint("CutPasteId")
+    private fun getMoreResults(end: String, start: String) {
+        isLoading = true
+        viewModel.fetchMoreResults(end, start).observe(viewLifecycleOwner, {
+            when (it) {
+                is Result.Loading -> {
+                    if (!::adapterToday.isInitialized) {
+                        binding.layoutErrorNoResults.visibility = View.GONE
+                        binding.lottieLoading.visibility = View.VISIBLE
+                        if (activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible!!) {
+                            activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.visibility =
+                                View.GONE
+                        }
+                    }
+                }
+                is Result.Success -> {
+                    bottomNavigation = activity?.findViewById(R.id.bottom_navigation)!!
+                    isLoading = false
+                    binding.lottieLoading.visibility = View.GONE
+                    if (!::adapterToday.isInitialized) {
+                        adapterToday = TodayAdapter(it.data, this, this, this, this)
+                        binding.vpPhotoToday.adapter = adapterToday
+                        if (!bottomNavigation.isVisible) {
+                            showBottomNavView()
+                        }
+                    } else {
+                        adapterToday.setData(it.data)
+                        dataStoreAPOD.saveLastDateToDataStore(it.data[it.data.lastIndex].date)
+                    }
+                }
+                is Result.Failure -> {
+                    binding.lottieLoading.visibility = View.GONE
+                }
+            }
+        })
     }
 
     private fun showBottomNavView() {
@@ -330,7 +350,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
         if (!isLoading) {
             Log.d("ViewPager2", "isLoading: $isLoading")
             if (binding.vpPhotoToday.currentItem >= adapterToday.itemCount - 7) {
-                getResults(newDates()[0], newDates()[1])
+                getMoreResults(newDates()[0], newDates()[1])
             }
         }
     }
@@ -381,26 +401,6 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     }
 
     @SuppressLint("ShowToast")
-    private fun showSnackbarLinkCopied() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            Snackbar.make(
-                binding.vpPhotoToday,
-                getString(R.string.link_copied),
-                Snackbar.LENGTH_SHORT
-            )
-                .setAnchorView(activity?.requireViewById(R.id.bottom_navigation))
-                .show()
-        } else {
-            Snackbar.make(
-                binding.vpPhotoToday,
-                getString(R.string.link_copied),
-                Snackbar.LENGTH_SHORT
-            )
-                .show()
-        }
-    }
-
-    @SuppressLint("ShowToast")
     override fun onButtonClick(apod: APOD, itemBinding: ItemApodDailyBinding) {
         when (isDownloadTheTranslator) {
             0 -> {
@@ -416,9 +416,9 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                     return
                 } else {
                     translator.translate("a").addOnFailureListener {
-                        showSnackbarDownloadIsNotFinish()
+                        showSnackbarMessage(getString(R.string.wait_to_translator_download_is_finish))
                     }.addOnSuccessListener {
-                        showSnackbarTranslating()
+                        showSnackbarMessage(getString(R.string.translating))
                         translateTitleAndExplanation(translator, apod, itemBinding)
                         itemBinding.textShowOriginal.setOnClickListener {
                             showOriginalText(itemBinding, apod)
@@ -426,26 +426,6 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                     }
                 }
             }
-        }
-    }
-
-    @SuppressLint("ShowToast")
-    private fun showSnackbarDownloadIsNotFinish() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            Snackbar.make(
-                binding.vpPhotoToday,
-                getString(R.string.wait_to_translator_download_is_finish),
-                Snackbar.LENGTH_SHORT
-            )
-                .setAnchorView(activity?.requireViewById(R.id.bottom_navigation))
-                .show()
-        } else {
-            Snackbar.make(
-                binding.vpPhotoToday,
-                getString(R.string.wait_to_translator_download_is_finish),
-                Snackbar.LENGTH_SHORT
-            )
-                .show()
         }
     }
 
@@ -505,26 +485,12 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     }
 
     @SuppressLint("ShowToast")
-    private fun showSnackbarTranslating() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            Snackbar.make(
-                binding.vpPhotoToday,
-                getString(R.string.translating),
-                Snackbar.LENGTH_SHORT
-            )
-                .setAnchorView(activity?.requireViewById(R.id.bottom_navigation))
-                .show()
-        } else {
-            Snackbar.make(
-                binding.vpPhotoToday,
-                getString(R.string.translating),
-                Snackbar.LENGTH_SHORT
-            )
-                .show()
-        }
+    private fun showSnackbarMessage(message: String) {
+        Snackbar.make(binding.vpPhotoToday, message, Snackbar.LENGTH_SHORT)
+            .setAnchorView(bottomNavigation)
+            .show()
     }
 
-    @SuppressLint("ShowToast")
     private fun permissionToDownloadTranslator() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.ask_download_traductor_title))
@@ -537,22 +503,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                     requireContext(),
                     requireActivity()
                 )
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    Snackbar.make(
-                        binding.vpPhotoToday,
-                        getString(R.string.snackbar_download_translator),
-                        Snackbar.LENGTH_SHORT
-                    )
-                        .setAnchorView(requireActivity().requireViewById(R.id.bottom_navigation))
-                        .show()
-                } else {
-                    Snackbar.make(
-                        binding.vpPhotoToday,
-                        getString(R.string.snackbar_download_translator),
-                        Snackbar.LENGTH_SHORT
-                    )
-                        .show()
-                }
+                showSnackbarMessage(getString(R.string.snackbar_download_translator))
                 dataStoreTranslator.saveValue(1)
                 isDownloadTheTranslator = 1
             }
@@ -564,6 +515,6 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
             requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Video link", apod.url)
         clipboard.setPrimaryClip(clip)
-        showSnackbarLinkCopied()
+        showSnackbarMessage(getString(R.string.link_copied))
     }
 }

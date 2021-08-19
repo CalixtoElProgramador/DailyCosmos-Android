@@ -41,6 +41,7 @@ import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModel
 import com.listocalixto.dailycosmos.presentation.preferences.TranslatorViewModel
 import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
 import com.listocalixto.dailycosmos.ui.main.explore.adapter.ExploreAdapter
+import com.listocalixto.dailycosmos.ui.main.favorites.adapter.FavoritesAdapter
 
 @Suppress("DEPRECATION")
 class DetailsFragment : Fragment(R.layout.fragment_details) {
@@ -136,11 +137,11 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         }
     }
 
-    private fun getValueFavorite() {
+    /*private fun getValueFavorite() {
         viewModelDetails.getFavValue().value?.let {
             apodReceived.is_favorite = it
         }
-    }
+    }*/
 
     private fun updateFavorite() {
         when (apodReceived.is_favorite) {
@@ -191,9 +192,9 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                     return
                 } else {
                     translator.translate("a").addOnFailureListener {
-                        showSnackbarDownloadIsNotFinish()
+                        showSnackbarMessage(getString(R.string.wait_to_translator_download_is_finish))
                     }.addOnSuccessListener {
-                        showSnackbarTranslating()
+                        showSnackbarMessage(getString(R.string.translating))
                         translateTitleAndExplanation(translator, apodReceived)
                         binding.textShowOriginal.setOnClickListener {
                             showOriginalText(apodReceived)
@@ -249,26 +250,6 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         }, 400)
     }
 
-    @SuppressLint("ShowToast")
-    private fun showSnackbarTranslating() {
-        Snackbar.make(
-            binding.imgApodPicture,
-            getString(R.string.translating),
-            Snackbar.LENGTH_SHORT
-        )
-            .show()
-    }
-
-    @SuppressLint("ShowToast")
-    private fun showSnackbarDownloadIsNotFinish() {
-        Snackbar.make(
-            binding.imgApodPicture,
-            getString(R.string.wait_to_translator_download_is_finish),
-            Snackbar.LENGTH_SHORT
-        )
-            .show()
-    }
-
     private fun showDialogTranslatorNotExits() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(resources.getString(R.string.bad_news))
@@ -291,17 +272,17 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                     requireContext(),
                     requireActivity()
                 )
-                showSnackbarDownloadStarted()
+                showSnackbarMessage(getString(R.string.snackbar_download_translator))
                 dataStoreTranslator.saveValue(1)
                 isDownloadTheTranslator = 1
             }
             .show()
     }
 
-    private fun showSnackbarDownloadStarted() {
+    private fun showSnackbarMessage(message: String) {
         Snackbar.make(
             binding.imgApodPicture,
-            getString(R.string.snackbar_download_translator),
+            message,
             Snackbar.LENGTH_SHORT
         )
             .show()

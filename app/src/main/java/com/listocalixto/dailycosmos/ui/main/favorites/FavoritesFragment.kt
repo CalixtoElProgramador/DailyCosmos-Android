@@ -7,6 +7,7 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -51,7 +52,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites),
     }
 
     private fun getAllFavorites() {
-        viewModel.getAPODFavorites().observe(viewLifecycleOwner, { result ->
+        viewModel.getAPODFavorites().observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Result.Loading -> {
                     binding.lottieLoading.visibility = View.VISIBLE
@@ -63,6 +64,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites),
                     binding.rvFavorites.adapter =
                         FavoritesAdapter(result.data, this@FavoritesFragment)
                     isBottomNavVisible()
+                    return@Observer
                 }
                 is Result.Failure -> {
                     binding.lottieLoading.visibility = View.GONE

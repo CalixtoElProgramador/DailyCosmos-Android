@@ -130,12 +130,8 @@ dependencies {
     //Android Transition
     implementation 'androidx.transition:transition-ktx:1.4.1'
 
-    //Used for StateFlow
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0"
-
-    //Android GIF Drawable
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.23'
-
+    //JavaMail
+    implementation 'com.sun.mail:android-mail:1.6.2'
+    implementation 'com.sun.mail:android-activation:1.6.2'
 
 }

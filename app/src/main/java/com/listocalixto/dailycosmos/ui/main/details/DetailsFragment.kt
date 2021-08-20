@@ -41,7 +41,6 @@ import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModel
 import com.listocalixto.dailycosmos.presentation.preferences.TranslatorViewModel
 import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
 import com.listocalixto.dailycosmos.ui.main.explore.adapter.ExploreAdapter
-import com.listocalixto.dailycosmos.ui.main.favorites.adapter.FavoritesAdapter
 
 @Suppress("DEPRECATION")
 class DetailsFragment : Fragment(R.layout.fragment_details) {
@@ -145,35 +144,24 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
     private fun updateFavorite() {
         when (apodReceived.is_favorite) {
-            0 -> {
-                notifyItemChanged(1)
-            }
-            1 -> {
-                notifyItemChanged(0)
-            }
-            -1 -> {
-                notifyItemChanged(1)
-            }
+            0 -> { notifyItemChanged(1) }
+            1 -> { notifyItemChanged(0) }
+            -1 -> { notifyItemChanged(1) }
         }
     }
 
     private fun notifyItemChanged(isFavorite: Int) {
+        when (isFavorite) {
+            -1 -> { }
+            0 -> { viewModelFavorite.deleteFavorite(apodReceived) }
+            1 -> { viewModelFavorite.setAPODFavorite(apodReceived) }
+        }
         setDrawableOnFAB(isFavorite)
         viewModel.updateFavorite(apodReceived, isFavorite)
         apodReceived.is_favorite = isFavorite
         //viewModelDetails.setFavValue(isFavorite)
         //getValueFavorite()
         adapterExplore?.notifyItemChanged(position)
-        when (isFavorite) {
-            -1 -> {
-            }
-            0 -> {
-                viewModelFavorite.deleteFavorite(apodReceived)
-            }
-            1 -> {
-                viewModelFavorite.setAPODFavorite(apodReceived)
-            }
-        }
     }
 
     @SuppressLint("ShowToast")

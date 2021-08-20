@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">DailyCosmos</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="today">Today</string>
     <string name="explore">Explore</string>
@@ -14,7 +13,6 @@
     <string name="about_of">About of</string>
     <string name="contact">Contact</string>
     <string name="content_description_contact">"This option redirects you to the activity to send an email to the developer. "</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="content_description_media_apod">This image is the picture of the cardview to display in the recycler view</string>
     <string name="title_item_apod">Flemings Triangular Wisp</string>
     <string name="supporting_text_item_apod">2021 July 27</string>
@@ -124,4 +122,16 @@
     <string name="in_case_if_media_type_is_video">This time it\'s a video/animation/simulation. Unfortunately it\'s not possible to play them from here, but if you like, you can press the icon below to copy the link and visit the site from your browser.</string>
     <string name="link_copied">Link copied</string>
     <string name="no_copyright">No copyright</string>
+    <string name="guest">Guest</string>
+    <string name="guest_email">guest@dailycosmos.com</string>
+    <string name="contact_me">Contact me</string>
+    <string name="contact_me_subtitle">Questions, comments, suggestions?</string>
+    <string name="application_info">Application info</string>
+    <string name="subject">Subject</string>
+    <string name="message">Write your message</string>
+    <string name="send">Send</string>
+    <string name="in_maintenance">In maintenance...</string>
+    <string name="use_email_app">Use email app</string>
+    <string name="available_to_future_versions">Available to future versions</string>
+
 </resources>

@@ -58,19 +58,9 @@
     </fragment>
     <fragment
         android:id="@+id/pictureFragment"
-        android:name="com.listocalixto.dailycosmos.ui.main.PictureFragment"
+        android:name="com.listocalixto.dailycosmos.ui.main.picture.PictureFragment"
         android:label="fragment_picture"
         tools:layout="@layout/fragment_picture" >
-    <argument
-        android:name="hdurl"
-        app:argType="string" />
-    <argument
-        android:name="title"
-        app:argType="string" />
-    <argument
-        android:name="url"
-        app:argType="string" />
-
     </fragment>
     <fragment
         android:id="@+id/favoritesFragment"
@@ -84,11 +74,19 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_favoritesFragment_to_registerGuestActivity"
+            app:destination="@id/registerGuestActivity" />
     </fragment>
     <activity
         android:id="@+id/settingsActivity"
         android:name="com.listocalixto.dailycosmos.ui.settings.SettingsActivity"
         android:label="activity_settings"
         tools:layout="@layout/activity_settings" />
+    <activity
+        android:id="@+id/registerGuestActivity"
+        android:name="com.listocalixto.dailycosmos.ui.auth.RegisterGuestActivity"
+        android:label="activity_register_guest"
+        tools:layout="@layout/activity_register_guest" />
 
 </navigation>

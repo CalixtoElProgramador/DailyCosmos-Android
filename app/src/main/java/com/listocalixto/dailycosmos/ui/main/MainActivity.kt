@@ -43,10 +43,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun observeDestinationChange(navController: NavController) {
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                else -> {
-                }
-            }
         }
     }
 }

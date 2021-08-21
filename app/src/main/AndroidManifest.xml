@@ -19,9 +19,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DailyCosmos">
+
+
+
+        <activity android:name=".ui.auth.RegisterGuestActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity"
+            android:theme="@style/Theme.DailyCosmos.Login">
+        </activity>
+
+
+
         <activity android:name=".ui.settings.SettingsActivity">
 
         </activity>
+
+
+
         <activity
             android:name=".ui.auth.AuthActivity"
             android:screenOrientation="portrait"
@@ -33,10 +47,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
+
         <activity
             android:name=".ui.main.MainActivity"
             android:theme="@style/Theme.DailyCosmos">
+
         </activity>
+
+
+
     </application>
 
 </manifest>

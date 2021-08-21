@@ -35,6 +35,14 @@ class APODViewModel(private val repo: APODRepository) : ViewModel() {
         }
     }
 
+    fun fetchRecentResults(endDate: String, startDate: String) = liveData(Dispatchers.IO) {
+        emit(Result.Loading())
+        kotlin.runCatching {
+            repo.getRecentResults(endDate, startDate)
+        }.onSuccess { apodList -> emit(Result.Success(apodList))
+        }.onFailure { throwable -> Result.Failure(Exception(throwable.message)) }
+    }
+
     fun fetchRandomResults(count: String) = liveData(Dispatchers.IO) {
         emit(Result.Loading())
         kotlin.runCatching {

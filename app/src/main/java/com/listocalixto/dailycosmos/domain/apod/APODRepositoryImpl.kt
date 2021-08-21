@@ -24,12 +24,8 @@ class APODRepositoryImpl(
             }
             dataSourceFireStore.getRemoteFavorites().forEach { favoriteEntity ->
                 dataSourceLocalFavorites.saveFavorite(favoriteEntity)
-            }
-
-            dataSourceLocalFavorites.getFavorites().forEach { favoriteEntity ->
                 dataSourceLocal.updateFavorite(favoriteEntity.toAPODEntity(1))
             }
-
             dataSourceLocal.getResults()
         } else {
             dataSourceLocal.getResults()
@@ -39,10 +35,13 @@ class APODRepositoryImpl(
     override suspend fun getMoreResults(endDate: String, startDate: String): List<APOD> {
         return if (InternetCheck.isNetworkAvailable()) {
             dataSourceRemote.getResults(endDate, startDate).forEach { apod ->
-                dataSourceLocal.saveAPOD(apod.toAPODEntity(0))
-            }
-            dataSourceLocalFavorites.getFavorites().forEach { favoriteEntity ->
-                dataSourceLocal.updateFavorite(favoriteEntity.toAPODEntity(1))
+                if (dataSourceLocalFavorites.getFavorites()
+                        .contains(apod.toFavorite(FirebaseAuth.getInstance().uid))
+                ) {
+                    dataSourceLocal.updateFavorite(apod.toAPODEntity(1))
+                } else {
+                    dataSourceLocal.saveAPOD(apod.toAPODEntity(0))
+                }
             }
             dataSourceLocal.getResults()
         } else {
@@ -50,26 +49,56 @@ class APODRepositoryImpl(
         }
     }
 
-    override suspend fun getRandomResults(count: String): List<APOD> {
-        val randomList = dataSourceRemote.getRandomResults(count)
-        randomList.forEachIndexed { index, apod ->
-            if (dataSourceLocalFavorites.getFavorites().contains(apod.toFavorite(FirebaseAuth.getInstance().uid))) {
-                randomList[index].is_favorite = 1
+    override suspend fun getRecentResults(endDate: String, startDate: String): List<APOD> {
+        val emptyList: List<APOD> = listOf()
+        return if (InternetCheck.isNetworkAvailable()) {
+            dataSourceRemote.getResults(endDate, startDate).forEach { apod ->
+                if (dataSourceLocalFavorites.getFavorites()
+                        .contains(apod.toFavorite(FirebaseAuth.getInstance().uid))
+                ) {
+                    dataSourceLocal.updateFavorite(apod.toAPODEntity(1))
+                } else {
+                    dataSourceLocal.saveAPOD(apod.toAPODEntity(0))
+                }
             }
+            dataSourceLocal.getResults()
+        } else {
+            emptyList
         }
-        return randomList
+    }
+
+    override suspend fun getRandomResults(count: String): List<APOD> {
+        val emptyList: List<APOD> = listOf()
+        val randomList = dataSourceRemote.getRandomResults(count)
+        return if (InternetCheck.isNetworkAvailable()) {
+            randomList.forEachIndexed { index, apod ->
+                if (dataSourceLocalFavorites.getFavorites()
+                        .contains(apod.toFavorite(FirebaseAuth.getInstance().uid))
+                ) {
+                    randomList[index].is_favorite = 1
+                }
+            }
+            randomList
+        } else {
+            emptyList
+        }
     }
 
     override suspend fun getCalendarResults(endDate: String, startDate: String): List<APOD> {
+        val emptyList: List<APOD> = listOf()
         val calendarList = dataSourceRemote.getCalendarResults(endDate, startDate)
-        calendarList.forEachIndexed { index, apod ->
-            if (dataSourceLocalFavorites.getFavorites()
-                    .contains(apod.toFavorite(FirebaseAuth.getInstance().uid))
-            ) {
-                calendarList[index].is_favorite = 1
+        return if (InternetCheck.isNetworkAvailable()) {
+            calendarList.forEachIndexed { index, apod ->
+                if (dataSourceLocalFavorites.getFavorites()
+                        .contains(apod.toFavorite(FirebaseAuth.getInstance().uid))
+                ) {
+                    calendarList[index].is_favorite = 1
+                }
             }
+            calendarList
+        } else {
+            emptyList
         }
-        return calendarList
     }
 
     override suspend fun getSearchResults(searchQuery: String): List<APOD> {
@@ -84,5 +113,4 @@ class APODRepositoryImpl(
         dataSourceLocal.updateFavorite(apod.toAPODEntity(isFavorite))
     }
 
-    //override fun getAPOD(date: String): Flow<APOD> = dataSourceLocal.getAPOD(date)
 }

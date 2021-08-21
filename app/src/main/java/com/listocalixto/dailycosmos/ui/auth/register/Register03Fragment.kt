@@ -14,6 +14,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
+import com.google.firebase.auth.FirebaseAuth
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.data.remote.auth.AuthDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentRegister03Binding
@@ -81,12 +82,23 @@ class Register03Fragment : Fragment(R.layout.fragment_register03) {
         }
     }
 
-    private fun nextFragment() {
-        findNavController().navigate(R.id.action_register03Fragment_to_mainActivity)
-        requireActivity().onBackPressed()
+    private fun nextFragment(wasAnonymous: Boolean) {
+        if (wasAnonymous) {
+            finishMainActivity()
+            findNavController().navigate(R.id.action_register03Fragment2_to_mainActivity2)
+            requireActivity().finish()
+        } else {
+            findNavController().navigate(R.id.action_register03Fragment_to_mainActivity)
+            requireActivity().finish()
+        }
+
     }
 
     private fun createUser(bitmap: Bitmap, password: Password, person: Person) {
+        var isAnonymous = false
+        if (FirebaseAuth.getInstance().currentUser?.isAnonymous == true) {
+            isAnonymous = true
+        }
         viewModelFirebase.signUp(
             person.name,
             person.lastname,
@@ -99,8 +111,8 @@ class Register03Fragment : Fragment(R.layout.fragment_register03) {
                     isEnabledViews(false)
                 }
                 is Result.Success -> {
-                    nextFragment()
                     isEnabledViews(true)
+                    nextFragment(isAnonymous)
                 }
                 is Result.Failure -> {
                     isEnabledViews(true)
@@ -146,4 +158,10 @@ class Register03Fragment : Fragment(R.layout.fragment_register03) {
             binding.lottieLoading.visibility = View.VISIBLE
         }
     }
+
+    private fun finishMainActivity() {
+        val intent = Intent("finish_activity")
+        activity?.sendBroadcast(intent)
+    }
+
 }

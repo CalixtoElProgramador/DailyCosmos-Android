@@ -1,4 +1,4 @@
-package com.listocalixto.dailycosmos.ui.main
+package com.listocalixto.dailycosmos.ui.main.picture
 
 import android.annotation.SuppressLint
 import android.content.*
@@ -19,6 +19,7 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -27,6 +28,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.databinding.FragmentPictureBinding
+import com.listocalixto.dailycosmos.ui.main.MainViewModel
+import com.listocalixto.dailycosmos.ui.main.PictureArgs
 import java.io.*
 
 const val REQUEST_PERMISSION_WRITE_STORAGE = 200
@@ -34,10 +37,11 @@ const val REQUEST_PERMISSION_WRITE_STORAGE = 200
 @Suppress("DEPRECATION")
 class PictureFragment : Fragment(R.layout.fragment_picture) {
 
-    private lateinit var binding: FragmentPictureBinding
+    private val viewModelShared by activityViewModels<MainViewModel>()
     private var bitmap: Bitmap? = null
 
-    private val args by navArgs<PictureFragmentArgs>()
+    private lateinit var args: PictureArgs
+    private lateinit var binding: FragmentPictureBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,39 +66,14 @@ class PictureFragment : Fragment(R.layout.fragment_picture) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentPictureBinding.bind(view)
 
+        viewModelShared.getArgsToPicture().value?.let {
+            args = it
+        }
+
         if (args.hdurl.isNotEmpty()) {
-            //Glide.with(requireContext()).load(args.url).into(binding.photoView)
-            Glide.with(requireContext()).asBitmap().load(args.hdurl)
-                .into(object : CustomTarget<Bitmap>() {
-                    override fun onResourceReady(
-                        resource: Bitmap,
-                        transition: Transition<in Bitmap>?
-                    ) {
-                        binding.photoView.setImageBitmap(resource)
-                        bitmap = resource
-                    }
-
-                    override fun onLoadCleared(placeholder: Drawable?) {
-                        binding.photoView.setImageBitmap(bitmap)
-                    }
-                })
-
+            setBitmapFromInternet(args.hdurl)
         } else {
-            //Glide.with(requireContext()).load(args.hdurl).into(binding.photoView)
-            Glide.with(requireContext()).asBitmap().load(args.hdurl)
-                .into(object : CustomTarget<Bitmap>() {
-                    override fun onResourceReady(
-                        resource: Bitmap,
-                        transition: Transition<in Bitmap>?
-                    ) {
-                        binding.photoView.setImageBitmap(resource)
-                        bitmap = resource
-                    }
-
-                    override fun onLoadCleared(placeholder: Drawable?) {
-                        binding.photoView.setImageBitmap(bitmap)
-                    }
-                })
+            setBitmapFromInternet(args.url)
         }
 
         binding.btnBack.setOnClickListener {
@@ -112,12 +91,25 @@ class PictureFragment : Fragment(R.layout.fragment_picture) {
                     getString(R.string.wait_for_the_image_to_load),
                     Toast.LENGTH_SHORT
                 ).show()
-            } else {
-                //drawable = binding.photoView.drawable as BitmapDrawable
-                //bitmap = drawable?.bitmap
-                checkPermissionsStorage()
-            }
+            } else { checkPermissionsStorage() }
         }
+    }
+
+    private fun setBitmapFromInternet(link: String) {
+        Glide.with(requireContext()).asBitmap().load(link)
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(
+                    resource: Bitmap,
+                    transition: Transition<in Bitmap>?
+                ) {
+                    binding.photoView.setImageBitmap(resource)
+                    bitmap = resource
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    binding.photoView.setImageBitmap(bitmap)
+                }
+            })
     }
 
     private fun shareLink() {
@@ -176,10 +168,9 @@ class PictureFragment : Fragment(R.layout.fragment_picture) {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        if (requestCode == REQUEST_PERMISSION_WRITE_STORAGE) {
-            if (permissions.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                saveImage()
-            }
+        if (requestCode == REQUEST_PERMISSION_WRITE_STORAGE && permissions.isNotEmpty()
+            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            saveImage()
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }

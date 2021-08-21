@@ -1,6 +1,7 @@
 package com.listocalixto.dailycosmos.domain.auth
 
 import android.graphics.Bitmap
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import com.listocalixto.dailycosmos.data.model.User
 import com.listocalixto.dailycosmos.data.remote.auth.AuthDataSource
@@ -19,6 +20,10 @@ class AuthRepoImpl(private val dataSource: AuthDataSource) : AuthRepo {
         imageBitmap: Bitmap
     ): FirebaseUser? {
         return dataSource.signUp(name, lastname, email, password, imageBitmap)
+    }
+
+    override suspend fun assignCredentialToGuest(email: String, password: String): AuthResult? {
+        return dataSource.assignCredentialToGuest(email, password)
     }
 
     override suspend fun isEmailRegistered(email: String): Boolean {

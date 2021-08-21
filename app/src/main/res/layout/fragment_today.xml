@@ -62,11 +62,21 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonReload"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/_180sdp"
             android:layout_height="wrap_content"
             android:text="@string/reload"
-            android:layout_marginTop="@dimen/_32sdp"
-            android:layout_marginBottom="@dimen/_8sdp"/>
+            android:layout_marginTop="@dimen/_24sdp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_useWithoutInternet"
+            android:layout_width="@dimen/_180sdp"
+            android:layout_height="wrap_content"
+            android:text="@string/use_without_internet"
+            android:textColor="@color/colorSecondary"
+            app:backgroundTint="@color/colorBackground"
+            app:strokeColor="@color/colorSecondary"
+            android:layout_marginBottom="@dimen/_8sdp"
+            app:strokeWidth="@dimen/_1sdp" />
 
     </LinearLayout>
 

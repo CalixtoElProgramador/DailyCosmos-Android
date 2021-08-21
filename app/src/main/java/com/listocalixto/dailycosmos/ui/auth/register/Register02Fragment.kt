@@ -8,6 +8,7 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
+import com.google.firebase.auth.FirebaseAuth
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.databinding.FragmentRegister02Binding
 
@@ -67,7 +68,12 @@ class Register02Fragment : Fragment(R.layout.fragment_register02) {
     }
 
     private fun nextFragment() {
-        findNavController().navigate(R.id.action_register02Fragment_to_register03Fragment)
+        if (FirebaseAuth.getInstance().currentUser?.isAnonymous == true) {
+            findNavController().navigate(R.id.action_register02Fragment2_to_register03Fragment2)
+        } else {
+            findNavController().navigate(R.id.action_register02Fragment_to_register03Fragment)
+        }
+
     }
 
 

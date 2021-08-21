@@ -130,8 +130,16 @@
     <string name="subject">Subject</string>
     <string name="message">Write your message</string>
     <string name="send">Send</string>
-    <string name="in_maintenance">In maintenance...</string>
+    <string name="in_maintenance">In maintenance…</string>
     <string name="use_email_app">Use email app</string>
     <string name="available_to_future_versions">Available to future versions</string>
+    <string name="use_without_internet">Use without internet</string>
+    <string name="something_went_wrong">Something went wrong :c</string>
+    <string name="verify_your_connection_internet_or_nasa_server_is_down">Verify that your Internet connection is good. If this error keeps happening, it is very likely that the service by NASA has stopped for a few minutes.</string>
+    <string name="how_strange">How strange</string>
+    <string name="try_again_if_your_request_arrived_with_an_empty_response">Your request arrived with an empty response. Please try again or wait a few minutes in case it still fails.</string>
+    <string name="verify_your_connection_internet">Verify your connection internet</string>
+    <string name="data_picker_title">Select dates. Do not choose more than 31 days</string>
+    <string name="dialog_message_create_an_account">Would you like to create an account and store your favorites in the cloud? It\'s free and it won\'t take more than five minutes.</string>
 
 </resources>

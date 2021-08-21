@@ -106,7 +106,9 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     private fun signOut() {
-        Firebase.auth.signOut(); finishMainActivity(); navigateToAuthActivity()
+        Firebase.auth.signOut()
+        finishMainActivity()
+        navigateToAuthActivity()
     }
 
     private fun navigateToAuthActivity() {

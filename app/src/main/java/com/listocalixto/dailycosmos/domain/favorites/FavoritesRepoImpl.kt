@@ -16,14 +16,14 @@ class FavoritesRepoImpl(
     FavoritesRepo {
 
     override suspend fun saveFavorite(apod: APOD) {
-        dataSourceRemote.setRemoteFavorite(apod)
         dataSourceLocalFav.saveFavorite(apod.toFavorite(FirebaseAuth.getInstance().uid))
+        dataSourceRemote.setRemoteFavorite(apod)
 
     }
 
     override suspend fun deleteFavorite(apod: APOD) {
-        dataSourceRemote.deleteRemoteFavorite(apod)
         dataSourceLocalFav.deleteFavorite(apod.toFavorite(FirebaseAuth.getInstance().uid))
+        dataSourceRemote.deleteRemoteFavorite(apod)
     }
 
     override suspend fun getFavorites(): List<FavoriteEntity> {

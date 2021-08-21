@@ -15,6 +15,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
+import com.google.firebase.auth.FirebaseAuth
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.data.remote.auth.AuthDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentRegister01Binding
@@ -159,19 +160,11 @@ class Register01Fragment : Fragment(R.layout.fragment_register01) {
     }
 
     private fun nextFragment() {
-        findNavController().navigate(R.id.action_register01Fragment_to_register02Fragment)
-    }
-
-    override fun onDestroy() {
-        /*activity?.findViewById<LinearLayout>(R.id.buttons_register)?.apply {
-            animation =
-                AnimationUtils.loadAnimation(
-                    requireContext(),
-                    R.anim.fade_out_main
-                )
-            visibility = View.GONE
-        }*/
-        super.onDestroy()
+        if (FirebaseAuth.getInstance().currentUser?.isAnonymous == true) {
+            findNavController().navigate(R.id.action_register01Fragment2_to_register02Fragment2)
+        } else {
+            findNavController().navigate(R.id.action_register01Fragment_to_register02Fragment)
+        }
     }
 
 }

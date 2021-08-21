@@ -1,9 +1,13 @@
 package com.listocalixto.dailycosmos.data.remote.auth
 
 import android.graphics.Bitmap
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.listocalixto.dailycosmos.data.model.User
 import kotlinx.coroutines.tasks.await
@@ -24,18 +28,41 @@ class AuthDataSource {
         password: String,
         imageBitmap: Bitmap
     ): FirebaseUser? {
-        val authResult =
-            FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).await()
-        authResult.user?.uid?.let { uid ->
-            val imageRef = FirebaseStorage.getInstance().reference.child("${uid}/profile_picture")
-            val baos = ByteArrayOutputStream()
-            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-            val downloadUrl =
-                imageRef.putBytes(baos.toByteArray()).await().storage.downloadUrl.await().toString()
-            FirebaseFirestore.getInstance().collection("users").document(uid)
-                .set(User(name, lastname, email, downloadUrl, uid)).await()
+        return if (FirebaseAuth.getInstance().currentUser?.isAnonymous == true) {
+            val credential = EmailAuthProvider.getCredential(email, password)
+            val authResult = FirebaseAuth.getInstance().currentUser?.linkWithCredential(credential)?.await()
+
+            authResult?.user?.uid?.let { uid ->
+                val imageRef = FirebaseStorage.getInstance().reference.child("${uid}/profile_picture")
+                val baos = ByteArrayOutputStream()
+                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                val downloadUrl =
+                    imageRef.putBytes(baos.toByteArray()).await().storage.downloadUrl.await().toString()
+                FirebaseFirestore.getInstance().collection("users").document(uid)
+                    .set(User(name, lastname, email, downloadUrl, uid)).await()
+            }
+            authResult?.user
+
+        } else {
+            val authResult = FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).await()
+            authResult.user?.uid?.let { uid ->
+                val imageRef = FirebaseStorage.getInstance().reference.child("${uid}/profile_picture")
+                val baos = ByteArrayOutputStream()
+                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                val downloadUrl =
+                    imageRef.putBytes(baos.toByteArray()).await().storage.downloadUrl.await().toString()
+                FirebaseFirestore.getInstance().collection("users").document(uid)
+                    .set(User(name, lastname, email, downloadUrl, uid)).await()
+            }
+            authResult.user
         }
-        return authResult.user
+    }
+
+    suspend fun assignCredentialToGuest(email: String, password: String): AuthResult? {
+        val credential = EmailAuthProvider.getCredential(email, password)
+        val authResult = Firebase.auth.currentUser!!.linkWithCredential(credential).await()
+
+        return authResult
     }
 
     suspend fun isEmailRegistered(email: String): Boolean {

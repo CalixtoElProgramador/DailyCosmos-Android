@@ -40,6 +40,8 @@ import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModel
 import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModelFactory
 import com.listocalixto.dailycosmos.presentation.preferences.TranslatorViewModel
 import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
+import com.listocalixto.dailycosmos.ui.main.MainViewModel
+import com.listocalixto.dailycosmos.ui.main.PictureArgs
 import com.listocalixto.dailycosmos.ui.main.explore.adapter.ExploreAdapter
 
 @Suppress("DEPRECATION")
@@ -65,7 +67,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     }
     private val dataStoreUtils by activityViewModels<UtilsViewModel>()
     private val dataStoreTranslator by activityViewModels<TranslatorViewModel>()
-    private val viewModelDetails by activityViewModels<DetailsViewModel>()
+    private val viewModelShared by activityViewModels<MainViewModel>()
 
     private var position: Int = -1
     private var adapterExplore: ExploreAdapter? = null
@@ -129,38 +131,39 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     }
 
     private fun getArgsFromViewModel() {
-        viewModelDetails.getArgs().value?.let { args ->
+        viewModelShared.getArgsToDetails().value?.let { args ->
             apodReceived = args.apod
             adapterExplore = args.adapterExplore
             position = args.position
         }
     }
 
-    /*private fun getValueFavorite() {
-        viewModelDetails.getFavValue().value?.let {
-            apodReceived.is_favorite = it
-        }
-    }*/
-
     private fun updateFavorite() {
         when (apodReceived.is_favorite) {
-            0 -> { notifyItemChanged(1) }
-            1 -> { notifyItemChanged(0) }
-            -1 -> { notifyItemChanged(1) }
+            0 -> {
+                notifyItemChanged(1)
+            }
+            1 -> {
+                notifyItemChanged(0)
+            }
+            -1 -> {
+                notifyItemChanged(1)
+            }
         }
     }
 
     private fun notifyItemChanged(isFavorite: Int) {
         when (isFavorite) {
-            -1 -> { }
-            0 -> { viewModelFavorite.deleteFavorite(apodReceived) }
-            1 -> { viewModelFavorite.setAPODFavorite(apodReceived) }
+            0 -> {
+                viewModelFavorite.deleteFavorite(apodReceived)
+            }
+            1 -> {
+                viewModelFavorite.setAPODFavorite(apodReceived)
+            }
         }
         setDrawableOnFAB(isFavorite)
         viewModel.updateFavorite(apodReceived, isFavorite)
         apodReceived.is_favorite = isFavorite
-        //viewModelDetails.setFavValue(isFavorite)
-        //getValueFavorite()
         adapterExplore?.notifyItemChanged(position)
     }
 
@@ -326,12 +329,14 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     }
 
     private fun navigateToPictureFragment() {
-        val action = DetailsFragmentDirections.actionDetailsFragmentToPictureFragment(
-            apodReceived.hdurl,
-            apodReceived.title,
-            apodReceived.url
+        viewModelShared.setArgsToPicture(
+            PictureArgs(
+                apodReceived.hdurl,
+                apodReceived.url,
+                apodReceived.title
+            )
         )
-        findNavController().navigate(action)
+        findNavController().navigate(R.id.action_detailsFragment_to_pictureFragment)
     }
 
     private fun updateViews() {

@@ -11,6 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.auth.FirebaseAuth
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.local.AppDatabase
@@ -22,14 +24,14 @@ import com.listocalixto.dailycosmos.databinding.FragmentFavoritesBinding
 import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModel
 import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModelFactory
 import com.listocalixto.dailycosmos.domain.favorites.FavoritesRepoImpl
-import com.listocalixto.dailycosmos.ui.main.details.DetailsArgs
-import com.listocalixto.dailycosmos.ui.main.details.DetailsViewModel
+import com.listocalixto.dailycosmos.ui.main.DetailsArgs
+import com.listocalixto.dailycosmos.ui.main.MainViewModel
 import com.listocalixto.dailycosmos.ui.main.favorites.adapter.FavoritesAdapter
 
 class FavoritesFragment : Fragment(R.layout.fragment_favorites),
     FavoritesAdapter.OnFavoriteClickListener {
 
-    private val viewModelDetails by activityViewModels<DetailsViewModel>()
+    private val viewModelShared by activityViewModels<MainViewModel>()
     private val viewModel by activityViewModels<APODFavoriteViewModel> {
         APODFavoriteViewModelFactory(
             FavoritesRepoImpl(
@@ -42,13 +44,38 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites),
     private lateinit var binding: FragmentFavoritesBinding
     private lateinit var layoutManager: StaggeredGridLayoutManager
 
+    override fun onResume() {
+        super.onResume()
+        isBottomNavVisible()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentFavoritesBinding.bind(view)
         layoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
         binding.rvFavorites.layoutManager = layoutManager
         getAllFavorites()
+        
+        if (FirebaseAuth.getInstance().currentUser?.isAnonymous == true) {
+            showDialogCreateAccount()
+        }
 
+    }
+
+    private fun showDialogCreateAccount() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.create_an_account))
+            .setIcon(R.drawable.ic_help)
+            .setMessage(getString(R.string.dialog_message_create_an_account))
+            .setNegativeButton(resources.getString(R.string.no_thanks)) { _, _ ->
+            }
+            .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
+                navigateToRegisterGuestActivity()
+            }.show()
+    }
+
+    private fun navigateToRegisterGuestActivity() {
+        findNavController().navigate(R.id.action_favoritesFragment_to_registerGuestActivity)
     }
 
     private fun getAllFavorites() {
@@ -87,12 +114,8 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites),
     }
 
     override fun onFavoriteClick(favorite: FavoriteEntity) {
-        viewModelDetails.setArgs(
-            DetailsArgs(
-                favorite.toAPOD(1),
-                null,
-                -1
-            )
+        viewModelShared.setArgsToDetails(
+            DetailsArgs(favorite.toAPOD(1), null, -1)
         )
         findNavController().navigate(R.id.action_favoritesFragment_to_detailsFragment)
     }

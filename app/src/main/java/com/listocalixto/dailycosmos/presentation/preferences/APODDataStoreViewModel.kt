@@ -11,10 +11,13 @@ class APODDataStoreViewModel(application: Application) : AndroidViewModel(applic
     private val repo = APODDataStore(application)
 
     val readLastDateFromDataStore = repo.readLastDateFromDataStore.asLiveData()
-
     fun saveLastDateToDataStore(newStarDate: String) = viewModelScope.launch(Dispatchers.IO) {
         repo.saveLastDateToDataStore(newStarDate)
     }
 
+    val readReferenceDate = repo.readReferenceDate.asLiveData()
+    fun saveReferenceDate(reference: String) = viewModelScope.launch(Dispatchers.IO) {
+        repo.saveReferenceDate(reference)
+    }
 
 }

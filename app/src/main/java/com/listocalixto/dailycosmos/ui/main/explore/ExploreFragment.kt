@@ -1,10 +1,7 @@
 package com.listocalixto.dailycosmos.ui.main.explore
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
@@ -35,11 +32,12 @@ import com.listocalixto.dailycosmos.domain.apod.RetrofitClient
 import com.listocalixto.dailycosmos.ui.main.explore.adapter.ExploreAdapter
 import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.local.favorites.LocalFavoriteDataSource
+import androidx.lifecycle.Observer
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.data.remote.favorites.RemoteAPODFavoriteDataSource
 import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
-import com.listocalixto.dailycosmos.ui.main.details.DetailsArgs
-import com.listocalixto.dailycosmos.ui.main.details.DetailsViewModel
+import com.listocalixto.dailycosmos.ui.main.DetailsArgs
+import com.listocalixto.dailycosmos.ui.main.MainViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -48,7 +46,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
 
     @SuppressLint("SimpleDateFormat")
     private val sdf = SimpleDateFormat("yyyy-MM-dd")
-    private val viewModelDetails by activityViewModels<DetailsViewModel>()
+    private val viewModelShared by activityViewModels<MainViewModel>()
     private val dataStore by activityViewModels<APODDataStoreViewModel>()
     private val dataStoreUtils by activityViewModels<UtilsViewModel>()
     private val viewModel by activityViewModels<APODViewModel> {
@@ -67,22 +65,11 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     private var isFirstSearch = -1
     private var isLoading = false
     private var isSearchResults = false
-    private var endDate: Calendar = Calendar.getInstance()
-    private var startDate: Calendar = Calendar.getInstance().apply {
-        set(
-            endDate.get(Calendar.YEAR),
-            endDate.get(Calendar.MONTH),
-            endDate.get(Calendar.DATE)
-        )
+    private var startDate: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
         add(Calendar.DATE, -10)
     }
 
-    private var referenceDate: Calendar = Calendar.getInstance().apply {
-        set(
-            endDate.get(Calendar.YEAR),
-            endDate.get(Calendar.MONTH),
-            endDate.get(Calendar.DATE)
-        )
+    private var referenceDate: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
         add(Calendar.DATE, -10)
     }
 
@@ -90,6 +77,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     private lateinit var adapter: ExploreAdapter
     private lateinit var layoutManager: StaggeredGridLayoutManager
     private lateinit var bottomNavigation: BottomNavigationView
+    private lateinit var exploreList: List<APOD>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -97,8 +85,14 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         savedInstanceState: Bundle?
     ): View? {
         bottomNavigation = activity?.findViewById(R.id.bottom_navigation)!!
-        showBottomNavView(bottomNavigation)
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (::bottomNavigation.isInitialized) {
+            showBottomNavView(bottomNavigation)
+        }
     }
 
     private fun showBottomNavView(bottomNavigation: BottomNavigationView) {
@@ -142,8 +136,6 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     }
 
     private fun getCalendarResults(): Boolean {
-        isSearchResults = true
-        binding.topAppBar.menu.findItem(R.id.calendar).isEnabled = false
         openDatePicker()
         return true
     }
@@ -156,8 +148,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     private fun validateQuery() {
         val query = binding.inputSearch.text.toString()
         if (query.isEmpty()) {
-            isLoading = false
-            isSearchResults = false
+            isDisableLoadMoreResults(false)
             getAllFromDatabase()
 
         } else {
@@ -169,19 +160,17 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         viewModel.fetchDataFromDatabase().observe(viewLifecycleOwner, {
             when (it) {
                 is Result.Loading -> {
+                    //Loading
                 }
                 is Result.Success -> {
-                    onSuccessDatabaseResults(it)
+                    exploreList = it.data
+                    onSuccessResults(it)
                 }
                 is Result.Failure -> {
+                    //Failure
                 }
             }
         })
-    }
-
-    private fun onSuccessDatabaseResults(it: Result<List<APOD>>?) {
-        setViewsInSuccess()
-        setDataInRecyclerView(it as Result.Success<List<APOD>>)
     }
 
     private fun setHelperText() {
@@ -206,9 +195,9 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     }
 
     private fun setViewsInLoading() {
+        binding.pbRvAPOD.visibility = View.VISIBLE
         binding.rvApod.visibility = View.GONE
         binding.layoutNoResults.visibility = View.GONE
-        binding.pbRvAPOD.visibility = View.VISIBLE
     }
 
     private fun openDatePicker() {
@@ -216,13 +205,12 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         val dateRangePicker = configDatePicker(constraintsBuilder)
         dateRangePicker.show(activity?.supportFragmentManager!!, "ExploreFragment")
         eventsDatePicker(dateRangePicker)
-        binding.topAppBar.menu.findItem(R.id.calendar).isEnabled = true
 
     }
 
     private fun configDatePicker(constraintsBuilder: CalendarConstraints.Builder): MaterialDatePicker<Pair<Long, Long>> {
         return MaterialDatePicker.Builder.dateRangePicker()
-            .setTitleText("Select dates")
+            .setTitleText(getString(R.string.data_picker_title))
             .setSelection(
                 Pair(thisMonthMilliseconds, todayMilliseconds)
             ).setCalendarConstraints(constraintsBuilder.build())
@@ -271,14 +259,14 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
 
             when {
                 firstDayInMillis > todayInMillis || secondDayInMillis > todayInMillis -> {
-                    showSnackbarMessage(getString(R.string.error_request_future_dates_today))
+                    showErrorSnackbarMessage(getString(R.string.error_request_future_dates_today))
                 }
                 firstDayInMillis < june161995.timeInMillis || secondDayInMillis < june161995.timeInMillis -> {
-                    showSnackbarMessage(getString(R.string.error_request_before_dates_june_16_1995))
+                    showErrorSnackbarMessage(getString(R.string.error_request_before_dates_june_16_1995))
                 }
 
                 secondDayInMillis - firstDayInMillis > AppConstants.MILLISECONDS_IN_A_MONTH -> {
-                    showSnackbarMessage(getString(R.string.error_request_more_31_days))
+                    showErrorSnackbarMessage(getString(R.string.error_request_more_31_days))
                 }
                 else -> {
                     getCalendarResults(sdf.format(firstDay.time), sdf.format(secondDay.time))
@@ -290,36 +278,43 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     }
 
     @SuppressLint("ShowToast")
-    private fun showSnackbarMessage(message: String) {
-            Snackbar.make(binding.topAppBar, message, Snackbar.LENGTH_LONG)
-                .setAnchorView(bottomNavigation)
-                .setBackgroundTint(requireContext().resources.getColor(R.color.colorError))
-                .show()
+    private fun showErrorSnackbarMessage(message: String) {
+        Snackbar.make(binding.topAppBar, message, Snackbar.LENGTH_LONG)
+            .setAnchorView(bottomNavigation)
+            .setBackgroundTint(requireContext().resources.getColor(R.color.colorError))
+            .show()
     }
 
     private fun getCalendarResults(start: String, end: String) {
-        viewModel.fetchCalendarResults(end, start).observe(viewLifecycleOwner, {
+        isDisableLoadMoreResults(true)
+        viewModel.fetchCalendarResults(end, start).observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Result.Loading -> {
+                    isSearchMethodsEnabled(false)
                     setViewsInLoading()
                 }
                 is Result.Success -> {
-                    onSuccessCalendarResults(it)
+                    isSearchMethodsEnabled(true)
+                    if (it.data.isEmpty()) {
+                        showErrorMessage(
+                            R.drawable.ic_help,
+                            getString(R.string.how_strange),
+                            getString(R.string.try_again_if_your_request_arrived_with_an_empty_response)
+                        )
+                        return@Observer
+                    }
+                    onSuccessResults(it)
                 }
                 is Result.Failure -> {
-                    isLoading = true
-                    binding.topAppBar.menu.findItem(R.id.calendar).isEnabled = true
-                    Log.d("ViewModel", "Failure calendarResults... ${it.exception}")
+                    isSearchMethodsEnabled(true)
+                    showErrorMessage(
+                        R.drawable.ic_error_outline,
+                        getString(R.string.something_went_wrong),
+                        getString(R.string.verify_your_connection_internet_or_nasa_server_is_down)
+                    )
                 }
             }
         })
-    }
-
-    private fun onSuccessCalendarResults(it: Result.Success<List<APOD>>) {
-        setViewsInSuccess()
-        setDataInRecyclerView(it)
-        isLoading = true
-        binding.topAppBar.menu.findItem(R.id.calendar).isEnabled = true
     }
 
     private fun setDataInRecyclerView(it: Result.Success<List<APOD>>) {
@@ -328,21 +323,32 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     }
 
     private fun getRandomResults(): Boolean {
-        isSearchResults = true
-        viewModel.fetchRandomResults("10").observe(viewLifecycleOwner, {
+        isDisableLoadMoreResults(true)
+        viewModel.fetchRandomResults("10").observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Result.Loading -> {
-                    binding.inputLayoutSearch.isEnabled = false
-                    onLoadingRandomResults()
+                    isSearchMethodsEnabled(false)
+                    setViewsInLoading()
                 }
                 is Result.Success -> {
-                    binding.inputLayoutSearch.isEnabled = true
-                    onSuccessRandomResults(it)
+                    isSearchMethodsEnabled(true)
+                    if (it.data.isEmpty()) {
+                        showErrorMessage(
+                            R.drawable.ic_help,
+                            getString(R.string.how_strange),
+                            getString(R.string.try_again_if_your_request_arrived_with_an_empty_response)
+                        )
+                        return@Observer
+                    }
+                    onSuccessResults(it)
                 }
                 is Result.Failure -> {
-                    isLoading = true
-                    binding.inputLayoutSearch.isEnabled = true
-                    binding.topAppBar.menu.findItem(R.id.random).isEnabled = true
+                    isSearchMethodsEnabled(true)
+                    showErrorMessage(
+                        R.drawable.ic_error_outline,
+                        getString(R.string.something_went_wrong),
+                        getString(R.string.verify_your_connection_internet_or_nasa_server_is_down)
+                    )
                 }
             }
         })
@@ -350,18 +356,26 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         return true
     }
 
-    private fun onLoadingRandomResults() {
-        binding.topAppBar.menu.findItem(R.id.random).isEnabled = false
-        Log.d("ViewModel", "Loading random... count isNotEmpty")
-        setViewsInLoading()
+    private fun isSearchMethodsEnabled(answer: Boolean) {
+        binding.inputLayoutSearch.isEnabled = answer
+        binding.topAppBar.menu.findItem(R.id.random).isEnabled = answer
+        binding.topAppBar.menu.findItem(R.id.calendar).isEnabled = answer
     }
 
-    private fun onSuccessRandomResults(it: Result.Success<List<APOD>>) {
-        isLoading = true
+    private fun showErrorMessage(imageResource: Int, errorTitle: String, errorSubtitle: String) {
+        binding.pbRvAPOD.visibility = View.GONE
+        binding.rvApod.visibility = View.GONE
+        binding.layoutNoResults.visibility = View.VISIBLE
+        binding.imageError.setImageResource(imageResource)
+        binding.textErrorTitle.text = errorTitle
+        binding.textErrorSubtitle.text = errorSubtitle
+
+    }
+
+    private fun onSuccessResults(it: Result.Success<List<APOD>>) {
         setViewsInSuccess()
         setDataInRecyclerView(it)
-        Log.d("ViewModel", "Result random... ${it.data}")
-        binding.topAppBar.menu.findItem(R.id.random).isEnabled = true
+
     }
 
     private fun setViewsInSuccess() {
@@ -378,10 +392,8 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                     val visibleItemCount = layoutManager.childCount
                     val pastVisibleItem = layoutManager.findLastVisibleItemPositions(null)
                     val total = adapter.itemCount
-                    if (!isLoading) {
-                        if ((visibleItemCount + pastVisibleItem[pastVisibleItem.lastIndex]) >= total) {
-                            getMoreResults(newDates()[0], newDates()[1])
-                        }
+                    if (!isLoading && (visibleItemCount + pastVisibleItem[pastVisibleItem.lastIndex]) >= total) {
+                        getMoreResults(newDates()[0], newDates()[1])
                     }
                 }
             }
@@ -392,13 +404,6 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         binding.rvApod.layoutManager = layoutManager
     }
-
-    /*private fun configWindow() {
-        activity?.window?.addFlags((WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS))
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        activity?.window?.statusBarColor =
-            requireActivity().resources.getColor(R.color.colorPrimaryVariant)
-    }*/
 
     private fun readFromDataStore() {
         dataStore.readLastDateFromDataStore.observe(viewLifecycleOwner, { date ->
@@ -448,77 +453,74 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     private fun getMoreResults(end: String, start: String) {
         isLoading = true
         viewModel.fetchMoreResults(end, start)
-            .observe(viewLifecycleOwner, { result ->
+            .observe(viewLifecycleOwner, Observer { result ->
                 when (result) {
                     is Result.Loading -> {
-                        binding.inputLayoutSearch.isEnabled = false
-                        if (!::adapter.isInitialized) {
-                            Log.d("ViewModel", "Loading... Adapter is NOT Initialized")
-                            setViewsInLoading()
-                        } else {
-                            Log.d("ViewModel", "Loading... Adapter is Initialized")
-                            binding.pbMoreResults.visibility = View.VISIBLE
-                        }
+                        binding.pbMoreResults.visibility = View.VISIBLE
+                        isSearchMethodsEnabled(false)
                     }
                     is Result.Success -> {
-                        binding.inputLayoutSearch.isEnabled = true
-                        if (::adapter.isInitialized) {
-                            adapter.setData(result.data)
-                            dataStore.saveLastDateToDataStore(result.data[result.data.lastIndex].date)
-                            binding.pbMoreResults.visibility = View.GONE
-                            Log.d("ViewModel", "Result... Adapter is Initialized")
-                        } else {
-                            Log.d("ViewModel", "Result... Adapter is NOT Initialized")
-                            onSuccessAPODResults(result)
-                        }
+                        binding.pbMoreResults.visibility = View.GONE
+                        isSearchMethodsEnabled(true)
                         isLoading = false
-                        Log.d("ViewModel", "Results: ${result.data}")
+                        if (exploreList == result.data) {
+                            showErrorSnackbarMessage(getString(R.string.verify_your_connection_internet))
+                            return@Observer
+                        }
+                        exploreList = result.data
+                        onSuccessMoreResults(result)
                     }
                     is Result.Failure -> {
-                        binding.inputLayoutSearch.isEnabled = true
-                        Log.d("ViewModel", "ViewModel error: ${result.exception}")
+                        isSearchMethodsEnabled(true)
+                        isLoading = false
+                        showErrorSnackbarMessage(getString(R.string.something_went_wrong))
 
                     }
                 }
             })
     }
 
-    private fun onSuccessAPODResults(result: Result<List<APOD>>?) {
-        setViewsInSuccess()
-        setDataInRecyclerView(result as Result.Success<List<APOD>>)
+    private fun onSuccessMoreResults(result: Result.Success<List<APOD>>) {
+        adapter.setData(result.data)
+        dataStore.saveLastDateToDataStore(result.data[result.data.lastIndex].date)
     }
 
     override fun onAPODClick(apod: APOD, apodList: List<APOD>, position: Int) {
         if (isLoading && !isSearchResults) {
             isLoading = false
         }
-        viewModelDetails.setArgs(DetailsArgs(apod, adapter, position))
+        viewModelShared.setArgsToDetails(DetailsArgs(apod, adapter, position))
         findNavController().navigate(R.id.action_exploreFragment_to_detailsFragment)
     }
 
-    @SuppressLint("SetTextI18n")
     private fun searchDatabase(query: String?) {
         val searchQuery = "%$query%"
-        viewModel.fetchSearchResults(searchQuery).observe(viewLifecycleOwner, {
+        isDisableLoadMoreResults(true)
+        viewModel.fetchSearchResults(searchQuery).observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Result.Loading -> {
+                    //Loading
                 }
                 is Result.Success -> {
                     if (it.data.isEmpty()) {
-                        binding.layoutNoResults.visibility = View.VISIBLE
-                        binding.textNoResultsFor.text =
-                            "${resources.getString(R.string.textNoResultsTitle)} \"$query\""
-                    } else {
-                        binding.layoutNoResults.visibility = View.GONE
+                        showErrorMessage(
+                            R.drawable.ic_outlined_flag,
+                            "${resources.getString(R.string.textNoResultsTitle)} \"$query\"",
+                            getString(R.string.textNoResultsSubtitle)
+                        )
+                        return@Observer
                     }
-                    adapter = ExploreAdapter(it.data, this)
-                    binding.rvApod.adapter = adapter
-                    isSearchResults = true
-                    isLoading = true
+                    onSuccessResults(it)
                 }
                 is Result.Failure -> {
+                    //Failurex1
                 }
             }
         })
+    }
+
+    private fun isDisableLoadMoreResults(answer: Boolean) {
+        isSearchResults = answer
+        isLoading = answer
     }
 }

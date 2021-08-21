@@ -17,7 +17,7 @@ class LocalAPODDataSource(private val apodDao: APODDao) {
     }
 
     suspend fun getDataFromDatabase(): List<APOD> {
-        return apodDao.getDataFromDatabase().toAPODList()
+        return apodDao.getResults().toAPODList()
     }
 
     suspend fun saveAPOD(apodEntity: APODEntity) {
@@ -27,7 +27,5 @@ class LocalAPODDataSource(private val apodDao: APODDao) {
     suspend fun updateFavorite(apodEntity: APODEntity) {
         apodDao.updateFavorite(apodEntity)
     }
-
-    /*fun getAPOD(date: String): Flow<APOD> = apodDao.getAPODDistinctUntilChanged(date)*/
 
 }

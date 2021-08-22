@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -14,7 +15,6 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -45,12 +45,15 @@ import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModel
 import com.listocalixto.dailycosmos.presentation.preferences.TranslatorViewModel
 import com.listocalixto.dailycosmos.domain.favorites.FavoritesRepoImpl
 import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
+import com.listocalixto.dailycosmos.ui.main.DateRange
 import com.listocalixto.dailycosmos.ui.main.MainViewModel
 import com.listocalixto.dailycosmos.ui.main.PictureArgs
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.math.abs
 
 private const val MIN_SCALE = 0.75f
+private const val MILLISECONDS_IN_A_DAY = 86400000
 
 @Suppress("DEPRECATION")
 class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPODClickListener,
@@ -59,7 +62,14 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
 
     @SuppressLint("SimpleDateFormat")
     private val sdf = SimpleDateFormat("yyyy-MM-dd")
-    private val today: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+    private val referenceDate: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+    private val dateOfLastResult: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+    private val today: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+        add(Calendar.DATE, 0)
+    }
+    private val todayLeastTenDays: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+        add(Calendar.DATE, -10)
+    }
     private val viewModelShared by activityViewModels<MainViewModel>()
     private val dataStoreAPOD by activityViewModels<APODDataStoreViewModel>()
     private val dataStoreTranslator by activityViewModels<TranslatorViewModel>()
@@ -89,9 +99,9 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     private var isDownloadTheTranslator: Int = -1
     private var isFirstTimeToOpenImage: Int = -1
     private var isNotFirstTimeGetResults: Int = -1
-    private var startDate: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
-        add(Calendar.DATE, -10)
-    }
+    private var delta: Int = 0
+    private var endDate = sdf.format(today.time)
+    private var startDate = sdf.format(todayLeastTenDays.time)
 
     private lateinit var binding: FragmentTodayBinding
     private lateinit var adapterToday: TodayAdapter
@@ -104,6 +114,13 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     ): View? {
         viewModelShared.isUserHaveInternet().value?.let {
             userHaveInternet = it
+        }
+        viewModelShared.getDelta().value?.let {
+            delta = it
+        }
+        viewModelShared.getDateRange().value?.let { dateRange ->
+            endDate = dateRange.endDate
+            startDate = dateRange.startDate
         }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -124,7 +141,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
         readFromDataStore()
 
         binding.buttonReload.setOnClickListener {
-            getResults(sdf.format(today.time), sdf.format(startDate.time))
+            getResults(endDate, startDate)
         }
         binding.buttonUseWithoutInternet.setOnClickListener {
             fetchResultsFromDatabase()
@@ -138,8 +155,9 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     }
 
     private fun readFromDataStore() {
-        dataStoreAPOD.readReferenceDate.observe(viewLifecycleOwner) { referenceDate ->
-            if (sdf.format(today.time) != referenceDate) {
+        dataStoreAPOD.readReferenceDate.observe(viewLifecycleOwner) { date ->
+            referenceDate.time = sdf.parse(date)!!
+            if (sdf.format(today.time) != date) {
                 isNewDate = true
             }
         }
@@ -148,7 +166,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
             isAdapterInit()
         }
         dataStoreAPOD.readLastDateFromDataStore.observe(viewLifecycleOwner, { date ->
-            startDate.time = sdf.parse(date)!!
+            dateOfLastResult.time = sdf.parse(date)!!
         })
         dataStoreTranslator.readValue.observe(viewLifecycleOwner, {
             isDownloadTheTranslator = it
@@ -161,13 +179,12 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
 
     private fun isAdapterInit() {
         if (!::adapterToday.isInitialized) {
-            getResults(sdf.format(today.time), sdf.format(startDate.time))
+            getResults(endDate, startDate)
         } else {
             binding.vpPhotoToday.adapter = adapterToday
         }
     }
 
-    @SuppressLint("CutPasteId")
     private fun getResults(end: String, start: String) {
         when (isNotFirstTimeGetResults) {
             0 -> {
@@ -176,6 +193,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
             1 -> {
                 if (isNewDate && userHaveInternet) {
                     fetchRecentResultsFromWebService(end, start)
+
                 } else {
                     fetchResultsFromDatabase()
                 }
@@ -184,32 +202,68 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     }
 
     private fun fetchRecentResultsFromWebService(end: String, start: String) {
-        viewModel.fetchRecentResults(end, start).observe(viewLifecycleOwner, Observer {
-            when (it) {
+        Log.d("fetchRecentResults", "Las fechas solicitadas son: $end, y $start ")
+        Log.d("fetchRecentResults", "El nuevo valor del entero es: $delta ")
+        viewModel.fetchRecentResults(end, start).observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
                 is Result.Loading -> {
-                    binding.layoutErrorNoResults.visibility = View.GONE
-                    binding.lottieLoading.visibility = View.VISIBLE
-                    hideBottomNav()
+                    isThereAProblem(false)
+                    Log.d("fetchRecentResults", "Loading... ")
                 }
                 is Result.Success -> {
-                    binding.lottieLoading.visibility = View.GONE
-                    if (it.data.isEmpty()) {
-                        binding.layoutErrorNoResults.visibility = View.VISIBLE
-                        return@Observer
+                    val results = result.data
+                    if (isResultsEmpty(results)) return@Observer
+                    val recentResults = results.take(-delta + 11)
+                    val lastResultDateString = recentResults[-delta + 10].date
+                    Log.d("fetchRecentResults", "La fecha del último elemento: $lastResultDateString ")
+                    val lastResultDateCalendar: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                    lastResultDateString.let { lastResultDateCalendar.time = sdf.parse(it)!! }
+                    Log.d("fetchRecentResults", "Fecha del último resultado: $lastResultDateString")
+                    val lastResultDateMilliseconds = lastResultDateCalendar.timeInMillis
+                    val referenceDateMilliseconds = referenceDate.timeInMillis
+                    Log.d("fetchRecentResults", "$referenceDateMilliseconds - $lastResultDateMilliseconds = ${referenceDateMilliseconds - lastResultDateMilliseconds} ")
+                    if (lastResultDateMilliseconds - referenceDateMilliseconds > MILLISECONDS_IN_A_DAY) {
+                        keepBringingMoreRecentResults()
+                    } else {
+                        Log.d("fetchRecentResults", "Todos los resultados nuevos han sido traídos")
+                        dataStoreAPOD.saveReferenceDate(sdf.format(today.time))
+                        fetchResultsFromDatabase()
                     }
-                    adapterToday = TodayAdapter(it.data, this, this, this, this)
-                    binding.vpPhotoToday.adapter = adapterToday
-                    bottomNavigation = activity?.findViewById(R.id.bottom_navigation)!!
-                    if (!bottomNavigation.isVisible) {
-                        showBottomNavView()
-                    }
-                    dataStoreAPOD.saveReferenceDate(sdf.format(today.time))
+
                 }
                 is Result.Failure -> {
-                    binding.lottieLoading.visibility = View.GONE
+                    isThereAProblem(true)
+                    Log.d("fetchRecentResults", "Happen an error: ${result.exception} ")
                 }
             }
         })
+    }
+
+    private fun isResultsEmpty(results: List<APOD>): Boolean {
+        if (results.isEmpty()) {
+            isThereAProblem(true)
+            return true
+        }
+        return false
+    }
+
+    private fun keepBringingMoreRecentResults() {
+        delta -= 10
+        viewModelShared.setDelta(delta)
+
+        val newEndDate: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+            add(Calendar.DATE, delta)
+        }
+        val newStartDate: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+            add(Calendar.DATE, delta - 10)
+        }
+
+        val newEndDateString = sdf.format(newEndDate.time)
+        val newStartDateString = sdf.format(newStartDate.time)
+        viewModelShared.setDateRange(DateRange(newEndDateString, newStartDateString))
+
+        Log.d("fetchRecentResults", "Volviendo a llamar el mismo método")
+        fetchRecentResultsFromWebService(newEndDateString, newStartDateString)
     }
 
     private fun fetchResultsFromDatabase() {
@@ -220,9 +274,8 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                 }
                 is Result.Success -> {
                     binding.lottieLoading.visibility = View.GONE
-                    adapterToday = TodayAdapter(it.data, this, this, this, this)
+                    setDataInViewPager(it.data)
                     bottomNavigation = activity?.findViewById(R.id.bottom_navigation)!!
-                    binding.vpPhotoToday.adapter = adapterToday
                     if (!bottomNavigation.isVisible) {
                         showBottomNavView()
                     }
@@ -238,23 +291,18 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
         viewModel.fetchFirstTimeResults(end, start).observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Result.Loading -> {
-                    binding.layoutErrorNoResults.visibility = View.GONE
-                    binding.lottieLoading.visibility = View.VISIBLE
-                    hideBottomNav()
+                    isThereAProblem(false)
                 }
                 is Result.Success -> {
                     binding.lottieLoading.visibility = View.GONE
-                    if (it.data.isEmpty()) {
-                        binding.layoutErrorNoResults.visibility = View.VISIBLE
-                        binding.buttonUseWithoutInternet.visibility = View.GONE
-                        return@Observer
-                    }
-                    adapterToday = TodayAdapter(it.data, this, this, this, this)
-                    binding.vpPhotoToday.adapter = adapterToday
+                    val results = it.data
+                    if (isResultsEmpty(results)) return@Observer
+                    setDataInViewPager(it.data)
                     bottomNavigation = activity?.findViewById(R.id.bottom_navigation)!!
                     if (!bottomNavigation.isVisible) {
                         showBottomNavView()
                     }
+                    dataStoreAPOD.saveReferenceDate(sdf.format(today.time))
                     dataStoreUtils.saveValueFirstTimeGetResults(1)
                     isNotFirstTimeGetResults = 1
                 }
@@ -265,12 +313,35 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
         })
     }
 
+    private fun isThereAProblem(answer: Boolean) {
+        if (answer) {
+            binding.lottieLoading.visibility = View.GONE
+            binding.layoutErrorNoResults.visibility = View.VISIBLE
+        } else {
+            binding.lottieLoading.visibility = View.VISIBLE
+            binding.layoutErrorNoResults.visibility = View.GONE
+            hideBottomNav()
+        }
+
+    }
+
+    private fun setDataInViewPager(results: List<APOD>) {
+        adapterToday = TodayAdapter(
+            results,
+            this@TodayFragment,
+            this@TodayFragment,
+            this@TodayFragment,
+            this@TodayFragment
+        )
+        binding.vpPhotoToday.adapter = adapterToday
+    }
+
     @SuppressLint("CutPasteId")
     private fun getMoreResults(end: String, start: String) {
         isLoading = true
         viewModel.fetchMoreResults(end, start).observe(viewLifecycleOwner, {
             when (it) {
-                is Result.Loading -> {
+                is Result.Loading -> { /*Loading*/
                 }
                 is Result.Success -> {
                     moreResultsSuccess(it)
@@ -283,23 +354,22 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     }
 
     private fun moreResultsFailure() {
-        binding.lottieLoading.visibility = View.GONE
+        showErrorSnackbarMessage(getString(R.string.verify_your_connection_internet))
+    }
+
+    @SuppressLint("ShowToast")
+    private fun showErrorSnackbarMessage(message: String) {
+        Snackbar.make(binding.vpPhotoToday, message, Snackbar.LENGTH_LONG)
+            .setAnchorView(bottomNavigation)
+            .setBackgroundTint(requireContext().resources.getColor(R.color.colorError))
+            .show()
     }
 
     private fun moreResultsSuccess(it: Result.Success<List<APOD>>) {
-        bottomNavigation = activity?.findViewById(R.id.bottom_navigation)!!
         isLoading = false
-        binding.lottieLoading.visibility = View.GONE
-        if (!::adapterToday.isInitialized) {
-            adapterToday = TodayAdapter(it.data, this, this, this, this)
-            binding.vpPhotoToday.adapter = adapterToday
-            if (!bottomNavigation.isVisible) {
-                showBottomNavView()
-            }
-        } else {
-            adapterToday.setData(it.data)
-            dataStoreAPOD.saveLastDateToDataStore(it.data[it.data.lastIndex].date)
-        }
+        adapterToday.setData(it.data)
+        dataStoreAPOD.saveLastDateToDataStore(it.data[it.data.lastIndex].date)
+
     }
 
     private fun hideBottomNav() {
@@ -403,6 +473,10 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     }
 
     private fun loadMoreResults() {
+        Log.d(
+            "ViewPager",
+            "La posición actual es: ${binding.vpPhotoToday.currentItem + 1}, tamaño del adaptador: ${adapterToday.itemCount} "
+        )
         if (!isLoading && binding.vpPhotoToday.currentItem >= adapterToday.itemCount - 7) {
             getMoreResults(newDates()[0], newDates()[1])
         }
@@ -411,17 +485,17 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     private fun newDates(): Array<String> {
         val newEndDate = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
             set(
-                startDate.get(Calendar.YEAR),
-                startDate.get(Calendar.MONTH),
-                startDate.get(Calendar.DATE)
+                dateOfLastResult.get(Calendar.YEAR),
+                dateOfLastResult.get(Calendar.MONTH),
+                dateOfLastResult.get(Calendar.DATE)
             )
             add(Calendar.DATE, -1)
         }
         val newStartDate = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
             set(
-                startDate.get(Calendar.YEAR),
-                startDate.get(Calendar.MONTH),
-                startDate.get(Calendar.DATE)
+                dateOfLastResult.get(Calendar.YEAR),
+                dateOfLastResult.get(Calendar.MONTH),
+                dateOfLastResult.get(Calendar.DATE)
             )
             add(Calendar.DATE, -10)
         }

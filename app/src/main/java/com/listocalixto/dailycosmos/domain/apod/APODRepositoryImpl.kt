@@ -38,7 +38,7 @@ class APODRepositoryImpl(
                 if (dataSourceLocalFavorites.getFavorites()
                         .contains(apod.toFavorite(FirebaseAuth.getInstance().uid))
                 ) {
-                    dataSourceLocal.updateFavorite(apod.toAPODEntity(1))
+                    dataSourceLocal.saveAPOD(apod.toAPODEntity(1))
                 } else {
                     dataSourceLocal.saveAPOD(apod.toAPODEntity(0))
                 }

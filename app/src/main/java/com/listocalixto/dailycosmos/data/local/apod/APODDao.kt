@@ -18,16 +18,9 @@ interface APODDao {
     @Query("SELECT * FROM apodentity WHERE title LIKE :searchQuery OR date LIKE :searchQuery ORDER BY date DESC")
     suspend fun getSearchResults(searchQuery: String): List<APODEntity>
 
-
-    //fun getAllAPODsDistinctUntilChanged() = getAllAPODs().distinctUntilChanged()
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveAPOD(apodEntity: APODEntity)
 
     @Update(entity = APODEntity::class)
     suspend fun updateFavorite(apodEntity: APODEntity)
-
-    /*@Query("SELECT * FROM apodentity WHERE date = :date")
-    fun getAPOD(date: String): Flow<APOD>
-    fun getAPODDistinctUntilChanged(date:String) = getAPOD(date).distinctUntilChanged()*/
 }

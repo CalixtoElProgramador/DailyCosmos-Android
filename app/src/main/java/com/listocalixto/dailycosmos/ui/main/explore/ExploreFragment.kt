@@ -66,11 +66,11 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     private var isLoading = false
     private var isSearchResults = false
     private var startDate: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
-        add(Calendar.DATE, -10)
+        add(Calendar.DATE, -50)
     }
 
     private var referenceDate: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
-        add(Calendar.DATE, -10)
+        add(Calendar.DATE, -50)
     }
 
     private lateinit var binding: FragmentExplorerBinding

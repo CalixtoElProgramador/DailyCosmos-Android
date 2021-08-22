@@ -18,6 +18,9 @@ interface APODDao {
     @Query("SELECT * FROM apodentity WHERE title LIKE :searchQuery OR date LIKE :searchQuery ORDER BY date DESC")
     suspend fun getSearchResults(searchQuery: String): List<APODEntity>
 
+    @Query("SELECT date FROM apodentity ORDER BY date DESC")
+    suspend fun getStoredDates(): List<String>
+
 
     //fun getAllAPODsDistinctUntilChanged() = getAllAPODs().distinctUntilChanged()
 

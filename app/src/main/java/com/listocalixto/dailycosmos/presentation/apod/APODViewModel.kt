@@ -39,7 +39,8 @@ class APODViewModel(private val repo: APODRepository) : ViewModel() {
         emit(Result.Loading())
         kotlin.runCatching {
             repo.getRecentResults(endDate, startDate)
-        }.onSuccess { apodList -> emit(Result.Success(apodList))
+        }.onSuccess { apodList ->
+            emit(Result.Success(apodList))
         }.onFailure { throwable -> Result.Failure(Exception(throwable.message)) }
     }
 
@@ -80,6 +81,17 @@ class APODViewModel(private val repo: APODRepository) : ViewModel() {
         emit(Result.Loading())
         kotlin.runCatching {
             repo.getDataFromDatabase()
+        }.onSuccess {
+            emit(Result.Success(it))
+        }.onFailure {
+            emit(Result.Failure(Exception(it.message)))
+        }
+    }
+
+    fun fetchStoredDates() = liveData(Dispatchers.IO) {
+        emit(Result.Loading())
+        kotlin.runCatching {
+            repo.getStoredDates()
         }.onSuccess {
             emit(Result.Success(it))
         }.onFailure {

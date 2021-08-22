@@ -42,7 +42,7 @@ class APODDataStore(context: Context) {
         }
     }
 
-    val readLastDateFromDataStore: Flow<String> = storeLastDate.data
+    val readLastDateFromDataStore: Flow<String> = storeLastDate.data.distinctUntilChanged()
         .catch { exception ->
             if (exception is IOException) {
                 Log.d("DataStore", exception.message.toString())
@@ -80,8 +80,10 @@ class APODDataStore(context: Context) {
             }
         }
         .map { preferences ->
-            val today: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-            val referenceDate = preferences[PreferencesKeys.referenceDate] ?: sdf.format(today.time)
+            val reference: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+                add(Calendar.DATE, -1)
+            }
+            val referenceDate = preferences[PreferencesKeys.referenceDate] ?: sdf.format(reference.time)
             referenceDate
         }
 

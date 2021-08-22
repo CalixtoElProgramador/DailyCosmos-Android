@@ -12,8 +12,8 @@ interface APODRepository {
     suspend fun getRandomResults(count: String): List<APOD>
     suspend fun getSearchResults(searchQuery: String): List<APOD>
     suspend fun getDataFromDatabase(): List<APOD>
+    suspend fun getStoredDates(): List<String>
     suspend fun getCalendarResults(endDate: String, startDate: String): List<APOD>
     suspend fun updateFavorite(apod: APOD, isFavorite: Int)
-    //fun getAPOD(date: String): Flow<APOD>
 
 }

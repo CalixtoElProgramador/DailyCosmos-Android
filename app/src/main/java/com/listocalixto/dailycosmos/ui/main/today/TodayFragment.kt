@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -14,7 +15,6 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -59,7 +59,13 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
 
     @SuppressLint("SimpleDateFormat")
     private val sdf = SimpleDateFormat("yyyy-MM-dd")
-    private val today: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+    private val today: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+        add(Calendar.DATE, 0)
+    }
+    private val todayLeastTenDays: Calendar =
+        Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+            add(Calendar.DATE, -10)
+        }
     private val viewModelShared by activityViewModels<MainViewModel>()
     private val dataStoreAPOD by activityViewModels<APODDataStoreViewModel>()
     private val dataStoreTranslator by activityViewModels<TranslatorViewModel>()
@@ -86,27 +92,21 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     private var isLoading = false
     private var isNewDate = false
     private var userHaveInternet = true
-    private var isDownloadTheTranslator: Int = -1
-    private var isFirstTimeToOpenImage: Int = -1
-    private var isNotFirstTimeGetResults: Int = -1
-    private var startDate: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
-        add(Calendar.DATE, -10)
-    }
+    private var isAvailableLoadMoreRecentResults = false
+    private var isDownloadTheTranslator = -1
+    private var isFirstTimeToOpenImage = -1
+    private var isNotFirstTimeGetResults = -1
+    private var firstRecentResultIndex = 0
+    private var lastRecentResultIndex = 0
+    private var dateToFind: String? = null
+    private var lastResultDateToCalendar: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+    private var startDate: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
 
     private lateinit var binding: FragmentTodayBinding
     private lateinit var adapterToday: TodayAdapter
+    private lateinit var storedDates: List<String>
+    private lateinit var databaseResults: List<APOD>
     private lateinit var bottomNavigation: BottomNavigationView
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        viewModelShared.isUserHaveInternet().value?.let {
-            userHaveInternet = it
-        }
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
 
     override fun onResume() {
         super.onResume()
@@ -114,12 +114,26 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
         if (::bottomNavigation.isInitialized && !bottomNavigation.isVisible) {
             showBottomNavView()
         }
+        viewModelShared.isUserHaveInternet().value?.let {
+            userHaveInternet = it
+        }
+        viewModelShared.getDateToFind().value?.let { date ->
+            dateToFind = date
+        }
+    }
 
+    override fun onStart() {
+        super.onStart()
+        viewModelShared.getDateToFind().value?.let { date ->
+            dateToFind = date
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentTodayBinding.bind(view)
+        getResultsFromDatabase()
+        getStoredDates()
         configViewPager() //And loadMoreResults when ViewPager.currentItem == adapter.itemCount
         readFromDataStore()
 
@@ -133,22 +147,47 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
 
     }
 
+    private fun getResultsFromDatabase() {
+        viewModel.fetchDataFromDatabase().observe(viewLifecycleOwner, {
+            when (it) {
+                is Result.Success -> {
+                    databaseResults = it.data
+                }
+                else -> { /*something*/
+                }
+            }
+        })
+    }
+
+    private fun getStoredDates() {
+        viewModel.fetchStoredDates().observe(viewLifecycleOwner, {
+            when (it) {
+                is Result.Success -> {
+                    storedDates = it.data
+                }
+                else -> { /*something*/
+                }
+            }
+        })
+    }
+
     private fun configViewPager() {
         binding.vpPhotoToday.setPageTransformer(this)
     }
 
     private fun readFromDataStore() {
-        dataStoreAPOD.readReferenceDate.observe(viewLifecycleOwner) { referenceDate ->
+        dataStoreAPOD.readReferenceDate.observe(viewLifecycleOwner, { referenceDate ->
             if (sdf.format(today.time) != referenceDate) {
                 isNewDate = true
             }
-        }
-        dataStoreUtils.readValueFirstTimeGetResults.observe(viewLifecycleOwner) {
-            isNotFirstTimeGetResults = it
-            isAdapterInit()
-        }
+        })
         dataStoreAPOD.readLastDateFromDataStore.observe(viewLifecycleOwner, { date ->
             startDate.time = sdf.parse(date)!!
+            Log.d("StartDate", "StartDate = ${sdf.format(startDate.time)}")
+        })
+        dataStoreUtils.readValueFirstTimeGetResults.observe(viewLifecycleOwner, {
+            isNotFirstTimeGetResults = it
+            isAdapterInit()
         })
         dataStoreTranslator.readValue.observe(viewLifecycleOwner, {
             isDownloadTheTranslator = it
@@ -161,7 +200,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
 
     private fun isAdapterInit() {
         if (!::adapterToday.isInitialized) {
-            getResults(sdf.format(today.time), sdf.format(startDate.time))
+            getResults(sdf.format(today.time), sdf.format(todayLeastTenDays.time))
         } else {
             binding.vpPhotoToday.adapter = adapterToday
         }
@@ -197,19 +236,64 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                         binding.layoutErrorNoResults.visibility = View.VISIBLE
                         return@Observer
                     }
-                    adapterToday = TodayAdapter(it.data, this, this, this, this)
-                    binding.vpPhotoToday.adapter = adapterToday
+
+                    /* En mantenimineto - Lo de abajo es para verificar si los APODS recientes ya están
+                    * almacenados en la base de datos. Esto funciona para cuando el usuario se ausentó
+                    * más, igual o menor a 10 días. El detalle aquí, es que para más de 10 días
+                    * inactivos, se corre el riesgo de que se pierda fotos si rota la pantalla o activa
+                    * el modo oscuro en medio del camino. Hay un bug muy extraño que no lo logro entender,
+                    * y es que cuando rota su pantalla, se trae todos los resultados que le hacían falta, TODOS, pero
+                    * cuando la vuelvo a enderzar, sólo trae consigo los que se almacenaron en la base de datos,
+                    * que curiosamente son los que tenia desde un principio y los que logró cargar antes de
+                    * cambiar la configuración del teléfono, ¿dónde quedaron y por qué no se almacenaron los que faltan? No lo sé...
+                    * Es algo muy raro y creo que esta solución no es muy buena.
+                    * Creo que lo correcto sería tener un servicio tipo WhatsApp, en el que tan pronto se suba un APOD,
+                    * notifique al usuario y actualice su base de datos, en vez de estar haciendo estos malabares que
+                    * son dificiles de entender y que además son muy frágiles a que se cometan bugs o problemas técnicos.
+                    * Por lo pronto, lo dejaré así. Si el usuario se ausenta de la aplicación más de 10 días, pues que
+                    * cruce los dedos e intente cargar los que le faltan. En fin, no hay aplicaciones perfectas, así que
+                    * me parece bien esta opción. Por lo menos funciona bien para cuando se ausenta igual o menor a 10 días */
+
+                    val recentResults = it.data.take(11)
+                    setDataInViewPager(recentResults)
+                    val lastResultDate = recentResults[10].date
+                    lastResultDateToCalendar.time = sdf.parse(lastResultDate)!!
+                    lastResultDateToCalendar.add(Calendar.DATE, -1)
+                    if (dateToFind.isNullOrEmpty()) {
+                        dateToFind = sdf.format(lastResultDateToCalendar.time)
+                        dateToFind?.let { date ->
+                            //dataStoreAPOD.saveLastDateToDataStore(date)
+                            viewModelShared.setDateToFind(date)
+                        }
+                    }
+                    if (storedDates.contains(dateToFind)) {
+                        dataStoreAPOD.saveReferenceDate(sdf.format(today.time))
+                        fetchResultsFromDatabase()
+                    } else {
+                        startDate.time = lastResultDateToCalendar.time
+                        firstRecentResultIndex += 10
+                        lastRecentResultIndex = firstRecentResultIndex + 11
+                        isAvailableLoadMoreRecentResults = true
+                    }
+
+                    /* En mantenimineto */
+
                     bottomNavigation = activity?.findViewById(R.id.bottom_navigation)!!
                     if (!bottomNavigation.isVisible) {
                         showBottomNavView()
                     }
-                    dataStoreAPOD.saveReferenceDate(sdf.format(today.time))
                 }
                 is Result.Failure -> {
                     binding.lottieLoading.visibility = View.GONE
+                    binding.layoutErrorNoResults.visibility = View.VISIBLE
                 }
             }
         })
+    }
+
+    private fun setDataInViewPager(recentResults: List<APOD>) {
+        adapterToday = TodayAdapter(recentResults, this, this, this, this)
+        binding.vpPhotoToday.adapter = adapterToday
     }
 
     private fun fetchResultsFromDatabase() {
@@ -255,6 +339,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                     if (!bottomNavigation.isVisible) {
                         showBottomNavView()
                     }
+                    dataStoreAPOD.saveReferenceDate(sdf.format(today.time))
                     dataStoreUtils.saveValueFirstTimeGetResults(1)
                     isNotFirstTimeGetResults = 1
                 }
@@ -271,6 +356,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
         viewModel.fetchMoreResults(end, start).observe(viewLifecycleOwner, {
             when (it) {
                 is Result.Loading -> {
+                    //Loading
                 }
                 is Result.Success -> {
                     moreResultsSuccess(it)
@@ -287,19 +373,32 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     }
 
     private fun moreResultsSuccess(it: Result.Success<List<APOD>>) {
-        bottomNavigation = activity?.findViewById(R.id.bottom_navigation)!!
-        isLoading = false
-        binding.lottieLoading.visibility = View.GONE
-        if (!::adapterToday.isInitialized) {
-            adapterToday = TodayAdapter(it.data, this, this, this, this)
-            binding.vpPhotoToday.adapter = adapterToday
-            if (!bottomNavigation.isVisible) {
-                showBottomNavView()
+        if (isNewDate && isAvailableLoadMoreRecentResults) {
+            Log.d("moreResults", "Entró al bloque de traer recientes. ")
+            val recentResults = it.data.take(lastRecentResultIndex)
+            val moreRecentResults = it.data.subList(firstRecentResultIndex, lastRecentResultIndex)
+            val lastResultDate = moreRecentResults[10].date
+            lastResultDateToCalendar.time = sdf.parse(lastResultDate)!!
+            lastResultDateToCalendar.add(Calendar.DATE, -1)
+            dateToFind = sdf.format(lastResultDateToCalendar.time)
+            viewModelShared.setDateToFind(dateToFind!!)
+            if (storedDates.contains(dateToFind)) {
+                isAvailableLoadMoreRecentResults = false
+                val total = recentResults + databaseResults
+                adapterToday.setData(total)
+                dataStoreAPOD.saveLastDateToDataStore(databaseResults[databaseResults.lastIndex].date)
+                dataStoreAPOD.saveReferenceDate(sdf.format(today.time))
+            } else {
+                adapterToday.setData(recentResults)
+                startDate.time = sdf.parse(lastResultDate)!!
+                firstRecentResultIndex += 10
+                lastRecentResultIndex = firstRecentResultIndex + 11
             }
         } else {
             adapterToday.setData(it.data)
             dataStoreAPOD.saveLastDateToDataStore(it.data[it.data.lastIndex].date)
         }
+        isLoading = false
     }
 
     private fun hideBottomNav() {
@@ -403,6 +502,10 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     }
 
     private fun loadMoreResults() {
+        Log.d(
+            "ViewPager",
+            "Posición acutal: ${binding.vpPhotoToday.currentItem}, tamaño del adaptador: ${adapterToday.itemCount} "
+        )
         if (!isLoading && binding.vpPhotoToday.currentItem >= adapterToday.itemCount - 7) {
             getMoreResults(newDates()[0], newDates()[1])
         }

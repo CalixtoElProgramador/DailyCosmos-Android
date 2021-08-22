@@ -11,6 +11,7 @@ class MainViewModel : ViewModel() {
     private val detailsArgs = MutableLiveData<DetailsArgs>()
     private val userHaveInternet = MutableLiveData<Boolean>()
     private val pictureArgs = MutableLiveData<PictureArgs>()
+    private val dateToFind = MutableLiveData<String>()
 
     fun setArgsToDetails(args: DetailsArgs) { detailsArgs.value = args }
     fun getArgsToDetails(): LiveData<DetailsArgs> = detailsArgs
@@ -20,6 +21,9 @@ class MainViewModel : ViewModel() {
 
     fun setArgsToPicture(args: PictureArgs) { pictureArgs.value = args }
     fun getArgsToPicture(): LiveData<PictureArgs> = pictureArgs
+
+    fun setDateToFind(date: String) { dateToFind.value = date }
+    fun getDateToFind(): LiveData<String> = dateToFind
 
 }
 

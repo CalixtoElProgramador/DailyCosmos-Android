@@ -20,6 +20,10 @@ class LocalAPODDataSource(private val apodDao: APODDao) {
         return apodDao.getResults().toAPODList()
     }
 
+    suspend fun getStoredDates(): List<String> {
+        return apodDao.getStoredDates()
+    }
+
     suspend fun saveAPOD(apodEntity: APODEntity) {
         apodDao.saveAPOD(apodEntity)
     }

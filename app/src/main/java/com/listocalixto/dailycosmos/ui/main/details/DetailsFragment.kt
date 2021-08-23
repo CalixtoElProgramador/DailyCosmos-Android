@@ -40,6 +40,7 @@ import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModel
 import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModelFactory
 import com.listocalixto.dailycosmos.presentation.preferences.TranslatorViewModel
 import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
+import com.listocalixto.dailycosmos.ui.main.APODTranslated
 import com.listocalixto.dailycosmos.ui.main.MainViewModel
 import com.listocalixto.dailycosmos.ui.main.PictureArgs
 import com.listocalixto.dailycosmos.ui.main.explore.adapter.ExploreAdapter
@@ -73,6 +74,8 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     private var adapterExplore: ExploreAdapter? = null
     private var isDownloadTheTranslator: Int = -1
     private var isFirstTimeToOpenImage: Int = -1
+    private var titleTranslated: String? = null
+    private var explanationTranslated: String? = null
 
     private lateinit var binding: FragmentDetailsBinding
     private lateinit var apodReceived: APOD
@@ -92,6 +95,10 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                 )
                 visibility = View.GONE
             }
+        }
+        viewModelShared.getAPODTranslated().value?.let { translation ->
+            titleTranslated = translation.title
+            explanationTranslated = translation.explanation
         }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -218,15 +225,27 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         translator: Translator,
         apod: APOD
     ) {
-        translator.translate(apod.title).addOnSuccessListener { titleTranslated ->
-            binding.textApodTitle.text = titleTranslated
+        translator.translate(apod.title).addOnSuccessListener { translation ->
+            binding.textApodTitle.text = translation
+            titleTranslated = translation
         }
 
-        translator.translate(apod.explanation).addOnSuccessListener { textTranslated ->
-            binding.textApodExplanation.text = textTranslated
+        translator.translate(apod.explanation).addOnSuccessListener { translation ->
+            binding.textApodExplanation.text = translation
+            explanationTranslated = translation
+            saveTranslationInViewModel()
             translator.close()
         }
+
         showTextViewShowOriginal()
+    }
+
+    private fun saveTranslationInViewModel() {
+        titleTranslated?.let { title ->
+            explanationTranslated?.let { explanation ->
+                viewModelShared.setAPODTranslated(APODTranslated(title, explanation))
+            }
+        }
     }
 
     private fun showTextViewShowOriginal() {
@@ -355,12 +374,20 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
     @SuppressLint("SetTextI18n")
     private fun setTexts() {
-        binding.textApodTitle.text = apodReceived.title
+        if (titleTranslated != null) {
+            binding.textApodTitle.text = titleTranslated
+        } else {
+            binding.textApodTitle.text = apodReceived.title
+        }
         binding.textApodDate.text = apodReceived.date
         if (apodReceived.explanation.isEmpty()) {
             binding.textApodExplanation.text = getString(R.string.no_description)
         } else {
-            binding.textApodExplanation.text = apodReceived.explanation
+            if (explanationTranslated != null) {
+                binding.textApodExplanation.text = explanationTranslated
+            } else {
+                binding.textApodExplanation.text = apodReceived.explanation
+            }
         }
         if (apodReceived.copyright.isEmpty()) {
             binding.textApodCopyright.text = getString(R.string.no_copyright)

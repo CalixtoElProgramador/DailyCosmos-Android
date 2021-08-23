@@ -53,6 +53,8 @@ class ExploreAdapter(
         diffResults.dispatchUpdatesTo(this)
     }
 
+    fun getData() = apodList
+
     private inner class APODViewHolder(val binding: ItemApodBinding, val context: Context) :
         BaseViewHolder<APOD>(binding.root) {
         @SuppressLint("SetTextI18n", "ResourceAsColor")

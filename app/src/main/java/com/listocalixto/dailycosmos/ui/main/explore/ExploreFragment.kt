@@ -36,8 +36,7 @@ import androidx.lifecycle.Observer
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.data.remote.favorites.RemoteAPODFavoriteDataSource
 import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
-import com.listocalixto.dailycosmos.ui.main.DetailsArgs
-import com.listocalixto.dailycosmos.ui.main.MainViewModel
+import com.listocalixto.dailycosmos.ui.main.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -60,11 +59,12 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         )
     }
 
-    private var thisMonthMilliseconds = MaterialDatePicker.thisMonthInUtcMilliseconds()
-    private var todayMilliseconds = MaterialDatePicker.todayInUtcMilliseconds()
+    private var firstDatePicker = MaterialDatePicker.thisMonthInUtcMilliseconds()
+    private var secondDatePicker = MaterialDatePicker.todayInUtcMilliseconds()
     private var isFirstSearch = -1
     private var isLoading = false
     private var isSearchResults = false
+    private var isExpandedAppBar = true
     private var startDate: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
         add(Calendar.DATE, -10)
     }
@@ -85,6 +85,22 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         savedInstanceState: Bundle?
     ): View? {
         bottomNavigation = activity?.findViewById(R.id.bottom_navigation)!!
+
+        viewModelShared.getAPODList().value?.let { list ->
+            adapter = ExploreAdapter(list.results, this@ExploreFragment)
+            exploreList = list.results
+        }
+        viewModelShared.isDisableLoadMoreResults().value?.let { answer ->
+            isSearchResults = answer.isSearchResults
+            isLoading = answer.isLoading
+        }
+        viewModelShared.isExpandedExploreAppBar().value?.let { answer ->
+            isExpandedAppBar = answer
+        }
+        viewModelShared.getDateRangePicker().value?.let { range ->
+            firstDatePicker = range.firstDate
+            secondDatePicker = range.secondDate
+        }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -93,6 +109,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         if (::bottomNavigation.isInitialized) {
             showBottomNavView(bottomNavigation)
         }
+        viewModelShared.setAPODTranslated(null)
     }
 
     private fun showBottomNavView(bottomNavigation: BottomNavigationView) {
@@ -110,6 +127,9 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentExplorerBinding.bind(view)
+        if (!isExpandedAppBar) {
+            binding.appBarExplorer.setExpanded(isExpandedAppBar)
+        }
         configRecyclerView()
         isAdapterInit()
         readFromDataStore()
@@ -165,6 +185,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                 is Result.Success -> {
                     exploreList = it.data
                     onSuccessResults(it)
+                    viewModelShared.setExpandedExploreAppBar(false)
                 }
                 is Result.Failure -> {
                     //Failure
@@ -212,7 +233,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         return MaterialDatePicker.Builder.dateRangePicker()
             .setTitleText(getString(R.string.data_picker_title))
             .setSelection(
-                Pair(thisMonthMilliseconds, todayMilliseconds)
+                Pair(firstDatePicker, secondDatePicker)
             ).setCalendarConstraints(constraintsBuilder.build())
             .build()
     }
@@ -270,8 +291,9 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
                 }
                 else -> {
                     getCalendarResults(sdf.format(firstDay.time), sdf.format(secondDay.time))
-                    thisMonthMilliseconds = dateRangePicker.selection?.first!!
-                    todayMilliseconds = dateRangePicker.selection?.second!!
+                    firstDatePicker = dateRangePicker.selection?.first!!
+                    secondDatePicker = dateRangePicker.selection?.second!!
+                    viewModelShared.setDateRangePicker(DateRangePicker(firstDatePicker, secondDatePicker))
                 }
             }
         }
@@ -317,8 +339,9 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
         })
     }
 
-    private fun setDataInRecyclerView(it: Result.Success<List<APOD>>) {
-        adapter = ExploreAdapter(it.data, this@ExploreFragment)
+    private fun setDataInRecyclerView(result: Result.Success<List<APOD>>) {
+        adapter = ExploreAdapter(result.data, this@ExploreFragment)
+        viewModelShared.setAPODList(APODList(result.data))
         binding.rvApod.adapter = adapter
     }
 
@@ -482,6 +505,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
 
     private fun onSuccessMoreResults(result: Result.Success<List<APOD>>) {
         adapter.setData(result.data)
+        viewModelShared.setAPODList(APODList(adapter.getData()))
         dataStore.saveLastDateToDataStore(result.data[result.data.lastIndex].date)
     }
 
@@ -522,5 +546,6 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     private fun isDisableLoadMoreResults(answer: Boolean) {
         isSearchResults = answer
         isLoading = answer
+        viewModelShared.setDisableLoadMoreResults(LoadMoreResults(answer, answer))
     }
 }

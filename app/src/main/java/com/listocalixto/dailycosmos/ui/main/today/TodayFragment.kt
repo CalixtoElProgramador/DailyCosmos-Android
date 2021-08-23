@@ -100,6 +100,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     private var isFirstTimeToOpenImage: Int = -1
     private var isNotFirstTimeGetResults: Int = -1
     private var delta: Int = 0
+    private var isFirstTimeOpenTheApp = true
     private var endDate = sdf.format(today.time)
     private var startDate = sdf.format(todayLeastTenDays.time)
 
@@ -122,6 +123,9 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
             endDate = dateRange.endDate
             startDate = dateRange.startDate
         }
+        viewModelShared.isFirstTimeOpen().value?.let { answer ->
+            isFirstTimeOpenTheApp = answer
+        }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -138,6 +142,9 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentTodayBinding.bind(view)
         configViewPager() //And loadMoreResults when ViewPager.currentItem == adapter.itemCount
+        if (!isFirstTimeOpenTheApp) {
+            isAdapterInit()
+        }
         readFromDataStore()
 
         binding.buttonReload.setOnClickListener {
@@ -163,7 +170,9 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
         }
         dataStoreUtils.readValueFirstTimeGetResults.observe(viewLifecycleOwner) {
             isNotFirstTimeGetResults = it
-            isAdapterInit()
+            if (isFirstTimeOpenTheApp) {
+                isAdapterInit()
+            }
         }
         dataStoreAPOD.readLastDateFromDataStore.observe(viewLifecycleOwner, { date ->
             dateOfLastResult.time = sdf.parse(date)!!
@@ -279,6 +288,8 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                     if (!bottomNavigation.isVisible) {
                         showBottomNavView()
                     }
+                    isFirstTimeOpenTheApp = false
+                    viewModelShared.setFirstTimeOpen(false)
                 }
                 is Result.Failure -> {
                     binding.lottieLoading.visibility = View.GONE
@@ -644,4 +655,10 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
         clipboard.setPrimaryClip(clip)
         showSnackbarMessage(getString(R.string.link_copied))
     }
+
+    override fun onDestroy() {
+        viewModelShared.setFirstTimeOpen(true)
+        super.onDestroy()
+    }
+
 }

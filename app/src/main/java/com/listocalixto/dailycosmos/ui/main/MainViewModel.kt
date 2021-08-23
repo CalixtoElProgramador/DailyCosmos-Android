@@ -14,6 +14,7 @@ class MainViewModel : ViewModel() {
     private val pictureArgs = MutableLiveData<PictureArgs>()
     private val delta = MutableLiveData<Int>()
     private val dateRange = MutableLiveData<DateRange>()
+    private val firstTimeOpen = MutableLiveData<Boolean>()
 
     fun setArgsToDetails(args: DetailsArgs) { detailsArgs.value = args }
     fun getArgsToDetails(): LiveData<DetailsArgs> = detailsArgs
@@ -29,6 +30,9 @@ class MainViewModel : ViewModel() {
 
     fun setDateRange(range: DateRange) { dateRange.value = range }
     fun getDateRange(): LiveData<DateRange> = dateRange
+
+    fun setFirstTimeOpen(answer: Boolean) { firstTimeOpen.value = answer }
+    fun isFirstTimeOpen(): LiveData<Boolean> = firstTimeOpen
 
 }
 

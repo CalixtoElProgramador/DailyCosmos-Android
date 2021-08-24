@@ -23,49 +23,25 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.mlkit.nl.translate.Translator
 import com.listocalixto.dailycosmos.R
-import com.listocalixto.dailycosmos.data.local.AppDatabase
-import com.listocalixto.dailycosmos.data.local.apod.LocalAPODDataSource
-import com.listocalixto.dailycosmos.data.local.favorites.LocalFavoriteDataSource
 import com.listocalixto.dailycosmos.data.model.APOD
-import com.listocalixto.dailycosmos.data.remote.apod.RemoteAPODDataSource
-import com.listocalixto.dailycosmos.data.remote.favorites.RemoteAPODFavoriteDataSource
 import com.listocalixto.dailycosmos.data.remote.translator.TranslatorDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentDetailsBinding
-import com.listocalixto.dailycosmos.domain.apod.APODRepositoryImpl
-import com.listocalixto.dailycosmos.domain.apod.RetrofitClient
-import com.listocalixto.dailycosmos.domain.favorites.FavoritesRepoImpl
 import com.listocalixto.dailycosmos.presentation.apod.APODViewModel
-import com.listocalixto.dailycosmos.presentation.apod.APODViewModelFactory
 import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModel
-import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModelFactory
 import com.listocalixto.dailycosmos.presentation.preferences.TranslatorViewModel
 import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
 import com.listocalixto.dailycosmos.ui.main.APODTranslated
 import com.listocalixto.dailycosmos.ui.main.MainViewModel
 import com.listocalixto.dailycosmos.ui.main.PictureArgs
 import com.listocalixto.dailycosmos.ui.main.explore.adapter.ExploreAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
 @Suppress("DEPRECATION")
+@AndroidEntryPoint
 class DetailsFragment : Fragment(R.layout.fragment_details) {
 
-    private val viewModel by activityViewModels<APODViewModel> {
-        APODViewModelFactory(
-            APODRepositoryImpl(
-                RemoteAPODDataSource(RetrofitClient.webservice),
-                LocalAPODDataSource(AppDatabase.getDatabase(requireContext()).apodDao()),
-                RemoteAPODFavoriteDataSource(),
-                LocalFavoriteDataSource(AppDatabase.getDatabase(requireContext()).favoriteDao())
-            )
-        )
-    }
-    private val viewModelFavorite by activityViewModels<APODFavoriteViewModel> {
-        APODFavoriteViewModelFactory(
-            FavoritesRepoImpl(
-                RemoteAPODFavoriteDataSource(),
-                LocalFavoriteDataSource(AppDatabase.getDatabase(requireContext()).favoriteDao())
-            )
-        )
-    }
+    private val viewModel by activityViewModels<APODViewModel>()
+    private val viewModelFavorite by activityViewModels<APODFavoriteViewModel>()
     private val dataStoreUtils by activityViewModels<UtilsViewModel>()
     private val dataStoreTranslator by activityViewModels<TranslatorViewModel>()
     private val viewModelShared by activityViewModels<MainViewModel>()

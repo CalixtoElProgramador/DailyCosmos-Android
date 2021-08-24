@@ -6,34 +6,31 @@ import android.os.Handler
 import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.View
-import android.view.WindowManager
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.listocalixto.dailycosmos.R
-import com.listocalixto.dailycosmos.data.remote.auth.AuthDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentRegister01Binding
 import com.listocalixto.dailycosmos.presentation.auth.AuthViewModel
-import com.listocalixto.dailycosmos.presentation.auth.AuthViewModelFactory
-import com.listocalixto.dailycosmos.domain.auth.AuthRepoImpl
 import com.listocalixto.dailycosmos.core.Result
+import com.listocalixto.dailycosmos.ui.auth.Person
+import com.listocalixto.dailycosmos.ui.auth.RegisterViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 @Suppress("DEPRECATION")
+@AndroidEntryPoint
 class Register01Fragment : Fragment(R.layout.fragment_register01) {
 
     private lateinit var binding: FragmentRegister01Binding
 
     private val patternEmail = Patterns.EMAIL_ADDRESS.toRegex()
-    private val viewModelShared: RegisterViewModel by activityViewModels()
-    private val viewModel by viewModels<AuthViewModel> {
-        AuthViewModelFactory(AuthRepoImpl(AuthDataSource()))
-    }
+    private val viewModelShared by activityViewModels<RegisterViewModel>()
+    private val viewModel by activityViewModels<AuthViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

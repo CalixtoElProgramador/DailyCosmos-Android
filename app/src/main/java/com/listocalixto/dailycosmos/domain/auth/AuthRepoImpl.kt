@@ -5,8 +5,9 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import com.listocalixto.dailycosmos.data.model.User
 import com.listocalixto.dailycosmos.data.remote.auth.AuthDataSource
+import javax.inject.Inject
 
-class AuthRepoImpl(private val dataSource: AuthDataSource) : AuthRepo {
+class AuthRepoImpl @Inject constructor (private val dataSource: AuthDataSource) : AuthRepo {
 
     override suspend fun singIn(email: String, password: String): FirebaseUser? {
         return dataSource.signIn(email, password)

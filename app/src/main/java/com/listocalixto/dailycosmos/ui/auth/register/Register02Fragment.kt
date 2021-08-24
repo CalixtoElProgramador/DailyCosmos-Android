@@ -3,7 +3,6 @@ package com.listocalixto.dailycosmos.ui.auth.register
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
-import android.view.WindowManager
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -11,12 +10,13 @@ import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.databinding.FragmentRegister02Binding
-
+import com.listocalixto.dailycosmos.ui.auth.Password
+import com.listocalixto.dailycosmos.ui.auth.RegisterViewModel
 
 class Register02Fragment : Fragment(R.layout.fragment_register02) {
 
     private lateinit var binding: FragmentRegister02Binding
-    private val viewModelShared: RegisterViewModel by activityViewModels()
+    private val viewModelShared by activityViewModels<RegisterViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

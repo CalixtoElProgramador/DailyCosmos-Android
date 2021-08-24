@@ -6,7 +6,9 @@ import androidx.navigation.fragment.NavHostFragment
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.databinding.ActivityAuthBinding
 import com.listocalixto.dailycosmos.databinding.ActivityRegisterGuestBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RegisterGuestActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegisterGuestBinding

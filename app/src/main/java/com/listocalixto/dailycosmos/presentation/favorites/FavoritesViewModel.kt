@@ -7,11 +7,14 @@ import androidx.lifecycle.viewModelScope
 import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.domain.favorites.FavoritesRepo
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import javax.inject.Inject
 
-class APODFavoriteViewModel(private val repo: FavoritesRepo) : ViewModel() {
+@HiltViewModel
+class APODFavoriteViewModel @Inject constructor (private val repo: FavoritesRepo) : ViewModel() {
 
     fun setAPODFavorite(apod: APOD) {
         viewModelScope.launch {
@@ -32,12 +35,5 @@ class APODFavoriteViewModel(private val repo: FavoritesRepo) : ViewModel() {
         } catch (e: Exception) {
             emit(Result.Failure(e))
         }
-    }
-}
-
-class APODFavoriteViewModelFactory(private val repo: FavoritesRepo) :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return modelClass.getConstructor(FavoritesRepo::class.java).newInstance(repo)
     }
 }

@@ -20,27 +20,21 @@ import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 import com.listocalixto.dailycosmos.application.AppConstants
-import com.listocalixto.dailycosmos.data.local.AppDatabase
-import com.listocalixto.dailycosmos.data.local.apod.LocalAPODDataSource
-import com.listocalixto.dailycosmos.data.remote.apod.RemoteAPODDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentExplorerBinding
 import com.listocalixto.dailycosmos.presentation.apod.APODViewModel
-import com.listocalixto.dailycosmos.presentation.apod.APODViewModelFactory
 import com.listocalixto.dailycosmos.presentation.preferences.APODDataStoreViewModel
-import com.listocalixto.dailycosmos.domain.apod.APODRepositoryImpl
-import com.listocalixto.dailycosmos.domain.apod.RetrofitClient
 import com.listocalixto.dailycosmos.ui.main.explore.adapter.ExploreAdapter
 import com.listocalixto.dailycosmos.core.Result
-import com.listocalixto.dailycosmos.data.local.favorites.LocalFavoriteDataSource
 import androidx.lifecycle.Observer
 import com.listocalixto.dailycosmos.data.model.APOD
-import com.listocalixto.dailycosmos.data.remote.favorites.RemoteAPODFavoriteDataSource
 import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
 import com.listocalixto.dailycosmos.ui.main.*
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Suppress("DEPRECATION")
+@AndroidEntryPoint
 class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnAPODClickListener {
 
     @SuppressLint("SimpleDateFormat")
@@ -48,16 +42,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     private val viewModelShared by activityViewModels<MainViewModel>()
     private val dataStore by activityViewModels<APODDataStoreViewModel>()
     private val dataStoreUtils by activityViewModels<UtilsViewModel>()
-    private val viewModel by activityViewModels<APODViewModel> {
-        APODViewModelFactory(
-            APODRepositoryImpl(
-                RemoteAPODDataSource(RetrofitClient.webservice),
-                LocalAPODDataSource(AppDatabase.getDatabase(requireContext()).apodDao()),
-                RemoteAPODFavoriteDataSource(),
-                LocalFavoriteDataSource(AppDatabase.getDatabase(requireContext()).favoriteDao())
-            )
-        )
-    }
+    private val viewModel by activityViewModels<APODViewModel>()
 
     private var firstDatePicker = MaterialDatePicker.thisMonthInUtcMilliseconds()
     private var secondDatePicker = MaterialDatePicker.todayInUtcMilliseconds()

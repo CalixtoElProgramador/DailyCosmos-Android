@@ -3,37 +3,32 @@ package com.listocalixto.dailycosmos.ui.auth.login
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
-import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.listocalixto.dailycosmos.R
-import com.listocalixto.dailycosmos.data.remote.auth.AuthDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentLoginBinding
 import com.listocalixto.dailycosmos.presentation.auth.AuthViewModel
-import com.listocalixto.dailycosmos.presentation.auth.AuthViewModelFactory
-import com.listocalixto.dailycosmos.domain.auth.AuthRepoImpl
-import com.listocalixto.dailycosmos.ui.auth.register.RegisterViewModel
+import com.listocalixto.dailycosmos.ui.auth.RegisterViewModel
 import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 @Suppress("DEPRECATION")
+@AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.fragment_login) {
 
     private val patternEmail = Patterns.EMAIL_ADDRESS.toRegex()
-    private lateinit var binding: FragmentLoginBinding
-    private val viewModelShared: RegisterViewModel by activityViewModels()
-    private val dataStoreUtils by viewModels<UtilsViewModel>()
-    private val viewModel by viewModels<AuthViewModel> {
-        AuthViewModelFactory(AuthRepoImpl(AuthDataSource()))
-    }
+    private val viewModelShared by activityViewModels<RegisterViewModel>()
+    private val dataStoreUtils by activityViewModels<UtilsViewModel>()
+    private val viewModel by activityViewModels<AuthViewModel>()
     private val firebaseAuth by lazy { FirebaseAuth.getInstance() }
+
+    private lateinit var binding: FragmentLoginBinding
 
     override fun onResume() {
         super.onResume()

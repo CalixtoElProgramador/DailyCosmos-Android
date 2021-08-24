@@ -3,8 +3,9 @@ package com.listocalixto.dailycosmos.data.remote.apod
 import com.listocalixto.dailycosmos.application.AppConstants
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.domain.apod.APODWebService
+import javax.inject.Inject
 
-class RemoteAPODDataSource(private val webService: APODWebService) {
+class RemoteAPODDataSource @Inject constructor (private val webService: APODWebService) {
 
     suspend fun getResults(endDate: String, startDate: String): List<APOD> = webService.getResults(
         AppConstants.API_KEY,

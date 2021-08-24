@@ -15,32 +15,21 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.core.Result
-import com.listocalixto.dailycosmos.data.local.AppDatabase
-import com.listocalixto.dailycosmos.data.local.favorites.LocalFavoriteDataSource
 import com.listocalixto.dailycosmos.data.model.FavoriteEntity
 import com.listocalixto.dailycosmos.data.model.toAPOD
-import com.listocalixto.dailycosmos.data.remote.favorites.RemoteAPODFavoriteDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentFavoritesBinding
 import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModel
-import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModelFactory
-import com.listocalixto.dailycosmos.domain.favorites.FavoritesRepoImpl
 import com.listocalixto.dailycosmos.ui.main.DetailsArgs
 import com.listocalixto.dailycosmos.ui.main.MainViewModel
 import com.listocalixto.dailycosmos.ui.main.favorites.adapter.FavoritesAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FavoritesFragment : Fragment(R.layout.fragment_favorites),
     FavoritesAdapter.OnFavoriteClickListener {
 
     private val viewModelShared by activityViewModels<MainViewModel>()
-    private val viewModel by activityViewModels<APODFavoriteViewModel> {
-        APODFavoriteViewModelFactory(
-            FavoritesRepoImpl(
-                RemoteAPODFavoriteDataSource(),
-                LocalFavoriteDataSource(AppDatabase.getDatabase(requireContext()).favoriteDao())
-            )
-        )
-    }
-
+    private val viewModel by activityViewModels<APODFavoriteViewModel>()
     private lateinit var binding: FragmentFavoritesBinding
     private lateinit var layoutManager: StaggeredGridLayoutManager
 

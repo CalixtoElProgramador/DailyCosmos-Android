@@ -8,30 +8,28 @@ import android.os.Bundle
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.View
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.listocalixto.dailycosmos.R
-import com.listocalixto.dailycosmos.data.remote.auth.AuthDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentRegister03Binding
 import com.listocalixto.dailycosmos.presentation.auth.AuthViewModel
-import com.listocalixto.dailycosmos.presentation.auth.AuthViewModelFactory
-import com.listocalixto.dailycosmos.domain.auth.AuthRepoImpl
 import com.listocalixto.dailycosmos.core.Result
+import com.listocalixto.dailycosmos.ui.auth.Password
+import com.listocalixto.dailycosmos.ui.auth.Person
+import com.listocalixto.dailycosmos.ui.auth.RegisterViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 const val REQUEST_IMAGE_CAPTURE = 1
 
 @Suppress("DEPRECATION")
+@AndroidEntryPoint
 class Register03Fragment : Fragment(R.layout.fragment_register03) {
 
-    private val viewModelShared: RegisterViewModel by activityViewModels()
-    private val viewModelFirebase by viewModels<AuthViewModel> {
-        AuthViewModelFactory(AuthRepoImpl(AuthDataSource()))
-    }
+    private val viewModelShared by activityViewModels<RegisterViewModel>()
+    private val viewModelFirebase by activityViewModels<AuthViewModel>()
 
     private var bitmap: Bitmap? = null
 

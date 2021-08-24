@@ -1,8 +1,9 @@
 package com.listocalixto.dailycosmos.data.local.apod
 
 import com.listocalixto.dailycosmos.data.model.*
+import javax.inject.Inject
 
-class LocalAPODDataSource(private val apodDao: APODDao) {
+class LocalAPODDataSource @Inject constructor (private val apodDao: APODDao) {
 
     suspend fun getResults(): List<APOD> {
         return apodDao.getResults().toAPODList()

@@ -1,4 +1,4 @@
-package com.listocalixto.dailycosmos.domain.apod
+    package com.listocalixto.dailycosmos.domain.apod
 
 import com.google.gson.GsonBuilder
 import com.listocalixto.dailycosmos.application.AppConstants
@@ -22,16 +22,5 @@ interface APODWebService {
         @Query("api_key") apiKey: String,
         @Query("count") count: String
     ): List<APOD>
-
-}
-
-object RetrofitClient {
-
-    val webservice by lazy {
-        Retrofit.Builder()
-            .baseUrl(AppConstants.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
-            .build().create(APODWebService::class.java)
-    }
 
 }

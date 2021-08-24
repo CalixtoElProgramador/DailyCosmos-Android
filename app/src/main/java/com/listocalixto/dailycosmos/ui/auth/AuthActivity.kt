@@ -14,7 +14,9 @@ import com.listocalixto.dailycosmos.databinding.ActivityAuthBinding
 import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
 import com.listocalixto.dailycosmos.ui.auth.welcome.WelcomeFragment
 import com.listocalixto.dailycosmos.ui.settings.SettingsActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AuthActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAuthBinding
@@ -51,8 +53,6 @@ class AuthActivity : AppCompatActivity() {
                         R.anim.fade_out_main
                     )
                     binding.buttonsRegister.visibility = View.GONE
-                }
-                else -> {
                 }
             }
         }

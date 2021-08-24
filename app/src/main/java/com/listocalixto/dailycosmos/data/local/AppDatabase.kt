@@ -9,13 +9,13 @@ import com.listocalixto.dailycosmos.data.local.favorites.FavoriteDao
 import com.listocalixto.dailycosmos.data.model.APODEntity
 import com.listocalixto.dailycosmos.data.model.FavoriteEntity
 
-@Database(entities = [APODEntity::class, FavoriteEntity::class], version = 1)
+@Database(entities = [APODEntity::class, FavoriteEntity::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun apodDao(): APODDao
     abstract fun favoriteDao(): FavoriteDao
 
-    companion object {
+    /*companion object {
         private var INSTANCE: AppDatabase? = null
 
         fun getDatabase(context: Context): AppDatabase {
@@ -31,5 +31,5 @@ abstract class AppDatabase : RoomDatabase() {
             INSTANCE = null
         }
 
-    }
+    }*/
 }

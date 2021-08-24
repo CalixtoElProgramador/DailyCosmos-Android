@@ -8,8 +8,9 @@ import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.data.model.FavoriteEntity
 import com.listocalixto.dailycosmos.data.model.toFavorite
 import com.listocalixto.dailycosmos.data.remote.favorites.RemoteAPODFavoriteDataSource
+import javax.inject.Inject
 
-class FavoritesRepoImpl(
+class FavoritesRepoImpl @Inject constructor(
     private val dataSourceRemote: RemoteAPODFavoriteDataSource,
     private val dataSourceLocalFav: LocalFavoriteDataSource
 ) :

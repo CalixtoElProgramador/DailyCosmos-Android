@@ -20,34 +20,25 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.listocalixto.dailycosmos.R
-import com.listocalixto.dailycosmos.data.local.AppDatabase
-import com.listocalixto.dailycosmos.data.local.apod.LocalAPODDataSource
-import com.listocalixto.dailycosmos.data.remote.apod.RemoteAPODDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentTodayBinding
 import com.listocalixto.dailycosmos.presentation.apod.APODViewModel
-import com.listocalixto.dailycosmos.presentation.apod.APODViewModelFactory
 import com.listocalixto.dailycosmos.presentation.preferences.APODDataStoreViewModel
-import com.listocalixto.dailycosmos.domain.apod.APODRepositoryImpl
-import com.listocalixto.dailycosmos.domain.apod.RetrofitClient
 import com.listocalixto.dailycosmos.ui.main.today.adapter.TodayAdapter
 import androidx.lifecycle.Observer
 import java.text.SimpleDateFormat
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.mlkit.nl.translate.Translator
 import com.listocalixto.dailycosmos.core.Result
-import com.listocalixto.dailycosmos.data.local.favorites.LocalFavoriteDataSource
 import com.listocalixto.dailycosmos.data.model.APOD
-import com.listocalixto.dailycosmos.data.remote.favorites.RemoteAPODFavoriteDataSource
 import com.listocalixto.dailycosmos.data.remote.translator.TranslatorDataSource
 import com.listocalixto.dailycosmos.databinding.ItemApodDailyBinding
 import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModel
-import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModelFactory
 import com.listocalixto.dailycosmos.presentation.preferences.TranslatorViewModel
-import com.listocalixto.dailycosmos.domain.favorites.FavoritesRepoImpl
 import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
 import com.listocalixto.dailycosmos.ui.main.DateRange
 import com.listocalixto.dailycosmos.ui.main.MainViewModel
 import com.listocalixto.dailycosmos.ui.main.PictureArgs
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.math.abs
@@ -56,6 +47,7 @@ private const val MIN_SCALE = 0.75f
 private const val MILLISECONDS_IN_A_DAY = 86400000
 
 @Suppress("DEPRECATION")
+@AndroidEntryPoint
 class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPODClickListener,
     ViewPager2.PageTransformer, TodayAdapter.OnFabClickListener,
     TodayAdapter.OnButtonClickListener, TodayAdapter.OnIconClickListener {
@@ -70,28 +62,12 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     private val todayLeastTenDays: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
         add(Calendar.DATE, -10)
     }
+    private val viewModel by activityViewModels<APODViewModel>()
+    private val viewModelFavorite by activityViewModels<APODFavoriteViewModel>()
     private val viewModelShared by activityViewModels<MainViewModel>()
     private val dataStoreAPOD by activityViewModels<APODDataStoreViewModel>()
     private val dataStoreTranslator by activityViewModels<TranslatorViewModel>()
     private val dataStoreUtils by activityViewModels<UtilsViewModel>()
-    private val viewModel by activityViewModels<APODViewModel> {
-        APODViewModelFactory(
-            APODRepositoryImpl(
-                RemoteAPODDataSource(RetrofitClient.webservice),
-                LocalAPODDataSource(AppDatabase.getDatabase(requireContext()).apodDao()),
-                RemoteAPODFavoriteDataSource(),
-                LocalFavoriteDataSource(AppDatabase.getDatabase(requireContext()).favoriteDao())
-            )
-        )
-    }
-    private val viewModelFavorite by activityViewModels<APODFavoriteViewModel> {
-        APODFavoriteViewModelFactory(
-            FavoritesRepoImpl(
-                RemoteAPODFavoriteDataSource(),
-                LocalFavoriteDataSource(AppDatabase.getDatabase(requireContext()).favoriteDao())
-            )
-        )
-    }
 
     private var isLoading = false
     private var isNewDate = false

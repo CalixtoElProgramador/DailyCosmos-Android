@@ -6,12 +6,15 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.model.APOD
-import com.listocalixto.dailycosmos.domain.apod.APODRepository
+import com.listocalixto.dailycosmos.domain.apod.APODRepo
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import javax.inject.Inject
 
-class APODViewModel(private val repo: APODRepository) : ViewModel() {
+@HiltViewModel
+class APODViewModel @Inject constructor (private val repo: APODRepo) : ViewModel() {
 
     fun fetchFirstTimeResults(endDate: String, startDate: String) = liveData(Dispatchers.IO) {
         emit(Result.Loading())
@@ -93,11 +96,5 @@ class APODViewModel(private val repo: APODRepository) : ViewModel() {
         viewModelScope.launch {
             repo.updateFavorite(apod, isFavorite)
         }
-    }
-}
-
-class APODViewModelFactory(private val repo: APODRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return modelClass.getConstructor(APODRepository::class.java).newInstance(repo)
     }
 }

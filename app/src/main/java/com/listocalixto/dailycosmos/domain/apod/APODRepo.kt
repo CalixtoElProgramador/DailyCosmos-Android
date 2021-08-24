@@ -4,7 +4,7 @@ import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.data.model.APODEntity
 import kotlinx.coroutines.flow.Flow
 
-interface APODRepository {
+interface APODRepo {
 
     suspend fun getFirstTimeResults(endDate: String, startDate: String): List<APOD>
     suspend fun getMoreResults(endDate: String, startDate: String): List<APOD>
@@ -14,6 +14,5 @@ interface APODRepository {
     suspend fun getDataFromDatabase(): List<APOD>
     suspend fun getCalendarResults(endDate: String, startDate: String): List<APOD>
     suspend fun updateFavorite(apod: APOD, isFavorite: Int)
-    //fun getAPOD(date: String): Flow<APOD>
 
 }

@@ -4,12 +4,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.listocalixto.dailycosmos.R
-import com.listocalixto.dailycosmos.databinding.ActivityMainBinding
 import com.listocalixto.dailycosmos.databinding.ActivitySettingsBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
@@ -34,7 +34,6 @@ class SettingsActivity : AppCompatActivity() {
             when(destination.id) {
                 R.id.helpFragment -> {setToolbarTitle(getString(R.string.help))}
                 R.id.settingsFragment -> {setToolbarTitle(getString(R.string.settings))}
-                else -> {}
             }
         }
     }

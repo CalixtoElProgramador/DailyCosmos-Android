@@ -14,23 +14,21 @@ import com.google.firebase.ktx.Firebase
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.model.User
-import com.listocalixto.dailycosmos.data.remote.auth.AuthDataSource
 import com.listocalixto.dailycosmos.databinding.FragmentSettingsBinding
-import com.listocalixto.dailycosmos.domain.auth.AuthRepoImpl
 import com.listocalixto.dailycosmos.presentation.auth.AuthViewModel
-import com.listocalixto.dailycosmos.presentation.auth.AuthViewModelFactory
 import com.listocalixto.dailycosmos.ui.settings.SettingsViewModel
-
+import dagger.hilt.android.AndroidEntryPoint
 
 @Suppress("DEPRECATION")
+@AndroidEntryPoint
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
-    private lateinit var binding: FragmentSettingsBinding
-    private var user: User? = null
     private val viewModelShared by activityViewModels<SettingsViewModel>()
-    private val viewModel by activityViewModels<AuthViewModel> {
-        AuthViewModelFactory(AuthRepoImpl(AuthDataSource()))
-    }
+    private val viewModel by activityViewModels<AuthViewModel>()
+
+    private var user: User? = null
+
+    private lateinit var binding: FragmentSettingsBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

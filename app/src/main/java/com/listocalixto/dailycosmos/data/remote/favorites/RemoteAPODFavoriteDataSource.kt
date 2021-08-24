@@ -8,8 +8,9 @@ import com.listocalixto.dailycosmos.data.model.toFavorite
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class RemoteAPODFavoriteDataSource {
+class RemoteAPODFavoriteDataSource @Inject constructor() {
 
     suspend fun setRemoteFavorite(apod: APOD) {
         val user = FirebaseAuth.getInstance().currentUser

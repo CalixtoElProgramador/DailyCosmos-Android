@@ -7,9 +7,12 @@ import androidx.lifecycle.liveData
 import com.listocalixto.dailycosmos.domain.auth.AuthRepo
 import kotlinx.coroutines.Dispatchers
 import com.listocalixto.dailycosmos.core.Result
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.lang.Exception
+import javax.inject.Inject
 
-class AuthViewModel(private val repo: AuthRepo) : ViewModel() {
+@HiltViewModel
+class AuthViewModel @Inject constructor (private val repo: AuthRepo) : ViewModel() {
 
     fun signIn(email: String, password: String) = liveData(Dispatchers.IO) {
         emit(Result.Loading())
@@ -54,10 +57,11 @@ class AuthViewModel(private val repo: AuthRepo) : ViewModel() {
     }
 
 }
+/*
 
 @Suppress("UNCHECKED_CAST")
 class AuthViewModelFactory(private val repo: AuthRepo) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return AuthViewModel(repo) as T
     }
-}
+}*/

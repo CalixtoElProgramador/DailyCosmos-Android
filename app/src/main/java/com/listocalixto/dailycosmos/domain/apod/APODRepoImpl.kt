@@ -9,13 +9,14 @@ import com.listocalixto.dailycosmos.data.model.toAPODEntity
 import com.listocalixto.dailycosmos.data.model.toFavorite
 import com.listocalixto.dailycosmos.data.remote.apod.RemoteAPODDataSource
 import com.listocalixto.dailycosmos.data.remote.favorites.RemoteAPODFavoriteDataSource
+import javax.inject.Inject
 
-class APODRepositoryImpl(
+class APODRepoImpl @Inject constructor (
     private val dataSourceRemote: RemoteAPODDataSource,
     private val dataSourceLocal: LocalAPODDataSource,
     private val dataSourceFireStore: RemoteAPODFavoriteDataSource,
     private val dataSourceLocalFavorites: LocalFavoriteDataSource
-) : APODRepository {
+) : APODRepo {
 
     override suspend fun getFirstTimeResults(endDate: String, startDate: String): List<APOD> {
         return if (InternetCheck.isNetworkAvailable()) {

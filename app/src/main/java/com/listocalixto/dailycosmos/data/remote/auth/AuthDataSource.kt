@@ -12,8 +12,9 @@ import com.google.firebase.storage.FirebaseStorage
 import com.listocalixto.dailycosmos.data.model.User
 import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayOutputStream
+import javax.inject.Inject
 
-class AuthDataSource {
+class AuthDataSource @Inject constructor() {
 
     suspend fun signIn(email: String, password: String): FirebaseUser? {
         val authResult =

@@ -25,14 +25,15 @@
 
         <activity android:name=".ui.auth.RegisterGuestActivity"
             android:screenOrientation="portrait"
+            android:exported="false"
             tools:ignore="LockedOrientationActivity"
             android:theme="@style/Theme.DailyCosmos.Login">
         </activity>
 
 
 
-        <activity android:name=".ui.settings.SettingsActivity">
-
+        <activity android:name=".ui.settings.SettingsActivity"
+            android:exported="false">
         </activity>
 
 
@@ -41,6 +42,7 @@
             android:name=".ui.auth.AuthActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme"
+            android:exported="true"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -53,6 +55,7 @@
 
         <activity
             android:name=".ui.main.MainActivity"
+            android:exported="false"
             android:theme="@style/Theme.DailyCosmos">
 
         </activity>

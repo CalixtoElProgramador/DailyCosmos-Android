@@ -2,7 +2,6 @@ package com.listocalixto.dailycosmos.presentation.auth
 
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.liveData
 import com.listocalixto.dailycosmos.domain.auth.AuthRepo
 import kotlinx.coroutines.Dispatchers
@@ -57,11 +56,3 @@ class AuthViewModel @Inject constructor (private val repo: AuthRepo) : ViewModel
     }
 
 }
-/*
-
-@Suppress("UNCHECKED_CAST")
-class AuthViewModelFactory(private val repo: AuthRepo) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return AuthViewModel(repo) as T
-    }
-}*/

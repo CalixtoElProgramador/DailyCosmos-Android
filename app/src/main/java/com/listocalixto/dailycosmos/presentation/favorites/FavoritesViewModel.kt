@@ -1,7 +1,6 @@
 package com.listocalixto.dailycosmos.presentation.favorites
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.listocalixto.dailycosmos.core.Result

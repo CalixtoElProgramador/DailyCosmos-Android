@@ -141,5 +141,7 @@
     <string name="verify_your_connection_internet">Verify your connection internet</string>
     <string name="data_picker_title">Select dates. Do not choose more than 31 days</string>
     <string name="dialog_message_create_an_account">Would you like to create an account and store your favorites in the cloud? It\'s free and it won\'t take more than five minutes.</string>
+    <string name="app_version">Version 1.0</string>
+    <string name="brand">&#169; 2021 ListoCalixto</string>
 
 </resources>

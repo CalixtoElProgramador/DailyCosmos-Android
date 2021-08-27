@@ -1,36 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.DailyCosmos" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryVariant">@color/colorSecondaryVariant</item>
-        <item name="colorOnPrimary">@color/colorOnPrimary</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/colorSecondary</item>
-        <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
-        <item name="colorOnSecondary">@color/colorOnSecondary</item>
-        <item name="colorSurface">@color/colorSurface</item>
 
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorSecondary">@color/colorTextSecondary</item>
+    <style name="Theme.DailyCosmos" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
+        <item name="colorPrimary">@color/primary_200</item>
+        <item name="colorPrimaryVariant">@color/primary_700</item>
+        <item name="colorSecondary">@color/secondary_200</item>
+        <item name="colorSecondaryVariant">@color/secondary_200</item>
+        <item name="colorTertiary">@color/tertiary_200</item>
+        <item name="colorTertiaryVariant">@color/tertiary_400</item>
+        <item name="background">@color/dark_grey</item>
+        <item name="colorSurface">@color/dark_grey</item>
+        <item name="colorError">@color/red_light</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorOnBackground">@color/white_alpha_87</item>
+        <item name="colorOnSurface">@color/white_alpha_87</item>
+        <item name="colorOnError">@color/black</item>
+
+        <item name="variationAlpha100">@color/white</item>
+        <item name="variationAlpha87">@color/white_alpha_87</item>
+        <item name="variationAlpha74">@color/white_alpha_74</item>
+        <item name="variationAlpha60">@color/white_alpha_60</item>
+        <item name="variationAlpha38">@color/white_alpha_38</item>
+        <item name="variationAlpha12">@color/white_alpha_12</item>
+        <item name="variationAlpha00">@color/black</item>
+
+        <item name="backgroundToolbar">@color/dark_grey_alpha_91</item>
+        <item name="colorPrimaryCalendar">@color/tertiary_200</item>
 
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="android:windowTranslucentStatus">true</item>
+
     </style>
 
     <style name="SplashTheme" parent="Theme.DailyCosmos">
         <item name="android:windowBackground">@drawable/splash_screen</item>
-    </style>
-
-    <style name="Widget.App.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
-        <item name="materialThemeOverlay">@style/ThemeOverlay.App.BottomNavigationView</item>
-    </style>
-
-    <style name="ThemeOverlay.App.BottomNavigationView" parent="">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorOnPrimary">@color/colorSecondary</item>
     </style>
 
 </resources>

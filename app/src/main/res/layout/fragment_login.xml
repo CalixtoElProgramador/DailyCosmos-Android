@@ -4,29 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_login_1_light"
+    android:background="@drawable/background_light_login"
     tools:context=".ui.auth.login.LoginFragment">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/_40sdp"
-        android:layout_marginBottom="@dimen/_24sdp"
-        android:fontFamily="@font/quicksand_light"
-        android:includeFontPadding="false"
-        android:text="@string/login"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline2"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_60sdp"
-        app:layout_constraintBottom_toTopOf="@id/inputLayout_email"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <View
-        android:id="@+id/guideline_02"
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:layout_marginEnd="@dimen/_16sdp"
-        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inputLayout_email"
@@ -47,7 +26,6 @@
             android:id="@+id/input_email"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fontFamily="@font/dosis_regular"
             android:includeFontPadding="false"
             android:inputType="textEmailAddress"
             android:singleLine="true"
@@ -71,7 +49,6 @@
         android:layout_marginStart="@dimen/_32sdp"
         android:layout_marginTop="@dimen/_8sdp"
         android:layout_marginEnd="@dimen/_32sdp"
-        android:fontFamily="@font/dosis_bold"
         android:hint="@string/password"
         android:includeFontPadding="false"
         app:boxCornerRadiusBottomEnd="@dimen/_16sdp"
@@ -85,7 +62,6 @@
             android:id="@+id/input_password"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fontFamily="@font/dosis_regular"
             android:includeFontPadding="false"
             android:inputType="textPassword"
             android:singleLine="true"
@@ -99,10 +75,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_40sdp"
-        android:backgroundTint="#E650B1"
-        android:fontFamily="@font/dosis_bold"
         android:text="@string/sign_in"
-        android:textColor="@color/white"
+        android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Button"
+        android:textColor="?attr/variationAlpha00"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/inputLayout_password" />
@@ -114,7 +89,6 @@
         android:textSize="@dimen/_10sdp"
         android:padding="@dimen/_8sdp"
         android:text="@string/enter_anonymously"
-        android:textColor="@color/colorTextSecondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/button_signIn" />
@@ -134,19 +108,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/don_t_have_an_account"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-            android:textColor="@color/colorSecondaryLogin"
-            android:textSize="@dimen/_10sdp" />
+            android:textColor="?attr/colorSecondary"
+            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Caption" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_4sdp"
             android:text="@string/register"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-            android:textColor="#7d7d7d"
-            android:textSize="@dimen/_10sdp"
-            android:textStyle="bold" />
+            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Caption" />
 
     </LinearLayout>
 

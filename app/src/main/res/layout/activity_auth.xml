@@ -31,9 +31,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/back"
-            android:textColor="@color/colorPrimaryLogin"
-            app:backgroundTint="@color/colorBackgroundLogin"
-            app:strokeColor="@color/colorPrimaryLogin"
+            android:backgroundTint="?attr/background"
+            app:strokeColor="?attr/colorPrimary"
+            android:textColor="?attr/colorPrimary"
+            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Button"
             app:strokeWidth="@dimen/_1sdp" />
 
         <View
@@ -45,8 +46,9 @@
             android:id="@+id/button_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="?attr/variationAlpha00"
             android:text="@string/next"
-            android:textColor="@color/colorBackgroundLogin" />
+            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Button" />
 
     </LinearLayout>
 

@@ -40,22 +40,17 @@
                 android:layout_marginBottom="@dimen/_8sdp"
                 android:text="@string/supporting_text_item_apod"
                 android:textAlignment="center"
-                android:textAppearance="?attr/textAppearanceCaption"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/_8sdp" />
+                android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Overline"
+                android:textColor="?attr/colorPrimary" />
 
             <TextView
                 android:id="@+id/title_itemAPOD"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:fontFamily="@font/pt_sans_bold"
                 android:text="@string/title_item_apod"
                 android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                android:textSize="@dimen/_24ssp"
-                android:textStyle="bold" />
-
+                android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Headline5" />
 
         </LinearLayout>
 
@@ -65,20 +60,18 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:orientation="horizontal"
-            android:paddingTop="@dimen/_16sdp"
             android:paddingStart="@dimen/_16sdp"
+            android:paddingTop="@dimen/_16sdp"
             android:paddingEnd="@dimen/_16sdp"
             android:paddingBottom="@dimen/_24sdp">
 
             <TextView
                 android:id="@+id/textCopyright"
-                style="@style/TextAppearance.MaterialComponents.Caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:lineSpacingExtra="@dimen/_2sdp"
                 android:gravity="center"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/_11ssp"
+                android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Overline"
+                android:textColor="?attr/colorPrimary"
                 tools:text="Copyright: Aarón Calixto" />
 
         </LinearLayout>

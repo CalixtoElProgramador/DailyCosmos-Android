@@ -1,12 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="TextAppearance.App.CollapsingToolbar.Expanded" parent="TextAppearance.MaterialComponents.Headline5">
-        <item name="android:textColor">?attr/colorOnPrimary</item>
+    <style name="TextAppearance.DailyCosmosTypography.Headline1" parent="TextAppearance.MaterialComponents.Headline1">
+        <item name="fontFamily">@font/lato_light</item>
+        <item name="android:fontFamily">@font/lato_light</item>
+        <item name="android:textSize">101sp</item>
+        <item name="android:textColor">?attr/variationAlpha87</item>
+        + <item name="android:letterSpacing">-0.014851485138515</item>
     </style>
 
-    <style name="TextAppearance.App.CollapsingToolbar.Collapsed" parent="TextAppearance.MaterialComponents.Headline6">
-        <item name="android:textColor">?attr/colorOnPrimary</item>
+    <style name="TextAppearance.DailyCosmosTypography.Headline2" parent="TextAppearance.MaterialComponents.Headline2">
+        <item name="fontFamily">@font/lato_light</item>
+        <item name="android:fontFamily">@font/lato_light</item>
+        <item name="android:textSize">63sp</item>
+        <item name="android:textColor">?attr/variationAlpha87</item>
+        + <item name="android:letterSpacing">-0.007936507936508</item>
+    </style>
+
+    <style name="TextAppearance.DailyCosmosTypography.Headline3" parent="TextAppearance.MaterialComponents.Headline3">
+        <item name="fontFamily">@font/lato_regular</item>
+        <item name="android:fontFamily">@font/lato_regular</item>
+        <item name="android:textSize">50sp</item>
+        <item name="android:textColor">?attr/variationAlpha87</item>
+        + <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="TextAppearance.DailyCosmosTypography.Headline4" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="fontFamily">@font/lato_regular</item>
+        <item name="android:fontFamily">@font/lato_regular</item>
+        <item name="android:textSize">36sp</item>
+        <item name="android:textColor">?attr/variationAlpha87</item>
+        + <item name="android:letterSpacing">0.006944444444444</item>
+    </style>
+
+    <style name="TextAppearance.DailyCosmosTypography.Headline5" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="fontFamily">@font/lato_regular</item>
+        <item name="android:fontFamily">@font/lato_regular</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:textColor">?attr/variationAlpha87</item>
+        + <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="TextAppearance.DailyCosmosTypography.Headline6" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="fontFamily">@font/lato_regular</item>
+        <item name="android:fontFamily">@font/lato_regular</item>
+        <item name="android:textSize">21sp</item>
+        <item name="android:textColor">?attr/variationAlpha87</item>
+        + <item name="android:letterSpacing">0.007142857142857</item>
+    </style>
+
+    <style name="TextAppearance.DailyCosmosTypography.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="fontFamily">@font/lato</item>
+        <item name="android:fontFamily">@font/lato</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">?attr/variationAlpha87</item>
+        + <item name="android:letterSpacing">0.008823529411765</item>
+    </style>
+
+    <style name="TextAppearance.DailyCosmosTypography.Subtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="fontFamily">@font/lato</item>
+        <item name="android:fontFamily">@font/lato</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">?attr/variationAlpha87</item>
+        + <item name="android:letterSpacing">0.006666666666667</item>
+    </style>
+
+    <style name="TextAppearance.DailyCosmosTypography.Body1" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="fontFamily">@font/source_sans_pro</item>
+        <item name="android:fontFamily">@font/source_sans_pro</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">?attr/variationAlpha60</item>
+        + <item name="android:letterSpacing">0.029411764705882</item>
+    </style>
+
+    <style name="TextAppearance.DailyCosmosTypography.Body2" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="fontFamily">@font/source_sans_pro</item>
+        <item name="android:fontFamily">@font/source_sans_pro</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">?attr/variationAlpha60</item>
+        + <item name="android:letterSpacing">0.016666666666667</item>
+    </style>
+
+    <style name="TextAppearance.DailyCosmosTypography.Button" parent="TextAppearance.MaterialComponents.Button">
+        <item name="fontFamily">@font/source_sans_pro_semibold</item>
+        <item name="android:fontFamily">@font/source_sans_pro_semibold</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">?attr/variationAlpha00</item>
+        + <item name="android:letterSpacing">0.083333333333333</item>
+    </style>
+
+    <style name="TextAppearance.DailyCosmosTypography.Caption" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="fontFamily">@font/source_sans_pro</item>
+        <item name="android:fontFamily">@font/source_sans_pro</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">?attr/variationAlpha87</item>
+        + <item name="android:letterSpacing">0.030769230769231</item>
+    </style>
+
+    <style name="TextAppearance.DailyCosmosTypography.Overline" parent="TextAppearance.MaterialComponents.Overline">
+        <item name="fontFamily">@font/source_sans_pro</item>
+        <item name="android:fontFamily">@font/source_sans_pro</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textColor">?attr/variationAlpha87</item>
+        + <item name="android:letterSpacing">0.136363636363636</item>
     </style>
 
 </resources>

@@ -57,8 +57,7 @@
             android:gravity="center"
             android:text="@string/press_the_button_below_to_try_again"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-            android:textColor="@color/colorTextSecondary" />
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonReload"
@@ -72,9 +71,6 @@
             android:layout_width="@dimen/_180sdp"
             android:layout_height="wrap_content"
             android:text="@string/use_without_internet"
-            android:textColor="@color/colorSecondary"
-            app:backgroundTint="@color/colorBackground"
-            app:strokeColor="@color/colorSecondary"
             android:layout_marginBottom="@dimen/_8sdp"
             app:strokeWidth="@dimen/_1sdp" />
 

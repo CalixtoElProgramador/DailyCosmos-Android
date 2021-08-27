@@ -26,6 +26,7 @@ import com.listocalixto.dailycosmos.presentation.preferences.APODDataStoreViewMo
 import com.listocalixto.dailycosmos.ui.main.explore.adapter.ExploreAdapter
 import com.listocalixto.dailycosmos.core.Result
 import androidx.lifecycle.Observer
+import com.google.android.material.color.MaterialColors
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
 import com.listocalixto.dailycosmos.ui.main.*
@@ -136,7 +137,8 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
             getRandomResults()
         }
         else -> {
-            false
+            showSnackbarMessage(getString(R.string.available_to_future_versions))
+            true
         }
     }
 
@@ -220,6 +222,7 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
             .setSelection(
                 Pair(firstDatePicker, secondDatePicker)
             ).setCalendarConstraints(constraintsBuilder.build())
+            .setTheme(R.style.ThemeOverlay_DailyCosmos_DatePicker)
             .build()
     }
 
@@ -286,9 +289,18 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
 
     @SuppressLint("ShowToast")
     private fun showErrorSnackbarMessage(message: String) {
+        val colorError = MaterialColors.getColor(requireView(), R.attr.colorError)
         Snackbar.make(binding.topAppBar, message, Snackbar.LENGTH_LONG)
             .setAnchorView(bottomNavigation)
-            .setBackgroundTint(requireContext().resources.getColor(R.color.colorError))
+            .setBackgroundTint(colorError)
+            .show()
+    }
+
+    @SuppressLint("ShowToast")
+    private fun showSnackbarMessage(message: String) {
+        val colorError = MaterialColors.getColor(requireView(), R.attr.colorError)
+        Snackbar.make(binding.topAppBar, message, Snackbar.LENGTH_LONG)
+            .setAnchorView(bottomNavigation)
             .show()
     }
 
@@ -416,10 +428,6 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     private fun readFromDataStore() {
         dataStore.readLastDateFromDataStore.observe(viewLifecycleOwner, { date ->
             startDate.time = sdf.parse(date)!!
-            if (sdf.format(referenceDate.time) == sdf.format(startDate.time)) {
-                binding.titleCollapsingToolBar.text =
-                    getString(R.string.title_explore_collapsing_toolbar)
-            }
         })
         dataStoreUtils.readValueSearch.observe(viewLifecycleOwner, {
             isFirstSearch = it

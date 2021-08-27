@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_dark_page_02"
+    android:background="@drawable/background_light_welcome_page_02"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".ui.auth.welcome.pages.WelcomeFragmentPage02">
@@ -30,8 +30,7 @@
             android:layout_height="wrap_content"
             android:text="@string/welcome_page_02_title"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-            android:textColor="@color/white" />
+            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Headline4" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -39,8 +38,7 @@
             android:layout_marginTop="@dimen/_4sdp"
             android:text="@string/welcome_page_02_subtitle"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-            android:textColor="@color/colorTextSecondary" />
+            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body2" />
 
     </LinearLayout>
 

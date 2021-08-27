@@ -64,8 +64,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:singleLine="true"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
-                            android:textColor="@color/colorTextPrimary"
+                            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Headline5"
                             tools:text="Aarón Calixto" />
 
                         <TextView
@@ -73,8 +72,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:singleLine="true"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                            android:textColor="@color/colorTextSecondary"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
                             tools:text="aaron.calixto@outlook.com" />
 
                     </LinearLayout>
@@ -88,7 +86,7 @@
                 android:id="@+id/guideline_01"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="@color/colorIcons"
+                android:background="?attr/variationAlpha12"
                 app:layout_constraintTop_toBottomOf="@+id/card_profile" />
 
             <com.google.android.material.card.MaterialCardView
@@ -133,16 +131,14 @@
                             android:layout_height="wrap_content"
                             android:singleLine="true"
                             android:text="@string/notifications"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                            android:textColor="@color/colorTextPrimary" />
+                            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Subtitle1" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:singleLine="true"
                             android:text="@string/notifications_subtitle"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                            android:textColor="@color/colorTextSecondary" />
+                            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body2" />
 
                     </LinearLayout>
 
@@ -192,16 +188,14 @@
                             android:layout_height="wrap_content"
                             android:singleLine="true"
                             android:text="@string/storage"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                            android:textColor="@color/colorTextPrimary" />
+                            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Subtitle1" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:singleLine="true"
                             android:text="@string/storage_subtitle"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                            android:textColor="@color/colorTextSecondary" />
+                            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body2" />
 
                     </LinearLayout>
 
@@ -252,16 +246,14 @@
                             android:layout_height="wrap_content"
                             android:singleLine="true"
                             android:text="@string/appearance"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                            android:textColor="@color/colorTextPrimary" />
+                            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Subtitle1" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:singleLine="true"
                             android:text="@string/appearance_subtitle"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                            android:textColor="@color/colorTextSecondary" />
+                            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body2" />
 
                     </LinearLayout>
 
@@ -311,16 +303,14 @@
                             android:layout_height="wrap_content"
                             android:singleLine="true"
                             android:text="@string/help"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                            android:textColor="@color/colorTextPrimary" />
+                            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Subtitle1" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:singleLine="true"
                             android:text="@string/help_subtitle"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-                            android:textColor="@color/colorTextSecondary" />
+                            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body2" />
 
                     </LinearLayout>
 
@@ -332,7 +322,7 @@
                 android:id="@+id/guideline_02"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="@color/colorIcons"
+                android:background="?attr/variationAlpha12"
                 app:layout_constraintTop_toBottomOf="@+id/card_help" />
 
             <com.google.android.material.card.MaterialCardView
@@ -377,8 +367,7 @@
                             android:layout_height="wrap_content"
                             android:singleLine="true"
                             android:text="@string/share_with_friends"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                            android:textColor="@color/colorTextPrimary" />
+                            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Subtitle1" />
 
                     </LinearLayout>
 
@@ -428,8 +417,7 @@
                             android:layout_height="wrap_content"
                             android:singleLine="true"
                             android:text="@string/rate_us"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-                            android:textColor="@color/colorTextPrimary" />
+                            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Subtitle1" />
 
                     </LinearLayout>
 
@@ -444,6 +432,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_16sdp"
                 android:text="@string/sign_out"
+                android:backgroundTint="?attr/colorTertiary"
+                android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Button"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/card_rate_us" />
@@ -456,7 +446,7 @@
                 android:layout_marginTop="@dimen/_16sdp"
                 android:gravity="center"
                 android:text="@string/from"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Caption"
                 app:layout_constraintTop_toBottomOf="@id/buttonSignOut" />
 
             <TextView
@@ -465,8 +455,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/listo_calixto"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                android:textColor="@color/colorTextPrimary"
+                android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Overline"
                 android:textSize="@dimen/_11ssp"
                 android:textStyle="bold"
                 app:layout_constraintTop_toBottomOf="@+id/text_from" />

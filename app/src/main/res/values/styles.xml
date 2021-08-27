@@ -20,4 +20,56 @@
         <item name="cornerSizeBottomRight">0dp</item>
     </style>
 
+    <style name="ThemeOverlay.DailyCosmos.DatePicker" parent="@style/ThemeOverlay.MaterialComponents.MaterialCalendar.Fullscreen">
+        <item name="colorPrimary">?attr/colorPrimaryCalendar</item>
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.DatePickerRange.SmallComponent</item>
+        <item name="textInputStyle">@style/Widget.DailyCosmos.TextInputLayout</item>
+    </style>
+
+    <style name="ShapeAppearance.DatePickerRange.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">cut</item>
+    </style>
+
+    <style name="Widget.DailyCosmos.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.DailyCosmos.TextInputLayout</item>
+        <item name="hintTextColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="ThemeOverlay.DailyCosmos.TextInputLayout" parent="">
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.DailyCosmosTypography.Body2
+        </item>
+        <item name="textAppearanceCaption">@style/TextAppearance.DailyCosmosTypography.Caption
+        </item>
+        <item name="editTextStyle">@style/Widget.DailyCosmos.TextInputEditText</item>
+    </style>
+
+    <style name="Widget.DailyCosmos.TextInputEditText" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="hintTextAppearance">@style/TextAppearance.DailyCosmosTypography.Subtitle2</item>
+    </style>
+
+    <style name="Widget.Settings.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Settings.Toolbar</item>
+        <item name="titleTextAppearance">@style/TextAppearance.DailyCosmosTypography.Headline6</item>
+        <item name="subtitleTextAppearance">@style/TextAppearance.DailyCosmosTypography.Subtitle1</item>
+    </style>
+
+    <style name="ThemeOverlay.Settings.Toolbar" parent="">
+        <item name="colorPrimary">?attr/colorTertiary</item>
+        <item name="colorPrimaryVariant">?attr/colorTertiaryVariant</item>
+        <item name="colorOnPrimary">?attr/variationAlpha00</item>
+    </style>
+
+    <style name="Widget.Explore.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Explore.Toolbar</item>
+        <item name="titleTextAppearance">@style/TextAppearance.DailyCosmosTypography.Headline6</item>
+        <item name="subtitleTextAppearance">@style/TextAppearance.DailyCosmosTypography.Subtitle1</item>
+    </style>
+
+    <style name="ThemeOverlay.Explore.Toolbar" parent="">
+        <item name="colorPrimary">?attr/colorTertiary</item>
+        <item name="colorPrimaryVariant">?attr/colorTertiaryVariant</item>
+        <item name="colorOnPrimary">?attr/variationAlpha00</item>
+    </style>
+
+
 </resources>

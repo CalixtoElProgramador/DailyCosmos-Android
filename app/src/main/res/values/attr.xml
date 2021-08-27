@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr format="color" name="colorTertiary"/>
+    <attr format="color" name="colorTertiaryVariant"/>
+
+    <attr format="color" name="variationAlpha100"/>
+    <attr format="color" name="variationAlpha87"/>
+    <attr format="color" name="variationAlpha74"/>
+    <attr format="color" name="variationAlpha60"/>
+    <attr format="color" name="variationAlpha38"/>
+    <attr format="color" name="variationAlpha12"/>
+    <attr format="color" name="variationAlpha00"/>
+
+    <attr format="color" name="backgroundToolbar"/>
+    <attr format="color" name="colorPrimaryCalendar"/>
+
+</resources>

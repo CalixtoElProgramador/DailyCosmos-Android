@@ -14,47 +14,35 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/quicksand_regular"
-        android:includeFontPadding="false"
         android:text="@string/create_a_password"
-        android:textColor="@color/colorTextPrimary"
-        android:textSize="@dimen/_24ssp" />
+        android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Headline3" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_8sdp"
-        android:fontFamily="@font/dosis_regular"
-        android:includeFontPadding="false"
-        android:lineSpacingExtra="@dimen/_2sdp"
         android:text="@string/subtitle_register02"
-        android:textColor="@color/colorTextSecondary"
-        android:textSize="@dimen/_13ssp" />
+        android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body1" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inputLayout_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_16sdp"
-        app:boxStrokeColor="#E650B1"
-        app:boxStrokeErrorColor="@color/colorErrorLogin"
+        android:layout_marginTop="@dimen/_24sdp"
+        android:hint="@string/password"
         app:counterEnabled="true"
         app:endIconMode="password_toggle"
         app:errorIconDrawable="@drawable/ic_error"
-        app:errorIconTint="@color/colorErrorLogin"
-        app:errorTextColor="@color/colorErrorLogin"
-        app:hintTextColor="#E650B1"
+        app:hintTextAppearance="@style/TextAppearance.DailyCosmosTypography.Subtitle2"
         app:startIconDrawable="@drawable/ic_lock">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/input_password"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fontFamily="@font/dosis_regular"
-            android:hint="@string/password"
-            android:includeFontPadding="false"
             android:inputType="textPassword"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body2" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -62,26 +50,21 @@
         android:id="@+id/inputLayout_passwordConfirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_16sdp"
-        app:boxStrokeColor="#E650B1"
-        app:boxStrokeErrorColor="@color/colorErrorLogin"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:hint="@string/confirm_password"
         app:counterEnabled="true"
         app:endIconMode="password_toggle"
         app:errorIconDrawable="@drawable/ic_error"
-        app:errorIconTint="@color/colorErrorLogin"
-        app:errorTextColor="@color/colorErrorLogin"
-        app:hintTextColor="#E650B1"
+        app:hintTextAppearance="@style/TextAppearance.DailyCosmosTypography.Subtitle2"
         app:startIconDrawable="@drawable/ic_lock_outline">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/input_passwordConfirm"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fontFamily="@font/dosis_regular"
-            android:hint="@string/confirm_password"
-            android:includeFontPadding="false"
             android:inputType="textPassword"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body2" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

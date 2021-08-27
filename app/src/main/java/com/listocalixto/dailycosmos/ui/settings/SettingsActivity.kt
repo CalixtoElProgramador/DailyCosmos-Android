@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import com.google.android.material.color.MaterialColors
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.databinding.ActivitySettingsBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,6 +35,7 @@ class SettingsActivity : AppCompatActivity() {
             when(destination.id) {
                 R.id.helpFragment -> {setToolbarTitle(getString(R.string.help))}
                 R.id.settingsFragment -> {setToolbarTitle(getString(R.string.settings))}
+                R.id.appInfoFragment -> {setToolbarTitle(getString(R.string.application_info))}
             }
         }
     }
@@ -43,9 +45,10 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun configWindow() {
+        val statusBarColor = MaterialColors.getColor(binding.root, R.attr.background)
         this.window?.addFlags((WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS))
         this.window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        this.window?.statusBarColor = this.resources.getColor(R.color.colorPrimaryVariant)
+        this.window?.statusBarColor = statusBarColor
     }
 
 }

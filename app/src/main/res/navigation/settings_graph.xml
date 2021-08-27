@@ -42,10 +42,22 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_helpFragment_to_appInfoFragment"
+            app:destination="@id/appInfoFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/contactMeFragment"
         android:name="com.listocalixto.dailycosmos.ui.settings.help.contact_me.ContactMeFragment"
         android:label="fragment_contact_me"
         tools:layout="@layout/fragment_contact_me" />
+    <fragment
+        android:id="@+id/appInfoFragment"
+        android:name="com.listocalixto.dailycosmos.ui.settings.help.app_info.AppInfoFragment"
+        android:label="fragment_app_info"
+        tools:layout="@layout/fragment_app_info" />
 </navigation>

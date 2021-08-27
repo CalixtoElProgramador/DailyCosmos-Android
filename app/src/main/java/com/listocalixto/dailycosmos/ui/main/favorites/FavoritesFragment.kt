@@ -41,6 +41,7 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentFavoritesBinding.bind(view)
+        viewModelShared.setAPODTranslated(null)
         layoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
         binding.rvFavorites.layoutManager = layoutManager
         getAllFavorites()

@@ -22,7 +22,7 @@
         android:title="@string/design"
         app:showAsAction="never">
 
-        <menu>
+        <!--<menu>
 
             <item
                 android:id="@+id/staggered"
@@ -35,7 +35,7 @@
                 app:showAsAction="never" />
 
 
-        </menu>
+        </menu>-->
 
     </item>
 
@@ -45,7 +45,7 @@
         android:title="@string/sort_by"
         app:showAsAction="never">
 
-        <menu>
+        <!--<menu>
 
             <item
                 android:id="@+id/newFirst"
@@ -57,7 +57,7 @@
                 android:title="@string/old_first"
                 app:showAsAction="never" />
 
-        </menu>
+        </menu>-->
 
     </item>
 

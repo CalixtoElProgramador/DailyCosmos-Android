@@ -1,26 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- Primary brand color. -->
-    <color name="colorPrimary">#2DD18E</color>
-    <color name="colorPrimaryVariant">#009f60</color>
-    <color name="colorOnPrimary">@color/black</color>
+    <color name="primary_900">#001FE7</color>
+    <color name="primary_800">#3D1EEC</color>
+    <color name="primary_700">#621EF1</color>
+    <color name="primary_600">#821DF9</color>
+    <color name="primary_500">#9719FF</color>
+    <color name="primary_400">#A945FF</color>
+    <color name="primary_300">#BA69FF</color>
+    <color name="primary_200">#CF96FF</color>
+    <color name="primary_100">#E2C0FF</color>
+    <color name="primary_50">#F4E6FF</color>
+
     <!-- Secondary brand color. -->
-    <color name="colorSecondary">#E31369</color>
-    <color name="colorSecondaryVariant">#A10547</color>
-    <color name="colorOnSecondary">#FFF</color>
+    <color name="secondary_900">#E45313</color>
+    <color name="secondary_800">#EE6C15</color>
+    <color name="secondary_700">#F47C16</color>
+    <color name="secondary_600">#FB8C18</color>
+    <color name="secondary_500">#FF9819</color>
+    <color name="secondary_400">#FFA630</color>
+    <color name="secondary_300">#FFB653</color>
+    <color name="secondary_200">#FFCC83</color>
+    <color name="secondary_100">#FFE0B4</color>
+    <color name="secondary_50">#FFF3E1</color>
 
-    <color name="colorBackground">#FFF</color>
-    <color name="colorSurface">#FFFFFF</color>
+    <!-- Tertiary brand color. -->
+    <color name="tertiary_900">#9B0059</color>
+    <color name="tertiary_800">#C2005E</color>
+    <color name="tertiary_700">#D70061</color>
+    <color name="tertiary_600">#EE0065</color>
+    <color name="tertiary_500">#FF0068</color>
+    <color name="tertiary_400">#FF1981</color>
+    <color name="tertiary_300">#FF5499</color>
+    <color name="tertiary_200">#FF89B7</color>
+    <color name="tertiary_100">#FEB9D4</color>
+    <color name="tertiary_50">#FFE3EE</color>
 
-    <color name="colorBackgroundDetail">#FFFFFF</color>
+    <!-- Fundamentals. -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="dark_grey">#121212</color>
+    <color name="red">#B00020</color>
+    <color name="red_light">#E14646</color>
 
-    <color name="colorError">#B00020</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Variations of black in background #FFFFFF -->
+    <color name="black_alpha_87">#212121</color>
+    <color name="black_alpha_74">#424242</color>
+    <color name="black_alpha_60">#666666</color>
+    <color name="black_alpha_38">#9E9E9E</color>
+    <color name="black_alpha_12">#E0E0E0</color>
 
-    <color name="colorWarning">#E5BE01</color>
-    <color name="colorTextPrimary">#212121</color>
-    <color name="colorTextSecondary">#757575</color>
-    <color name="colorIcons">#A4A4A4</color>
+    <!-- Variations of white in background #121212 -->
+    <color name="white_alpha_87">#E0E0E0</color>
+    <color name="white_alpha_74">#C1C1C1</color>
+    <color name="white_alpha_60">#A0A0A0</color>
+    <color name="white_alpha_38">#6C6C6C</color>
+    <color name="white_alpha_12">#2E2E2E</color>
+
+    <!-- Elevation 4dp #212121 -->
+    <color name="dark_grey_alpha_91">#262626</color>
 
 </resources>

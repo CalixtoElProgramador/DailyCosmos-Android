@@ -31,9 +31,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/back"
-            android:textColor="@color/colorPrimaryLogin"
-            app:backgroundTint="@color/colorBackgroundLogin"
-            app:strokeColor="@color/colorPrimaryLogin"
             app:strokeWidth="@dimen/_1sdp" />
 
         <View
@@ -45,8 +42,7 @@
             android:id="@+id/button_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/next"
-            android:textColor="@color/colorBackgroundLogin" />
+            android:text="@string/next" />
 
     </LinearLayout>
 

@@ -21,22 +21,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DailyCosmos">
 
-
-
         <activity android:name=".ui.auth.RegisterGuestActivity"
             android:screenOrientation="portrait"
             android:exported="false"
-            tools:ignore="LockedOrientationActivity"
-            android:theme="@style/Theme.DailyCosmos.Login">
+            tools:ignore="LockedOrientationActivity">
         </activity>
-
-
 
         <activity android:name=".ui.settings.SettingsActivity"
             android:exported="false">
         </activity>
-
-
 
         <activity
             android:name=".ui.auth.AuthActivity"
@@ -51,8 +44,6 @@
             </intent-filter>
         </activity>
 
-
-
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="false"
@@ -60,6 +51,9 @@
 
         </activity>
 
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
 
 
     </application>

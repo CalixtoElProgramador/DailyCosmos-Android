@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
     tools:context=".ui.settings.SettingsActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -15,7 +14,7 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
-            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            style="@style/Widget.MaterialComponents.Toolbar.Surface"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/ic_arrow_back"
@@ -23,9 +22,18 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <View
+        android:id="@+id/guideline_03"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="?attr/variationAlpha12"
+        app:layout_anchorGravity="bottom"
+        app:layout_anchor="@+id/appBar_main"/>
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_settings"
         android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_marginTop="0.5dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"

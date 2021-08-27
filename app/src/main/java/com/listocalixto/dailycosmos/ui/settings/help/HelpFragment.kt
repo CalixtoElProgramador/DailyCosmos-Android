@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.databinding.FragmentHelpBinding
@@ -17,7 +18,12 @@ class HelpFragment : Fragment(R.layout.fragment_help) {
         binding = FragmentHelpBinding.bind(view)
 
         binding.cardContactMe.setOnClickListener { navigateToContactMeFragment() }
+        binding.cardAppInfo.setOnClickListener { navigateToAppInfoFragment() }
 
+    }
+
+    private fun navigateToAppInfoFragment() {
+        findNavController().navigate(R.id.action_helpFragment_to_appInfoFragment)
     }
 
     private fun navigateToContactMeFragment() {

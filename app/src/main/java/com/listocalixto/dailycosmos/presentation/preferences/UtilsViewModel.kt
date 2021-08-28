@@ -1,16 +1,16 @@
 package com.listocalixto.dailycosmos.presentation.preferences
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.listocalixto.dailycosmos.data.datastore.UtilsDataStore
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class UtilsViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val dataStore = UtilsDataStore(application)
+@HiltViewModel
+class UtilsViewModel @Inject constructor(private val dataStore: UtilsDataStore) : ViewModel() {
 
     val readValue = dataStore.readValue.asLiveData()
 

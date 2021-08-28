@@ -95,7 +95,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
 
     //DataStore
-    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha04"
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
 
     //Concat Adapter
     implementation "androidx.recyclerview:recyclerview:1.2.1"

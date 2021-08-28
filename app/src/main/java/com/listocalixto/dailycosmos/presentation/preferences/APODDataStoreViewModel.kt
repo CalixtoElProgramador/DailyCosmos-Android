@@ -1,14 +1,14 @@
 package com.listocalixto.dailycosmos.presentation.preferences
 
-import android.app.Application
 import androidx.lifecycle.*
 import com.listocalixto.dailycosmos.data.datastore.APODDataStore
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class APODDataStoreViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val repo = APODDataStore(application)
+@HiltViewModel
+class APODDataStoreViewModel @Inject constructor(private val repo: APODDataStore) : ViewModel() {
 
     val readLastDateFromDataStore = repo.readLastDateFromDataStore.asLiveData()
     fun saveLastDateToDataStore(newStarDate: String) = viewModelScope.launch(Dispatchers.IO) {

@@ -8,7 +8,13 @@ object AppConstants {
     const val EMAIL = ""
     const val PASSWORD = ""
 
-    const val STORE_LAST_DATE = "preferences_01"
-    const val STORE_REFERENCE_DATE = "preferences_store_reference_date"
+    const val KEY_STORE_LAST_DATE = "preferences_01"
+    const val KEY_STORE_REFERENCE_DATE = "preferences_store_reference_date"
+    const val KEY_STORE_IS_MODEL_DOWNLOADED = "preferences_03"
+    const val KEY_STORE_DIALOG_CAUTION_OPEN_IMAGE = "preferences_04"
+    const val KEY_STORE_IS_THE_FIRST_SEARCH = "preferences_is_the_first_search"
+    const val KEY_STORE_IS_THE_FIRST_TIME_ON_THE_APP = "preferences_is_the_first_time_in_the_app"
+    const val KEY_STORE_IS_THE_FIRST_TIME_GET_RESULTS = "preferences_first_time_get_results"
+
 
 }

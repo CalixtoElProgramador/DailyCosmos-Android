@@ -348,7 +348,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     private fun showErrorSnackbarMessage(message: String) {
         Snackbar.make(binding.vpPhotoToday, message, Snackbar.LENGTH_LONG)
             .setAnchorView(bottomNavigation)
-            .setBackgroundTint(requireContext().resources.getColor(R.color.red))
+            .setBackgroundTint(requireContext().resources.getColor(R.color.red_alpha_100))
             .show()
     }
 

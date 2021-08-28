@@ -3,6 +3,7 @@ package com.listocalixto.dailycosmos.di
 import android.content.Context
 import androidx.room.Room
 import com.google.gson.GsonBuilder
+import com.listocalixto.dailycosmos.BaseApplication
 import com.listocalixto.dailycosmos.application.AppConstants
 import com.listocalixto.dailycosmos.data.local.AppDatabase
 import com.listocalixto.dailycosmos.domain.apod.APODWebService
@@ -45,5 +46,9 @@ object AppModule {
     @Singleton
     @Provides
     fun provideWebService(retrofit: Retrofit): APODWebService = retrofit.create(APODWebService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideApplication(@ApplicationContext app: Context): BaseApplication = app as BaseApplication
 
 }

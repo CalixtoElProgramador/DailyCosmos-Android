@@ -12,7 +12,7 @@
     <item
         android:id="@+id/calendar"
         android:enabled="true"
-        android:icon="@drawable/ic_calendar"
+        android:icon="@drawable/ic_date_range"
         android:title="@string/calendar"
         app:showAsAction="ifRoom" />
 

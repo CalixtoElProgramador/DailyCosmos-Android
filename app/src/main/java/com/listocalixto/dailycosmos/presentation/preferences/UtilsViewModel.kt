@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.listocalixto.dailycosmos.data.local.preferences.UtilsDataStore
+import com.listocalixto.dailycosmos.data.datastore.UtilsDataStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

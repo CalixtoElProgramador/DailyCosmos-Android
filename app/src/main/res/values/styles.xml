@@ -22,6 +22,7 @@
 
     <style name="ThemeOverlay.DailyCosmos.DatePicker" parent="@style/ThemeOverlay.MaterialComponents.MaterialCalendar.Fullscreen">
         <item name="colorPrimary">?attr/colorPrimaryCalendar</item>
+        <item name="colorSurface">?attr/backgroundTertiary</item>
         <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.DatePickerRange.SmallComponent</item>
         <item name="textInputStyle">@style/Widget.DailyCosmos.TextInputLayout</item>
     </style>
@@ -69,6 +70,15 @@
         <item name="colorPrimary">?attr/colorTertiary</item>
         <item name="colorPrimaryVariant">?attr/colorTertiaryVariant</item>
         <item name="colorOnPrimary">?attr/variationAlpha00</item>
+    </style>
+
+    <style name="Widget.DailyCosmos.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.DailyCosmos.BottomNavigationView</item>
+    </style>
+
+    <style name="ThemeOverlay.DailyCosmos.BottomNavigationView" parent="">
+        <item name="colorPrimary">?attr/colorPrimaryBottomNav</item>
+        <item name="colorOnPrimary">?attr/colorOnPrimaryBottomNav</item>
     </style>
 
 

@@ -47,7 +47,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
         binding.cardNotifications.setOnClickListener { showSnackbarMessage(getString(R.string.available_to_future_versions)) }
         binding.cardStorage.setOnClickListener { showSnackbarMessage(getString(R.string.available_to_future_versions)) }
-        binding.cardBrush.setOnClickListener { showSnackbarMessage(getString(R.string.available_to_future_versions)) }
+        binding.cardBrush.setOnClickListener { navigateToAppearance() }
         binding.cardHelp.setOnClickListener { navigateToHelp() }
 
         binding.cardPeople.setOnClickListener { showSnackbarMessage(getString(R.string.available_to_future_versions)) }
@@ -55,6 +55,10 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
         binding.buttonSignOut.setOnClickListener { signOut() }
 
+    }
+
+    private fun navigateToAppearance() {
+        findNavController().navigate(R.id.action_settingsFragment_to_appearanceFragment)
     }
 
     private fun showSnackbarMessage(message: String) {

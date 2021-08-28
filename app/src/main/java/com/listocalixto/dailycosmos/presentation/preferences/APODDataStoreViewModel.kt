@@ -2,7 +2,7 @@ package com.listocalixto.dailycosmos.presentation.preferences
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.listocalixto.dailycosmos.data.local.preferences.APODDataStore
+import com.listocalixto.dailycosmos.data.datastore.APODDataStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="bottom"
+    android:background="?attr/background"
     tools:context=".ui.main.favorites.FavoritesFragment">
 
     <com.airbnb.lottie.LottieAnimationView
@@ -23,11 +24,11 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        android:paddingEnd="@dimen/_16sdp"
         android:layout_marginBottom="@dimen/_8sdp"
         android:clipToPadding="false"
         android:layoutDirection="rtl"
         android:paddingTop="@dimen/_32sdp"
+        android:paddingEnd="@dimen/_16sdp"
         android:paddingBottom="?attr/actionBarSize"
         android:text="@string/hello_blank_fragment"
         tools:ignore="RtlSymmetry" />

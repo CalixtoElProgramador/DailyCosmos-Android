@@ -9,9 +9,11 @@
         <item name="colorSecondaryVariant">@color/secondary_200</item>
         <item name="colorTertiary">@color/tertiary_200</item>
         <item name="colorTertiaryVariant">@color/tertiary_400</item>
-        <item name="background">@color/dark_grey</item>
-        <item name="colorSurface">@color/dark_grey</item>
-        <item name="colorError">@color/red_light</item>
+        <item name="background">@color/dark_gray_primary</item>
+        <item name="colorSurface">@color/dark_gray_primary</item>
+        <item name="backgroundSecondary">@color/dark_gray_secondary</item>
+        <item name="backgroundTertiary">@color/dark_gray_tertiary</item>
+        <item name="colorError">@color/red_alpha_70</item>
         <item name="colorOnPrimary">@color/black</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="colorOnBackground">@color/white_alpha_87</item>
@@ -26,8 +28,12 @@
         <item name="variationAlpha12">@color/white_alpha_12</item>
         <item name="variationAlpha00">@color/black</item>
 
-        <item name="backgroundToolbar">@color/dark_grey_alpha_91</item>
+        <item name="backgroundToolbar">@color/dark_gray_alpha_91</item>
         <item name="colorPrimaryCalendar">@color/tertiary_200</item>
+
+        <!-- Bottom Navigation Theme. -->
+        <item name="colorPrimaryBottomNav">@color/dark_gray_alpha_88</item>
+        <item name="colorOnPrimaryBottomNav">@color/primary_200</item>
 
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>

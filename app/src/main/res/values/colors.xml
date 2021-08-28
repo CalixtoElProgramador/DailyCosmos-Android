@@ -40,9 +40,9 @@
     <!-- Fundamentals. -->
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
-    <color name="dark_grey">#121212</color>
-    <color name="red">#B00020</color>
-    <color name="red_light">#E14646</color>
+    <color name="dark_gray">#121212</color>
+
+
 
     <!-- Variations of black in background #FFFFFF -->
     <color name="black_alpha_87">#212121</color>
@@ -58,7 +58,17 @@
     <color name="white_alpha_38">#6C6C6C</color>
     <color name="white_alpha_12">#2E2E2E</color>
 
-    <!-- Elevation 4dp #212121 -->
-    <color name="dark_grey_alpha_91">#262626</color>
+    <!-- Variations of red in background #FFFFFF -->
+    <color name="red_alpha_100">#B00020</color>
+    <color name="red_alpha_70">#C84C63</color>
+
+    <!-- Variations of dark gray -->
+    <color name="dark_gray_primary">#201B25</color>
+    <color name="dark_gray_secondary">#25211B</color>
+    <color name="dark_gray_tertiary">#251C1F</color>
+
+    <!-- Elevation #212121 -->
+    <color name="dark_gray_alpha_91">#343039</color>
+    <color name="dark_gray_alpha_88">#3B363F</color>
 
 </resources>

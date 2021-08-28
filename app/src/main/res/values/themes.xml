@@ -8,10 +8,12 @@
         <item name="colorSecondary">@color/secondary_500</item>
         <item name="colorSecondaryVariant">@color/secondary_700</item>
         <item name="colorTertiary">@color/tertiary_400</item>
-        <item name="colorTertiaryVariant">@color/tertiary_600</item>
+        <item name="colorTertiaryVariant">@color/tertiary_700</item>
         <item name="background">@color/white</item>
         <item name="colorSurface">@color/white</item>
-        <item name="colorError">@color/red</item>
+        <item name="backgroundSecondary">@color/white</item>
+        <item name="backgroundTertiary">@color/white</item>
+        <item name="colorError">@color/red_alpha_100</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="colorOnBackground">@color/black_alpha_87</item>
@@ -28,6 +30,10 @@
 
         <item name="backgroundToolbar">@color/white</item>
         <item name="colorPrimaryCalendar">@color/tertiary_400</item>
+
+        <!-- Bottom Navigation Theme. -->
+        <item name="colorPrimaryBottomNav">@color/white</item>
+        <item name="colorOnPrimaryBottomNav">@color/primary_500</item>
 
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>

@@ -1,4 +1,4 @@
-package com.listocalixto.dailycosmos.data.local.preferences
+package com.listocalixto.dailycosmos.data.datastore
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.preferencesKey
 import androidx.datastore.preferences.createDataStore
+import com.listocalixto.dailycosmos.application.AppConstants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -16,9 +17,6 @@ import kotlinx.coroutines.flow.map
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-
-const val STORE_LAST_DATE = "preferences_01"
-const val STORE_REFERENCE_DATE = "preferences_store_reference_date"
 
 @SuppressLint("SimpleDateFormat")
 private val sdf = SimpleDateFormat("yyyy-MM-dd")
@@ -31,9 +29,9 @@ class APODDataStore(context: Context) {
     }
 
     private val storeLastDate: DataStore<Preferences> =
-        context.createDataStore(name = STORE_LAST_DATE)
+        context.createDataStore(name = AppConstants.STORE_LAST_DATE)
     private val storeReferenceDate: DataStore<Preferences> =
-        context.createDataStore(name = STORE_REFERENCE_DATE)
+        context.createDataStore(name = AppConstants.STORE_REFERENCE_DATE)
 
     // STORE LAST DATE //
     suspend fun saveLastDateToDataStore(newStarDate: String) {

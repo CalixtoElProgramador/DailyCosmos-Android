@@ -8,4 +8,7 @@ object AppConstants {
     const val EMAIL = ""
     const val PASSWORD = ""
 
+    const val STORE_LAST_DATE = "preferences_01"
+    const val STORE_REFERENCE_DATE = "preferences_store_reference_date"
+
 }

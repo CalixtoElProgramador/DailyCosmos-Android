@@ -24,6 +24,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_settingsFragment_to_appearanceFragment"
+            app:destination="@id/appearanceFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <activity
         android:id="@+id/authActivity"
@@ -60,4 +67,9 @@
         android:name="com.listocalixto.dailycosmos.ui.settings.help.app_info.AppInfoFragment"
         android:label="fragment_app_info"
         tools:layout="@layout/fragment_app_info" />
+    <fragment
+        android:id="@+id/appearanceFragment"
+        android:name="com.listocalixto.dailycosmos.ui.settings.appearance.AppearanceFragment"
+        android:label="fragment_appearance"
+        tools:layout="@layout/fragment_appearance" />
 </navigation>

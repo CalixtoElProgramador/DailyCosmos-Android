@@ -1,4 +1,4 @@
-package com.listocalixto.dailycosmos.data.local.preferences
+package com.listocalixto.dailycosmos.data.datastore
 
 import android.content.Context
 import android.util.Log

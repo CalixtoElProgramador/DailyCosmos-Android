@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context=".ui.main.details.DetailsFragment">
+    android:background="?attr/backgroundSecondary"
+    android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar_details"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_300sdp"
-        android:background="?attr/background"
+        android:background="?attr/backgroundSecondary"
         android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout

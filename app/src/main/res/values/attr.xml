@@ -3,6 +3,8 @@
 
     <attr format="color" name="colorTertiary"/>
     <attr format="color" name="colorTertiaryVariant"/>
+    <attr format="color" name="backgroundSecondary"/>
+    <attr format="color" name="backgroundTertiary"/>
 
     <attr format="color" name="variationAlpha100"/>
     <attr format="color" name="variationAlpha87"/>
@@ -14,5 +16,7 @@
 
     <attr format="color" name="backgroundToolbar"/>
     <attr format="color" name="colorPrimaryCalendar"/>
+    <attr format="color" name="colorPrimaryBottomNav"/>
+    <attr format="color" name="colorOnPrimaryBottomNav"/>
 
 </resources>

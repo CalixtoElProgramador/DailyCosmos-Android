@@ -1,5 +1,6 @@
 package com.listocalixto.dailycosmos.ui.auth.login
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
@@ -9,7 +10,13 @@ import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.color.MaterialColors
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.databinding.FragmentLoginBinding
 import com.listocalixto.dailycosmos.presentation.auth.AuthViewModel
@@ -17,6 +24,7 @@ import com.listocalixto.dailycosmos.ui.auth.RegisterViewModel
 import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.Exception
 
 @Suppress("DEPRECATION")
 @AndroidEntryPoint
@@ -116,14 +124,38 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 }
                 is Result.Failure -> {
                     isEnabledViews(true)
-                    Toast.makeText(
-                        requireContext(),
-                        "Error: ${result.exception}",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    when(result.exception) {
+                        is FirebaseAuthInvalidCredentialsException -> {
+                            showErrorSnackbarMessage(getString(R.string.error_incorrect_password))
+                        }
+                        is FirebaseAuthInvalidUserException -> {
+                            showErrorSnackbarMessage(getString(R.string.error_unregistered_email))
+                        }
+                        is FirebaseTooManyRequestsException -> {
+                            showErrorSnackbarMessage(getString(R.string.error_too_many_requests))
+                        }
+                        is FirebaseNetworkException -> {
+                            showErrorSnackbarMessage(getString(R.string.error_internet_connection_login))
+                        }
+                        else -> {
+                            showErrorSnackbarMessage(getString(R.string.error_something_went_wrong))
+                        }
+                    }
+                    Log.d("Failure", "Error in login: ${result.exception} ")
+
                 }
             }
         })
+    }
+
+    @SuppressLint("ShowToast")
+    private fun showErrorSnackbarMessage(message: String) {
+        val colorError = MaterialColors.getColor(requireView(), R.attr.colorError)
+        Snackbar.make(binding.textSingInAnon, message, Snackbar.LENGTH_INDEFINITE)
+            .setDuration(5000)
+            .setAnchorView(binding.layoutTextRegister)
+            .setBackgroundTint(colorError)
+            .show()
     }
 
     private fun navigateToMainActivity() {

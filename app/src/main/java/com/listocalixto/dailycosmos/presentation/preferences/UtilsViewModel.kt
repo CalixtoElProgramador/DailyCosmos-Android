@@ -33,4 +33,9 @@ class UtilsViewModel @Inject constructor(private val dataStore: UtilsDataStore) 
         dataStore.saveValueFirstTimeGetResults(value)
     }
 
+    val isDarkThemeActivated = dataStore.isDarkThemeActivated.asLiveData()
+    fun setDarkThemeActivated(answer: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        dataStore.setDarkTheme(answer)
+    }
+
 }

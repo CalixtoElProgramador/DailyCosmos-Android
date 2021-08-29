@@ -23,15 +23,42 @@ class UtilsDataStore @Inject constructor(private val context: Application) {
         val isFirstSearch = intPreferencesKey("is_the_first_search")
         val isFirstTime = intPreferencesKey("is_the_first_time_on_the_app")
         val isFirstTimeGetResults = intPreferencesKey("is_the_first_time_get_results")
+        val isDarkThemeActivated = booleanPreferencesKey("is_dark_theme_activated")
     }
 
     private val Context.storeIsAccepted: DataStore<Preferences> by preferencesDataStore(AppConstants.KEY_STORE_DIALOG_CAUTION_OPEN_IMAGE)
     private val Context.isFirstSearch: DataStore<Preferences> by preferencesDataStore(AppConstants.KEY_STORE_IS_THE_FIRST_SEARCH)
     private val Context.isFirstTime: DataStore<Preferences> by preferencesDataStore(AppConstants.KEY_STORE_IS_THE_FIRST_TIME_ON_THE_APP)
-    private val Context.isFirstTimeGetResults: DataStore<Preferences> by preferencesDataStore(AppConstants.KEY_STORE_IS_THE_FIRST_TIME_GET_RESULTS)
+    private val Context.isFirstTimeGetResults: DataStore<Preferences> by preferencesDataStore(
+        AppConstants.KEY_STORE_IS_THE_FIRST_TIME_GET_RESULTS
+    )
+    private val Context.isDarkThemeActivated: DataStore<Preferences> by preferencesDataStore(
+        AppConstants.KEY_STORE_IS_DARK_THEME_ACTIVATED
+    )
+
+    suspend fun setDarkTheme(answer: Boolean) {
+        context.isDarkThemeActivated.edit { preferences ->
+            preferences[PreferencesKeys.isDarkThemeActivated] = answer
+        }
+    }
+
+    val isDarkThemeActivated: Flow<Boolean> = context.isDarkThemeActivated.data.distinctUntilChanged()
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }
+        .map { preferences ->
+            val darkTheme = preferences[PreferencesKeys.isDarkThemeActivated] ?: false
+            darkTheme
+        }
 
     suspend fun saveValue(value: Int) {
-        context.storeIsAccepted.edit { preferences -> preferences[PreferencesKeys.isAccepted] = value }
+        context.storeIsAccepted.edit { preferences ->
+            preferences[PreferencesKeys.isAccepted] = value
+        }
         Log.d("DataStore", "The answer has been saved: $value")
     }
 
@@ -49,7 +76,9 @@ class UtilsDataStore @Inject constructor(private val context: Application) {
         }
 
     suspend fun saveValueSearch(value: Int) {
-        context.isFirstSearch.edit { preferences -> preferences[PreferencesKeys.isFirstSearch] = value }
+        context.isFirstSearch.edit { preferences ->
+            preferences[PreferencesKeys.isFirstSearch] = value
+        }
         Log.d("DataStore", "isFirstSearch: $value")
     }
 
@@ -84,20 +113,23 @@ class UtilsDataStore @Inject constructor(private val context: Application) {
         }
 
     suspend fun saveValueFirstTimeGetResults(value: Int) {
-        context.isFirstTimeGetResults.edit { preferences -> preferences[PreferencesKeys.isFirstTimeGetResults] = value }
+        context.isFirstTimeGetResults.edit { preferences ->
+            preferences[PreferencesKeys.isFirstTimeGetResults] = value
+        }
     }
 
-    val readValueFirstTimeGetResults: Flow<Int> = context.isFirstTimeGetResults.data.distinctUntilChanged()
-        .catch { exception ->
-            if (exception is IOException) {
-                emit(emptyPreferences())
-            } else {
-                throw exception
+    val readValueFirstTimeGetResults: Flow<Int> =
+        context.isFirstTimeGetResults.data.distinctUntilChanged()
+            .catch { exception ->
+                if (exception is IOException) {
+                    emit(emptyPreferences())
+                } else {
+                    throw exception
+                }
             }
-        }
-        .map { preferences ->
-            val value = preferences[PreferencesKeys.isFirstTimeGetResults] ?: 0
-            value
-        }
+            .map { preferences ->
+                val value = preferences[PreferencesKeys.isFirstTimeGetResults] ?: 0
+                value
+            }
 
 }

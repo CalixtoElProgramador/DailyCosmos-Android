@@ -4,17 +4,21 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.databinding.ActivityAuthBinding
+import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class AuthActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAuthBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_DailyCosmos)

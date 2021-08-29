@@ -30,7 +30,11 @@
             android:id="@+id/button_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="?attr/background"
             android:text="@string/back"
+            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Button"
+            android:textColor="?attr/colorPrimary"
+            app:strokeColor="?attr/colorPrimary"
             app:strokeWidth="@dimen/_1sdp" />
 
         <View
@@ -42,7 +46,9 @@
             android:id="@+id/button_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/next" />
+            android:text="@string/next"
+            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Button"
+            android:textColor="?attr/variationAlpha00" />
 
     </LinearLayout>
 

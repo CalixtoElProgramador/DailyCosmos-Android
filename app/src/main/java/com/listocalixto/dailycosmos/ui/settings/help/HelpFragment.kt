@@ -8,7 +8,9 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.databinding.FragmentHelpBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HelpFragment : Fragment(R.layout.fragment_help) {
 
     private lateinit var binding: FragmentHelpBinding
@@ -27,13 +29,6 @@ class HelpFragment : Fragment(R.layout.fragment_help) {
     }
 
     private fun navigateToContactMeFragment() {
-        Snackbar.make(requireContext(), binding.cardAppInfo, getString(R.string.in_maintenance), Snackbar.LENGTH_SHORT)
-            .setAction(getString(R.string.use_email_app)) { intentEmail() }
-            .show()
+        findNavController().navigate(R.id.action_helpFragment_to_contactMeFragment)
     }
-
-    private fun intentEmail() {
-        Toast.makeText(requireContext(), "Email", Toast.LENGTH_SHORT).show()
-    }
-
 }

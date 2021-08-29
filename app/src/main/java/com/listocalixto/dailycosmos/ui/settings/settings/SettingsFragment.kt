@@ -8,7 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.listocalixto.dailycosmos.R
@@ -16,6 +20,7 @@ import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.model.User
 import com.listocalixto.dailycosmos.databinding.FragmentSettingsBinding
 import com.listocalixto.dailycosmos.presentation.auth.AuthViewModel
+import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
 import com.listocalixto.dailycosmos.ui.settings.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,6 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
     private val viewModelShared by activityViewModels<SettingsViewModel>()
+    private val dataStoreUtils by activityViewModels<UtilsViewModel>()
     private val viewModel by activityViewModels<AuthViewModel>()
 
     private var user: User? = null
@@ -33,6 +39,9 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSettingsBinding.bind(view)
+
+        readPreferences()
+
         viewModelShared.getUser().value?.let {
             user = it
         }
@@ -41,6 +50,10 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             getUserInfo()
         } else {
             setUserInfo(user!!)
+        }
+
+        if (FirebaseAuth.getInstance().currentUser?.isAnonymous == true) {
+            binding.buttonSignOut.visibility = View.GONE
         }
 
         binding.cardProfile.setOnClickListener { showSnackbarMessage(getString(R.string.available_to_future_versions)) }
@@ -55,6 +68,12 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
         binding.buttonSignOut.setOnClickListener { signOut() }
 
+    }
+
+    private fun readPreferences() {
+        dataStoreUtils.isDarkThemeActivated.observe(viewLifecycleOwner, {
+            viewModelShared.setDarkTheme(it)
+        })
     }
 
     private fun navigateToAppearance() {
@@ -87,10 +106,30 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 }
                 is Result.Failure -> {
                     binding.lottieLoading.visibility = View.GONE
-                    setGuestInfo()
+                    if (FirebaseAuth.getInstance().currentUser?.isAnonymous == true) {
+                        setGuestInfo()
+                    } else {
+                        when(result.exception) {
+                            is FirebaseNetworkException -> {
+                                showErrorSnackbarMessage(getString(R.string.error_internet_connection_login))
+                            }
+                            else -> {
+                                showErrorSnackbarMessage(getString(R.string.error_something_went_wrong))
+                            }
+                        }
+                    }
                 }
             }
         })
+    }
+
+    @SuppressLint("ShowToast")
+    private fun showErrorSnackbarMessage(message: String) {
+        val colorError = MaterialColors.getColor(requireView(), R.attr.colorError)
+        Snackbar.make(binding.buttonSignOut, message, Snackbar.LENGTH_INDEFINITE)
+            .setDuration(5000)
+            .setBackgroundTint(colorError)
+            .show()
     }
 
     private fun setGuestInfo() {

@@ -3,17 +3,23 @@ package com.listocalixto.dailycosmos.ui.settings
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.activity.viewModels
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.color.MaterialColors
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.databinding.ActivitySettingsBinding
+import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
+    private val dataStoreUtils by viewModels<UtilsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

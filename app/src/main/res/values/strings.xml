@@ -45,9 +45,8 @@
     <string name="subtitle_register02">Enter a password and retype it below to compare if they are the same. Must be longer than eight characters</string>
     <string name="confirm_password">Confirm password</string>
     <string name="error_field_empty">This field cannot be left empty</string>
-    <string name="error_email_registered">This email is already registered</string>
+    <string name="error_email_registered">This email is already registered. Please enter a new one.</string>
     <string name="error_email_no_valid">Insert a valid email</string>
-    <string name="error_email_in_use">This email is already in use</string>
     <string name="error_passwords_not_same">Passwords are not the same</string>
     <string name="error_password_short">The password must have a minimum of 8 characters</string>
     <string name="smile">Take o select a picture!</string>
@@ -144,5 +143,16 @@
     <string name="app_version">Version 1.0</string>
     <string name="brand">&#169; 2021 ListoCalixto</string>
     <string name="dark_theme">Dark theme</string>
+    <string name="choose_your_email_app">Choose your favorite email application</string>
+    <string name="user_need_to_enable_permissions">You need to enable the permissions</string>
+    <string name="profile_picture">Profile picture</string>
+    <string name="gallery">Gallery</string>
+    <string name="camera">Camera</string>
+    <string name="error_incorrect_password">Incorrect password. Verify that everything is in order.</string>
+    <string name="error_unregistered_email">Unregistered email account. Verify that everything is spelled correctly.</string>
+    <string name="error_too_many_requests">We have blocked all requests from this device due to unusual activity. Try again later.</string>
+    <string name="error_internet_connection_login">An error has occurred with the internet connection. Check that everything is OK and try again.</string>
+    <string name="error_something_went_wrong">Something went wrong. The reasons are unknown at this time. Sorry for the inconvenience.</string>
+    <string name="thanks_nasa">I send a special thanks to NASA for sharing their APIs for free. Thanks to this, it is the reason why this application exists. For more information, visit https://api.nasa.gov/.</string>
 
 </resources>

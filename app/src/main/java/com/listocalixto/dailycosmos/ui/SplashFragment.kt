@@ -6,12 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SplashFragment : Fragment(R.layout.fragment_splash) {
 
     private val dataStoreUtils by activityViewModels<UtilsViewModel>()
@@ -22,6 +25,14 @@ class SplashFragment : Fragment(R.layout.fragment_splash) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        dataStoreUtils.isDarkThemeActivated.observe(viewLifecycleOwner) {isActivated ->
+            if (isActivated) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
 
         dataStoreUtils.readValueFirstTime.observe(viewLifecycleOwner, {
             if (it == 0) {

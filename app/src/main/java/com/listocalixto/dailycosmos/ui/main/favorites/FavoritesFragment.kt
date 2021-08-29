@@ -2,6 +2,7 @@ package com.listocalixto.dailycosmos.ui.main.favorites
 
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -45,11 +46,21 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites),
         layoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
         binding.rvFavorites.layoutManager = layoutManager
         getAllFavorites()
-        
+
+        activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.setOnItemReselectedListener { item -> smoothScrollToStart(item) }
+
         if (FirebaseAuth.getInstance().currentUser?.isAnonymous == true) {
             showDialogCreateAccount()
         }
 
+    }
+
+    private fun smoothScrollToStart(item: MenuItem) {
+        when (item.itemId) {
+            R.id.favoritesFragment -> {
+                binding.rvFavorites.smoothScrollToPosition(0)
+            }
+        }
     }
 
     private fun showDialogCreateAccount() {

@@ -8,11 +8,13 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.color.MaterialColors
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.databinding.FragmentRegister01Binding
@@ -22,7 +24,6 @@ import com.listocalixto.dailycosmos.ui.auth.Person
 import com.listocalixto.dailycosmos.ui.auth.RegisterViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
-@Suppress("DEPRECATION")
 @AndroidEntryPoint
 class Register01Fragment : Fragment(R.layout.fragment_register01) {
 
@@ -31,6 +32,8 @@ class Register01Fragment : Fragment(R.layout.fragment_register01) {
     private val patternEmail = Patterns.EMAIL_ADDRESS.toRegex()
     private val viewModelShared by activityViewModels<RegisterViewModel>()
     private val viewModel by activityViewModels<AuthViewModel>()
+
+    private lateinit var buttonNext: MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,10 +56,11 @@ class Register01Fragment : Fragment(R.layout.fragment_register01) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentRegister01Binding.bind(view)
+        buttonNext = activity?.findViewById(R.id.button_next)!!
         getInputsFromViewModel()
         setErrorEnabledAfterChanges()
 
-        activity?.findViewById<MaterialButton>(R.id.button_next)?.setOnClickListener {
+        buttonNext.setOnClickListener {
             validateInputs()
         }
 
@@ -114,7 +118,7 @@ class Register01Fragment : Fragment(R.layout.fragment_register01) {
                 is Result.Success -> {
                     setEnabledViews(true)
                     if (!result.data) {
-                        binding.inputLayoutEmail.error = getString(R.string.error_email_in_use)
+                        binding.inputLayoutEmail.error = getString(R.string.error_email_registered)
                     } else {
                         saveInputsToViewModel()
                         nextFragment()
@@ -122,14 +126,27 @@ class Register01Fragment : Fragment(R.layout.fragment_register01) {
                 }
                 is Result.Failure -> {
                     setEnabledViews(true)
-                    Toast.makeText(
-                        requireContext(),
-                        "Error: ${result.exception}",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    when (result.exception) {
+                        is FirebaseNetworkException -> {
+                            showErrorSnackbarMessage(getString(R.string.error_internet_connection_login))
+                        }
+                        else -> {
+                            showErrorSnackbarMessage(getString(R.string.error_something_went_wrong))
+                        }
+                    }
                 }
             }
         })
+    }
+
+    @SuppressLint("ShowToast")
+    private fun showErrorSnackbarMessage(message: String) {
+        val colorError = MaterialColors.getColor(requireView(), R.attr.colorError)
+        Snackbar.make(binding.lottieLoading, message, Snackbar.LENGTH_INDEFINITE)
+            .setDuration(5000)
+            .setAnchorView(buttonNext)
+            .setBackgroundTint(colorError)
+            .show()
     }
 
     @SuppressLint("ResourceAsColor")

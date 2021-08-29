@@ -20,7 +20,6 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -34,7 +33,6 @@ import java.io.*
 
 const val REQUEST_PERMISSION_WRITE_STORAGE = 200
 
-@Suppress("DEPRECATION")
 class PictureFragment : Fragment(R.layout.fragment_picture) {
 
     private val viewModelShared by activityViewModels<MainViewModel>()

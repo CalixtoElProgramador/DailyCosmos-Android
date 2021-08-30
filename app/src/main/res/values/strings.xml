@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">DailyCosmos</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment">Hello blank parentFragment</string>
     <string name="today">Today</string>
     <string name="explore">Explore</string>
     <string name="search">Search</string>
     <string name="content_description_cover_photo">This image is the cover photo of the application.</string>
     <string name="favorite">Favorites</string>
-    <string name="content_description_favorite">This icon redirects to the favorites fragment</string>
+    <string name="content_description_favorite">This icon redirects to the favorites parentFragment</string>
     <string name="content_description_search">This icon shows the search bar to locate an object.</string>
     <string name="more">more</string>
     <string name="content_description_about_of">This option redirects you to the activity to learn about the application and the developer.</string>
@@ -69,7 +69,7 @@
     <string name="from">from</string>
     <string name="settings">Settings</string>
     <string name="random">Random</string>
-    <string name="content_description_settings">This option is intended to go to the application settings fragment.</string>
+    <string name="content_description_settings">This option is intended to go to the application settings parentFragment.</string>
     <string name="title_explore_collapsing_toolbar">Find wonderful images of the cosmos and add them to your favorites</string>
     <string name="subtitle_explore_collapsing_toolbar">From June 16, 1995 to the present</string>
     <string name="helper_text_search_view">Click on the icon to search for images that are stored in your local database. For example, search for today\'s date in this format: YYYY-MM-DD</string>
@@ -154,5 +154,10 @@
     <string name="error_internet_connection_login">An error has occurred with the internet connection. Check that everything is OK and try again.</string>
     <string name="error_something_went_wrong">Something went wrong. The reasons are unknown at this time. Sorry for the inconvenience.</string>
     <string name="thanks_nasa">I send a special thanks to NASA for sharing their APIs for free. Thanks to this, it is the reason why this application exists. For more information, visit https://api.nasa.gov/.</string>
+    <string name="theme">Theme</string>
+    <string name="system_default">System default</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="choose_a_theme">Choose a theme</string>
 
 </resources>

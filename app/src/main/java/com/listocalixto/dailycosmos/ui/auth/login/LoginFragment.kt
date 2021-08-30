@@ -2,13 +2,12 @@ package com.listocalixto.dailycosmos.ui.auth.login
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.View
-import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
@@ -24,9 +23,7 @@ import com.listocalixto.dailycosmos.ui.auth.RegisterViewModel
 import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.Exception
 
-@Suppress("DEPRECATION")
 @AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.fragment_login) {
 
@@ -61,16 +58,18 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             firebaseAuth.signInAnonymously().addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
                     isEnabledViews(true)
-                    Log.d("FirebaseAuth", "Usuario anónimo creado ")
-                    navigateToMainActivity()
+                    navigateToMainParentFragment()
                 } else {
                     isEnabledViews(true)
-                    Log.d("FirebaseAuth", "Usuario anónimo NO creado: ${task.exception}")
-                    Toast.makeText(
-                        context,
-                        "Ha ocurrido un error... inténtalo más tarde",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    when(task.exception) {
+                        is FirebaseNetworkException -> {
+                            showErrorSnackbarMessage(getString(R.string.error_internet_connection_login))
+                        }
+                        else -> {
+                            showErrorSnackbarMessage(getString(R.string.error_something_went_wrong))
+                        }
+                    }
+
                 }
             }
         }
@@ -119,7 +118,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 }
                 is Result.Success -> {
                     isEnabledViews(true)
-                    navigateToMainActivity()
+                    navigateToMainParentFragment()
 
                 }
                 is Result.Failure -> {
@@ -141,8 +140,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                             showErrorSnackbarMessage(getString(R.string.error_something_went_wrong))
                         }
                     }
-                    Log.d("Failure", "Error in login: ${result.exception} ")
-
                 }
             }
         })
@@ -158,10 +155,11 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             .show()
     }
 
-    private fun navigateToMainActivity() {
+    private fun navigateToMainParentFragment() {
         dataStoreUtils.saveValueFirstTime(1)
-        findNavController().navigate(R.id.action_loginFragment_to_mainActivity)
-        requireActivity().finish()
+        val activityNavHost = requireActivity().findViewById<View>(R.id.nav_host_activity)
+        Navigation.findNavController(activityNavHost).navigate(R.id.action_authParentFragment_to_mainParentFragment)
+
     }
 
     private fun isEnabledViews(boolean: Boolean) {

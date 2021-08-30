@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -321,7 +322,8 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     }
 
     private fun navigateToSettingsActivity() {
-        findNavController().navigate(R.id.action_detailsFragment_to_settingsActivity)
+        val activityNavHost = requireActivity().findViewById<View>(R.id.nav_host_activity)
+        Navigation.findNavController(activityNavHost).navigate(R.id.action_mainParentFragment_to_settingsParentFragment)
     }
 
     private fun navigateToPictureFragment() {

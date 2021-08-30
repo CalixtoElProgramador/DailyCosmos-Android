@@ -6,7 +6,7 @@
     android:gravity="center"
     android:orientation="vertical"
     android:padding="@dimen/_16sdp"
-    tools:context=".ui.settings.help.app_info.AppInfoFragment">
+    tools:context=".ui.settings.menu.help.app_info.AppInfoFragment">
 
     <TextView
         android:layout_width="wrap_content"

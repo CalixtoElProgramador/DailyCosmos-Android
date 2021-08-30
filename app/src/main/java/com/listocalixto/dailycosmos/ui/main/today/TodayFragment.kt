@@ -25,6 +25,7 @@ import com.listocalixto.dailycosmos.presentation.apod.APODViewModel
 import com.listocalixto.dailycosmos.presentation.preferences.APODDataStoreViewModel
 import com.listocalixto.dailycosmos.ui.main.today.adapter.TodayAdapter
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
 import java.text.SimpleDateFormat
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.mlkit.nl.translate.Translator
@@ -421,7 +422,8 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     }
 
     private fun navigateToSettingsActivity() {
-        findNavController().navigate(R.id.action_todayFragment_to_settingsActivity)
+        val activityNavHost = requireActivity().findViewById<View>(R.id.nav_host_activity)
+        Navigation.findNavController(activityNavHost).navigate(R.id.action_mainParentFragment_to_settingsParentFragment)
     }
 
     private fun navigateToPictureFragment(apod: APOD) {

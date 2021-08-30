@@ -3,43 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/settings_graph"
-    app:startDestination="@id/settingsFragment">
+    app:startDestination="@id/menuFragment">
 
     <fragment
-        android:id="@+id/settingsFragment"
-        android:name="com.listocalixto.dailycosmos.ui.settings.settings.SettingsFragment"
+        android:id="@+id/menuFragment"
+        android:name="com.listocalixto.dailycosmos.ui.settings.menu.MenuFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" >
+        tools:layout="@layout/fragment_menu" >
         <action
-            android:id="@+id/action_settingsFragment_to_authActivity"
-            app:destination="@id/authActivity"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popUpTo="@id/settingsFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_settingsFragment_to_helpFragment"
+            android:id="@+id/action_menuFragment_to_helpFragment"
             app:destination="@id/helpFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
         <action
-            android:id="@+id/action_settingsFragment_to_appearanceFragment"
+            android:id="@+id/action_menuFragment_to_appearanceFragment"
             app:destination="@id/appearanceFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
-    <activity
-        android:id="@+id/authActivity"
-        android:name="com.listocalixto.dailycosmos.ui.auth.AuthActivity"
-        android:label="activity_auth"
-        tools:layout="@layout/activity_auth" />
     <fragment
         android:id="@+id/helpFragment"
-        android:name="com.listocalixto.dailycosmos.ui.settings.help.HelpFragment"
+        android:name="com.listocalixto.dailycosmos.ui.settings.menu.help.HelpFragment"
         android:label="fragment_help"
         tools:layout="@layout/fragment_help" >
         <action
@@ -59,17 +47,17 @@
     </fragment>
     <fragment
         android:id="@+id/contactMeFragment"
-        android:name="com.listocalixto.dailycosmos.ui.settings.help.contact_me.ContactMeFragment"
+        android:name="com.listocalixto.dailycosmos.ui.settings.menu.help.contact_me.ContactMeFragment"
         android:label="fragment_contact_me"
         tools:layout="@layout/fragment_contact_me" />
     <fragment
         android:id="@+id/appInfoFragment"
-        android:name="com.listocalixto.dailycosmos.ui.settings.help.app_info.AppInfoFragment"
+        android:name="com.listocalixto.dailycosmos.ui.settings.menu.help.app_info.AppInfoFragment"
         android:label="fragment_app_info"
         tools:layout="@layout/fragment_app_info" />
     <fragment
         android:id="@+id/appearanceFragment"
-        android:name="com.listocalixto.dailycosmos.ui.settings.appearance.AppearanceFragment"
+        android:name="com.listocalixto.dailycosmos.ui.settings.menu.appearance.AppearanceFragment"
         android:label="fragment_appearance"
         tools:layout="@layout/fragment_appearance" />
 </navigation>

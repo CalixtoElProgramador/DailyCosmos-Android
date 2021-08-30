@@ -35,16 +35,5 @@
         android:id="@+id/register03Fragment2"
         android:name="com.listocalixto.dailycosmos.ui.auth.register.Register03Fragment"
         android:label="fragment_register03"
-        tools:layout="@layout/fragment_register03" >
-        <action
-            android:id="@+id/action_register03Fragment2_to_mainActivity2"
-            app:destination="@id/mainActivity2"
-            app:popUpTo="@id/register03Fragment2"
-            app:popUpToInclusive="true" />
-    </fragment>
-    <activity
-        android:id="@+id/mainActivity2"
-        android:name="com.listocalixto.dailycosmos.ui.main.MainActivity"
-        android:label="activity_main"
-        tools:layout="@layout/activity_main" />
+        tools:layout="@layout/fragment_register03" />
 </navigation>

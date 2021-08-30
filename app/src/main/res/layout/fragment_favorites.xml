@@ -18,7 +18,7 @@
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/planet_loading" />
 
-    <!-- TODO: Update blank fragment layout -->
+    <!-- TODO: Update blank parentFragment layout -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_favorites"
         android:layout_width="wrap_content"

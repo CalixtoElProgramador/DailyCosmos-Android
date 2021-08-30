@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_graph"
+    app:startDestination="@id/splashFragment">
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.listocalixto.dailycosmos.ui.splash.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_welcomeParentFragment"
+            app:destination="@id/welcomeParentFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_authParentFragment"
+            app:destination="@id/authParentFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_mainParentFragment"
+            app:destination="@id/mainParentFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/welcomeParentFragment"
+        android:name="com.listocalixto.dailycosmos.ui.welcome.WelcomeParentFragment"
+        android:label="fragment_parent_welcome"
+        tools:layout="@layout/fragment_parent_welcome" >
+        <action
+            android:id="@+id/action_welcomeParentFragment_to_authParentFragment"
+            app:destination="@id/authParentFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/authParentFragment"
+        android:name="com.listocalixto.dailycosmos.ui.auth.AuthParentFragment"
+        android:label="fragment_parent_auth"
+        tools:layout="@layout/fragment_parent_auth"
+        app:startDestination="@id/action_authParentFragment_to_mainParentFragment">
+        <action
+            android:id="@+id/action_authParentFragment_to_mainParentFragment"
+            app:destination="@id/mainParentFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popUpTo="@id/activity_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/mainParentFragment"
+        android:name="com.listocalixto.dailycosmos.ui.main.MainParentFragment"
+        android:label="fragment_parent_main"
+        tools:layout="@layout/fragment_parent_main" >
+        <action
+            android:id="@+id/action_mainParentFragment_to_settingsParentFragment"
+            app:destination="@id/settingsParentFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_mainParentFragment_to_registerParentFragment"
+            app:destination="@id/registerParentFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsParentFragment"
+        android:name="com.listocalixto.dailycosmos.ui.settings.SettingsParentFragment"
+        android:label="fragment_parent_settings"
+        tools:layout="@layout/fragment_parent_settings" >
+        <action
+            android:id="@+id/action_settingsParentFragment_to_authParentFragment"
+            app:destination="@id/authParentFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popUpTo="@id/activity_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerParentFragment"
+        android:name="com.listocalixto.dailycosmos.ui.auth.RegisterParentFragment"
+        android:label="fragment_parent_register"
+        tools:layout="@layout/fragment_parent_register" >
+        <action
+            android:id="@+id/action_registerParentFragment_to_mainParentFragment"
+            app:destination="@id/mainParentFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popUpTo="@id/activity_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+</navigation>

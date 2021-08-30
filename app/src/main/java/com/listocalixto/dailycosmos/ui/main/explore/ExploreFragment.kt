@@ -26,6 +26,7 @@ import com.listocalixto.dailycosmos.presentation.preferences.APODDataStoreViewMo
 import com.listocalixto.dailycosmos.ui.main.explore.adapter.ExploreAdapter
 import com.listocalixto.dailycosmos.core.Result
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
 import com.google.android.material.color.MaterialColors
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
@@ -52,10 +53,6 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     private var isSearchResults = false
     private var isExpandedAppBar = true
     private var startDate: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
-        add(Calendar.DATE, -10)
-    }
-
-    private var referenceDate: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
         add(Calendar.DATE, -10)
     }
 
@@ -148,7 +145,8 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
     }
 
     private fun navigateToActivitySettings(): Boolean {
-        findNavController().navigate(R.id.action_exploreFragment_to_settingsActivity)
+        val activityNavHost = requireActivity().findViewById<View>(R.id.nav_host_activity)
+        Navigation.findNavController(activityNavHost).navigate(R.id.action_mainParentFragment_to_settingsParentFragment)
         return true
     }
 
@@ -298,7 +296,6 @@ class ExploreFragment : Fragment(R.layout.fragment_explorer), ExploreAdapter.OnA
 
     @SuppressLint("ShowToast")
     private fun showSnackbarMessage(message: String) {
-        val colorError = MaterialColors.getColor(requireView(), R.attr.colorError)
         Snackbar.make(binding.topAppBar, message, Snackbar.LENGTH_LONG)
             .setAnchorView(bottomNavigation)
             .show()

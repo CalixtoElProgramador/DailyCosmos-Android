@@ -8,12 +8,12 @@ import com.listocalixto.dailycosmos.data.model.User
 class SettingsViewModel : ViewModel() {
 
     private val userArgs = MutableLiveData<User?>()
-    private val isDarkTheme = MutableLiveData<Boolean>()
+    private val darkThemeMode = MutableLiveData<Int>()
 
     fun setUser(user: User?) { userArgs.value = user }
     fun getUser(): LiveData<User?> = userArgs
 
-    fun setDarkTheme(boolean: Boolean) { isDarkTheme.value = boolean }
-    fun isDarkTheme(): LiveData<Boolean> = isDarkTheme
+    fun setDarkThemeMode(mode: Int) { darkThemeMode.value = mode }
+    fun getDarkThemeMode(): LiveData<Int> = darkThemeMode
 
 }

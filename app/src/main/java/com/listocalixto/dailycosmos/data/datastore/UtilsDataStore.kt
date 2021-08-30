@@ -23,7 +23,7 @@ class UtilsDataStore @Inject constructor(private val context: Application) {
         val isFirstSearch = intPreferencesKey("is_the_first_search")
         val isFirstTime = intPreferencesKey("is_the_first_time_on_the_app")
         val isFirstTimeGetResults = intPreferencesKey("is_the_first_time_get_results")
-        val isDarkThemeActivated = booleanPreferencesKey("is_dark_theme_activated")
+        val darkThemeMode = intPreferencesKey("is_dark_theme_activated")
     }
 
     private val Context.storeIsAccepted: DataStore<Preferences> by preferencesDataStore(AppConstants.KEY_STORE_DIALOG_CAUTION_OPEN_IMAGE)
@@ -36,13 +36,13 @@ class UtilsDataStore @Inject constructor(private val context: Application) {
         AppConstants.KEY_STORE_IS_DARK_THEME_ACTIVATED
     )
 
-    suspend fun setDarkTheme(answer: Boolean) {
+    suspend fun setDarkThemeMode(answer: Int) {
         context.isDarkThemeActivated.edit { preferences ->
-            preferences[PreferencesKeys.isDarkThemeActivated] = answer
+            preferences[PreferencesKeys.darkThemeMode] = answer
         }
     }
 
-    val isDarkThemeActivated: Flow<Boolean> = context.isDarkThemeActivated.data.distinctUntilChanged()
+    val getDarkThemeMode: Flow<Int> = context.isDarkThemeActivated.data.distinctUntilChanged()
         .catch { exception ->
             if (exception is IOException) {
                 emit(emptyPreferences())
@@ -51,7 +51,7 @@ class UtilsDataStore @Inject constructor(private val context: Application) {
             }
         }
         .map { preferences ->
-            val darkTheme = preferences[PreferencesKeys.isDarkThemeActivated] ?: false
+            val darkTheme = preferences[PreferencesKeys.darkThemeMode] ?: 0
             darkTheme
         }
 

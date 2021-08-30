@@ -7,7 +7,7 @@
     android:background="@drawable/background_dark_welcome_page_02"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".ui.auth.welcome.pages.WelcomeFragmentPage02">
+    tools:context=".ui.welcome.pages.WelcomeFragmentPage02">
 
     <com.airbnb.lottie.LottieAnimationView
         android:layout_width="@dimen/_210sdp"

@@ -10,6 +10,7 @@ import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -20,16 +21,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.Navigation
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.FirebaseNetworkException
-import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.databinding.FragmentRegister03Binding
@@ -236,14 +234,12 @@ class Register03Fragment : Fragment(R.layout.fragment_register03) {
     }
 
     private fun nextFragment(wasAnonymous: Boolean) {
+        val activityNavHost = requireActivity().findViewById<View>(R.id.nav_host_activity)
         dataStoreUtils.saveValueFirstTime(1)
         if (wasAnonymous) {
-            finishMainActivity()
-            findNavController().navigate(R.id.action_register03Fragment2_to_mainActivity2)
-            requireActivity().finish()
+            Navigation.findNavController(activityNavHost).navigate(R.id.action_registerParentFragment_to_mainParentFragment)
         } else {
-            findNavController().navigate(R.id.action_register03Fragment_to_mainActivity)
-            requireActivity().finish()
+            Navigation.findNavController(activityNavHost).navigate(R.id.action_authParentFragment_to_mainParentFragment)
         }
 
     }
@@ -278,6 +274,7 @@ class Register03Fragment : Fragment(R.layout.fragment_register03) {
                             showErrorSnackbarMessage(getString(R.string.error_email_registered))
                         }
                         else -> {
+                            Log.d("FailureCreateUser", "Failure: ${result.exception} ")
                             showErrorSnackbarMessage(getString(R.string.error_something_went_wrong))
                         }
                     }
@@ -327,11 +324,6 @@ class Register03Fragment : Fragment(R.layout.fragment_register03) {
         } else {
             binding.lottieLoading.visibility = View.VISIBLE
         }
-    }
-
-    private fun finishMainActivity() {
-        val intent = Intent("finish_activity")
-        activity?.sendBroadcast(intent)
     }
 
 }

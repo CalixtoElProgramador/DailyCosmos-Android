@@ -9,6 +9,7 @@ import android.view.animation.AnimationUtils
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -76,7 +77,8 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites),
     }
 
     private fun navigateToRegisterGuestActivity() {
-        findNavController().navigate(R.id.action_favoritesFragment_to_registerGuestActivity)
+        val activityNavHost = requireActivity().findViewById<View>(R.id.nav_host_activity)
+        Navigation.findNavController(activityNavHost).navigate(R.id.action_mainParentFragment_to_registerParentFragment)
     }
 
     private fun getAllFavorites() {

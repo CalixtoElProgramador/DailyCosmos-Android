@@ -44,7 +44,6 @@
 
     <style name="SplashTheme" parent="Theme.DailyCosmos">
         <item name="android:windowBackground">@drawable/splash_screen</item>
-        <item name="background">@color/dark_gray_primary</item>
     </style>
 
 </resources>

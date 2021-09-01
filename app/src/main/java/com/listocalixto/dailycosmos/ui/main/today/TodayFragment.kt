@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -25,9 +25,9 @@ import com.listocalixto.dailycosmos.presentation.apod.APODViewModel
 import com.listocalixto.dailycosmos.presentation.preferences.APODDataStoreViewModel
 import com.listocalixto.dailycosmos.ui.main.today.adapter.TodayAdapter
 import androidx.lifecycle.Observer
-import androidx.navigation.Navigation
 import java.text.SimpleDateFormat
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.theme.overlay.MaterialThemeOverlay
 import com.google.mlkit.nl.translate.Translator
 import com.listocalixto.dailycosmos.core.Result
 import com.listocalixto.dailycosmos.data.model.APOD
@@ -47,7 +47,6 @@ import kotlin.math.abs
 private const val MIN_SCALE = 0.75f
 private const val MILLISECONDS_IN_A_DAY = 86400000
 
-@Suppress("DEPRECATION")
 @AndroidEntryPoint
 class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPODClickListener,
     ViewPager2.PageTransformer, TodayAdapter.OnFabClickListener,
@@ -109,7 +108,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     override fun onResume() {
         super.onResume()
         isLoading = false
-        if (::bottomNavigation.isInitialized && !bottomNavigation.isVisible) {
+        if (!activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.isVisible!!) {
             showBottomNavView()
         }
 
@@ -188,30 +187,23 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     }
 
     private fun fetchRecentResultsFromWebService(end: String, start: String) {
-        Log.d("fetchRecentResults", "Las fechas solicitadas son: $end, y $start ")
-        Log.d("fetchRecentResults", "El nuevo valor del entero es: $delta ")
         viewModel.fetchRecentResults(end, start).observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Result.Loading -> {
                     isThereAProblem(false)
-                    Log.d("fetchRecentResults", "Loading... ")
                 }
                 is Result.Success -> {
                     val results = result.data
                     if (isResultsEmpty(results)) return@Observer
                     val recentResults = results.take(-delta + 11)
                     val lastResultDateString = recentResults[-delta + 10].date
-                    Log.d("fetchRecentResults", "La fecha del último elemento: $lastResultDateString ")
                     val lastResultDateCalendar: Calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
                     lastResultDateString.let { lastResultDateCalendar.time = sdf.parse(it)!! }
-                    Log.d("fetchRecentResults", "Fecha del último resultado: $lastResultDateString")
                     val lastResultDateMilliseconds = lastResultDateCalendar.timeInMillis
                     val referenceDateMilliseconds = referenceDate.timeInMillis
-                    Log.d("fetchRecentResults", "$referenceDateMilliseconds - $lastResultDateMilliseconds = ${referenceDateMilliseconds - lastResultDateMilliseconds} ")
                     if (lastResultDateMilliseconds - referenceDateMilliseconds > MILLISECONDS_IN_A_DAY) {
                         keepBringingMoreRecentResults()
                     } else {
-                        Log.d("fetchRecentResults", "Todos los resultados nuevos han sido traídos")
                         dataStoreAPOD.saveReferenceDate(sdf.format(today.time))
                         fetchResultsFromDatabase()
                     }
@@ -219,7 +211,6 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
                 }
                 is Result.Failure -> {
                     isThereAProblem(true)
-                    Log.d("fetchRecentResults", "Happen an error: ${result.exception} ")
                 }
             }
         })
@@ -248,7 +239,6 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
         val newStartDateString = sdf.format(newStartDate.time)
         viewModelShared.setDateRange(DateRange(newEndDateString, newStartDateString))
 
-        Log.d("fetchRecentResults", "Volviendo a llamar el mismo método")
         fetchRecentResultsFromWebService(newEndDateString, newStartDateString)
     }
 
@@ -305,6 +295,9 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
         if (answer) {
             binding.lottieLoading.visibility = View.GONE
             binding.layoutErrorNoResults.visibility = View.VISIBLE
+            if (isNotFirstTimeGetResults == 0) {
+                binding.buttonUseWithoutInternet.visibility = View.GONE
+            }
         } else {
             binding.lottieLoading.visibility = View.VISIBLE
             binding.layoutErrorNoResults.visibility = View.GONE
@@ -349,7 +342,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     private fun showErrorSnackbarMessage(message: String) {
         Snackbar.make(binding.vpPhotoToday, message, Snackbar.LENGTH_LONG)
             .setAnchorView(bottomNavigation)
-            .setBackgroundTint(requireContext().resources.getColor(R.color.red_alpha_100))
+            .setBackgroundTint(requireContext().resources.getColor(R.color.red_alpha_100, ))
             .show()
     }
 
@@ -368,7 +361,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     }
 
     private fun showBottomNavView() {
-        bottomNavigation.apply {
+        activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.apply {
             animation = AnimationUtils.loadAnimation(
                 requireContext(),
                 R.anim.slide_in_bottom
@@ -400,12 +393,7 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
             .setIcon(R.drawable.ic_error_outline)
             .setMessage(resources.getString(R.string.caution_open_image))
             .setNeutralButton(resources.getString(R.string.cancel)) { _, _ -> }
-            .setNegativeButton(resources.getString(R.string.settings)) { _, _ ->
-                dataStoreUtils.saveValue(1)
-                isFirstTimeToOpenImage = 1
-                navigateToSettingsActivity()
-            }
-            .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
+            .setPositiveButton(resources.getString(R.string.ok_i_understand)) { _, _ ->
                 dataStoreUtils.saveValue(1)
                 isFirstTimeToOpenImage = 1
                 navigateToPictureFragment(apod)
@@ -419,11 +407,6 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
             Toast.LENGTH_SHORT
         )
             .show()
-    }
-
-    private fun navigateToSettingsActivity() {
-        val activityNavHost = requireActivity().findViewById<View>(R.id.nav_host_activity)
-        Navigation.findNavController(activityNavHost).navigate(R.id.action_mainParentFragment_to_settingsParentFragment)
     }
 
     private fun navigateToPictureFragment(apod: APOD) {
@@ -462,10 +445,6 @@ class TodayFragment : Fragment(R.layout.fragment_today), TodayAdapter.OnImageAPO
     }
 
     private fun loadMoreResults() {
-        Log.d(
-            "ViewPager",
-            "La posición actual es: ${binding.vpPhotoToday.currentItem + 1}, tamaño del adaptador: ${adapterToday.itemCount} "
-        )
         if (!isLoading && binding.vpPhotoToday.currentItem >= adapterToday.itemCount - 7) {
             getMoreResults(newDates()[0], newDates()[1])
         }

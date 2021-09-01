@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -13,10 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -37,7 +34,6 @@ import com.listocalixto.dailycosmos.ui.main.PictureArgs
 import com.listocalixto.dailycosmos.ui.main.explore.adapter.ExploreAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
-@Suppress("DEPRECATION")
 @AndroidEntryPoint
 class DetailsFragment : Fragment(R.layout.fragment_details) {
 
@@ -80,7 +76,6 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -93,6 +88,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         binding.fabAddAPODFavorites.setOnClickListener { updateFavorite() }
         binding.btnTranslate.setOnClickListener { translateExplanation() }
         binding.imgApodPicture.setOnClickListener { verifyDrawable() }
+        binding.textShowOriginal.setOnClickListener{ showOriginalText(apodReceived) }
         binding.iconCopyLink.setOnClickListener { copyLinkToClipboard() }
 
     }
@@ -172,9 +168,6 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                     }.addOnSuccessListener {
                         showSnackbarMessage(getString(R.string.translating))
                         translateTitleAndExplanation(translator, apodReceived)
-                        binding.textShowOriginal.setOnClickListener {
-                            showOriginalText(apodReceived)
-                        }
                     }
                 }
             }
@@ -184,6 +177,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     private fun showOriginalText(apod: APOD) {
         binding.textApodTitle.text = apod.title
         binding.textApodExplanation.text = apod.explanation
+        viewModelShared.setAPODTranslated(APODTranslated(null, null))
         hideTextViewShowOriginal()
     }
 
@@ -199,10 +193,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         }, 400)
     }
 
-    private fun translateTitleAndExplanation(
-        translator: Translator,
-        apod: APOD
-    ) {
+    private fun translateTitleAndExplanation(translator: Translator, apod: APOD) {
         translator.translate(apod.title).addOnSuccessListener { translation ->
             binding.textApodTitle.text = translation
             titleTranslated = translation
@@ -214,7 +205,6 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             saveTranslationInViewModel()
             translator.close()
         }
-
         showTextViewShowOriginal()
     }
 
@@ -300,12 +290,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             .setIcon(R.drawable.ic_error_outline)
             .setMessage(resources.getString(R.string.caution_open_image))
             .setNeutralButton(resources.getString(R.string.cancel)) { _, _ -> }
-            .setNegativeButton(resources.getString(R.string.settings)) { _, _ ->
-                dataStoreUtils.saveValue(1)
-                isFirstTimeToOpenImage = 1
-                navigateToSettingsActivity()
-            }
-            .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
+            .setPositiveButton(resources.getString(R.string.ok_i_understand)) { _, _ ->
                 dataStoreUtils.saveValue(1)
                 isFirstTimeToOpenImage = 1
                 navigateToPictureFragment()
@@ -319,11 +304,6 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
             Toast.LENGTH_SHORT
         )
             .show()
-    }
-
-    private fun navigateToSettingsActivity() {
-        val activityNavHost = requireActivity().findViewById<View>(R.id.nav_host_activity)
-        Navigation.findNavController(activityNavHost).navigate(R.id.action_mainParentFragment_to_settingsParentFragment)
     }
 
     private fun navigateToPictureFragment() {
@@ -354,6 +334,7 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
     @SuppressLint("SetTextI18n")
     private fun setTexts() {
         if (titleTranslated != null) {
+            binding.textShowOriginal.visibility = View.VISIBLE
             binding.textApodTitle.text = titleTranslated
         } else {
             binding.textApodTitle.text = apodReceived.title

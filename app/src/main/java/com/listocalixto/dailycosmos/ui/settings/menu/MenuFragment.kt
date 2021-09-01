@@ -44,14 +44,18 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
             user = it
         }
 
-        if (user == null) {
-            getUserInfo()
-        } else {
-            setUserInfo(user!!)
-        }
-
         if (FirebaseAuth.getInstance().currentUser?.isAnonymous == true) {
-            binding.buttonSignOut.visibility = View.GONE
+            setGuestInfo()
+            binding.buttonSignOut.text = getString(R.string.create_an_account)
+            binding.buttonSignOut.setOnClickListener { navigateToRegisterParentFragment() }
+        } else {
+            binding.buttonSignOut.text = getString(R.string.sign_out)
+            binding.buttonSignOut.setOnClickListener { signOut() }
+            if (user != null) {
+                setUserInfo(user!!)
+            } else {
+                getUserInfo()
+            }
         }
 
         binding.cardProfile.setOnClickListener { showSnackbarMessage(getString(R.string.available_to_future_versions)) }
@@ -64,8 +68,11 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
         binding.cardPeople.setOnClickListener { showSnackbarMessage(getString(R.string.available_to_future_versions)) }
         binding.cardRateUs.setOnClickListener { showSnackbarMessage(getString(R.string.available_to_future_versions)) }
 
-        binding.buttonSignOut.setOnClickListener { signOut() }
+    }
 
+    private fun navigateToRegisterParentFragment() {
+        val activityNavHost = requireActivity().findViewById<View>(R.id.nav_host_activity)
+        Navigation.findNavController(activityNavHost).navigate(R.id.action_settingsParentFragment_to_registerParentFragment)
     }
 
     private fun readPreferences() {
@@ -104,16 +111,12 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
                 }
                 is Result.Failure -> {
                     binding.lottieLoading.visibility = View.GONE
-                    if (FirebaseAuth.getInstance().currentUser?.isAnonymous == true) {
-                        setGuestInfo()
-                    } else {
-                        when(result.exception) {
-                            is FirebaseNetworkException -> {
-                                showErrorSnackbarMessage(getString(R.string.error_internet_connection_login))
-                            }
-                            else -> {
-                                showErrorSnackbarMessage(getString(R.string.error_something_went_wrong))
-                            }
+                    when (result.exception) {
+                        is FirebaseNetworkException -> {
+                            showErrorSnackbarMessage(getString(R.string.error_internet_connection_login))
+                        }
+                        else -> {
+                            showErrorSnackbarMessage(getString(R.string.error_something_went_wrong))
                         }
                     }
                 }
@@ -151,7 +154,8 @@ class MenuFragment : Fragment(R.layout.fragment_menu) {
 
     private fun navigateToAuthActivity() {
         val activityNavHost = requireActivity().findViewById<View>(R.id.nav_host_activity)
-        Navigation.findNavController(activityNavHost).navigate(R.id.action_settingsParentFragment_to_authParentFragment)
+        Navigation.findNavController(activityNavHost)
+            .navigate(R.id.action_settingsParentFragment_to_authParentFragment)
     }
 
 }

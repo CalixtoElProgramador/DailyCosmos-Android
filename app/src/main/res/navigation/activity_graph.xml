@@ -89,6 +89,13 @@
             app:exitAnim="@android:anim/fade_out"
             app:popUpTo="@id/activity_graph"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_settingsParentFragment_to_registerParentFragment"
+            app:destination="@id/registerParentFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
     </fragment>
     <fragment
         android:id="@+id/registerParentFragment"

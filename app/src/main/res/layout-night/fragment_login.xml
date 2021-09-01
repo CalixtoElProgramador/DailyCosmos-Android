@@ -116,7 +116,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_4sdp"
             android:text="@string/register"
-            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Caption" />
+            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Overline" />
 
     </LinearLayout>
 

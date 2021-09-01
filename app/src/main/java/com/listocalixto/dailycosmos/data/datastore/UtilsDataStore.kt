@@ -2,7 +2,6 @@ package com.listocalixto.dailycosmos.data.datastore
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
@@ -24,6 +23,7 @@ class UtilsDataStore @Inject constructor(private val context: Application) {
         val isFirstTime = intPreferencesKey("is_the_first_time_on_the_app")
         val isFirstTimeGetResults = intPreferencesKey("is_the_first_time_get_results")
         val darkThemeMode = intPreferencesKey("is_dark_theme_activated")
+        val dialogShowAgain = booleanPreferencesKey("dialog_show_again")
     }
 
     private val Context.storeIsAccepted: DataStore<Preferences> by preferencesDataStore(AppConstants.KEY_STORE_DIALOG_CAUTION_OPEN_IMAGE)
@@ -35,6 +35,28 @@ class UtilsDataStore @Inject constructor(private val context: Application) {
     private val Context.isDarkThemeActivated: DataStore<Preferences> by preferencesDataStore(
         AppConstants.KEY_STORE_IS_DARK_THEME_ACTIVATED
     )
+    private val Context.isDialogNotShowAgain: DataStore<Preferences> by preferencesDataStore(
+        AppConstants.KEY_STORE_SHOW_AGAIN_DIALOG_IN_FAVORITES
+    )
+
+    suspend fun setDialogShowAgain(answer: Boolean) {
+        context.isDialogNotShowAgain.edit { preferences ->
+            preferences[PreferencesKeys.dialogShowAgain] = answer
+        }
+    }
+
+    val isDialogShowAgain: Flow<Boolean> = context.isDialogNotShowAgain.data
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw  exception
+            }
+        }
+        .map { preferences ->
+            val answer = preferences[PreferencesKeys.dialogShowAgain] ?: true
+            answer
+        }
 
     suspend fun setDarkThemeMode(answer: Int) {
         context.isDarkThemeActivated.edit { preferences ->
@@ -59,7 +81,6 @@ class UtilsDataStore @Inject constructor(private val context: Application) {
         context.storeIsAccepted.edit { preferences ->
             preferences[PreferencesKeys.isAccepted] = value
         }
-        Log.d("DataStore", "The answer has been saved: $value")
     }
 
     val readValue: Flow<Int> = context.storeIsAccepted.data.distinctUntilChanged()
@@ -79,7 +100,6 @@ class UtilsDataStore @Inject constructor(private val context: Application) {
         context.isFirstSearch.edit { preferences ->
             preferences[PreferencesKeys.isFirstSearch] = value
         }
-        Log.d("DataStore", "isFirstSearch: $value")
     }
 
     val readValueSearch: Flow<Int> = context.isFirstSearch.data.distinctUntilChanged()

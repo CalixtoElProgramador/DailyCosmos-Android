@@ -52,10 +52,8 @@ class AppearanceFragment : Fragment(R.layout.fragment_appearance) {
         )
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(resources.getString(R.string.choose_a_theme))
-            .setNeutralButton(resources.getString(R.string.cancel)) { dialog, which ->
-                // Respond to neutral button press
-            }
-            .setPositiveButton(resources.getString(R.string.ok)) { dialog, which ->
+            .setNeutralButton(resources.getString(R.string.cancel)) { _, _ -> }
+            .setPositiveButton(resources.getString(R.string.ok)) { _, _ ->
                 viewModelShared.setDarkThemeMode(checkedItem)
                 dataStoreUtils.setDarkThemeMode(checkedItem)
                 when (checkedItem) {
@@ -78,7 +76,7 @@ class AppearanceFragment : Fragment(R.layout.fragment_appearance) {
                 }
             }
             // Single-choice items (initialized with checked item)
-            .setSingleChoiceItems(singleItems, checkedItem) { dialog, which ->
+            .setSingleChoiceItems(singleItems, checkedItem) { _, which ->
                 checkedItem = which
             }
             .show()

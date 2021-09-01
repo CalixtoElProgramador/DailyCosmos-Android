@@ -20,7 +20,6 @@ class AuthParentFragment : Fragment(R.layout.fragment_parent_auth) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentParentAuthBinding.bind(view)
-        configWindow()
 
         val navHostFragment =
             childFragmentManager.findFragmentById(R.id.nav_host_login_fragment) as NavHostFragment
@@ -45,9 +44,4 @@ class AuthParentFragment : Fragment(R.layout.fragment_parent_auth) {
             }
         }
     }
-
-    private fun configWindow() {
-        requireActivity().window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-    }
-
 }

@@ -38,4 +38,9 @@ class UtilsViewModel @Inject constructor(private val dataStore: UtilsDataStore) 
         dataStore.setDarkThemeMode(mode)
     }
 
+    val isDialogShowAgain = dataStore.isDialogShowAgain.asLiveData()
+    fun setDialogShowAgain(answer: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        dataStore.setDialogShowAgain(answer)
+    }
+
 }

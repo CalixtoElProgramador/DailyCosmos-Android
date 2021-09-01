@@ -1,10 +1,11 @@
 package com.listocalixto.dailycosmos.ui.main.favorites
 
 import android.os.Bundle
-import android.util.Log
+import android.view.LayoutInflater
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
@@ -14,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.dialog.MaterialDialogs
 import com.google.firebase.auth.FirebaseAuth
 import com.listocalixto.dailycosmos.R
 import com.listocalixto.dailycosmos.core.Result
@@ -21,6 +23,7 @@ import com.listocalixto.dailycosmos.data.model.FavoriteEntity
 import com.listocalixto.dailycosmos.data.model.toAPOD
 import com.listocalixto.dailycosmos.databinding.FragmentFavoritesBinding
 import com.listocalixto.dailycosmos.presentation.favorites.APODFavoriteViewModel
+import com.listocalixto.dailycosmos.presentation.preferences.UtilsViewModel
 import com.listocalixto.dailycosmos.ui.main.DetailsArgs
 import com.listocalixto.dailycosmos.ui.main.MainViewModel
 import com.listocalixto.dailycosmos.ui.main.favorites.adapter.FavoritesAdapter
@@ -32,12 +35,27 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites),
 
     private val viewModelShared by activityViewModels<MainViewModel>()
     private val viewModel by activityViewModels<APODFavoriteViewModel>()
+    private val dataStoreUtils by activityViewModels<UtilsViewModel>()
+
+    private var showDialogAgain = true
+
     private lateinit var binding: FragmentFavoritesBinding
     private lateinit var layoutManager: StaggeredGridLayoutManager
 
     override fun onResume() {
         super.onResume()
         isBottomNavVisible()
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        viewModelShared.isShowFavoritesDialogAgain().value?.let { answer ->
+            showDialogAgain = answer
+        }
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,10 +68,11 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites),
 
         activity?.findViewById<BottomNavigationView>(R.id.bottom_navigation)?.setOnItemReselectedListener { item -> smoothScrollToStart(item) }
 
-        if (FirebaseAuth.getInstance().currentUser?.isAnonymous == true) {
-            showDialogCreateAccount()
-        }
-
+        dataStoreUtils.isDialogShowAgain.observe(viewLifecycleOwner, { showAgain ->
+            if (FirebaseAuth.getInstance().currentUser?.isAnonymous == true && showAgain && showDialogAgain) {
+                    showDialogCreateAccount()
+            }
+        })
     }
 
     private fun smoothScrollToStart(item: MenuItem) {
@@ -69,7 +88,14 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites),
             .setTitle(getString(R.string.create_an_account))
             .setIcon(R.drawable.ic_help)
             .setMessage(getString(R.string.dialog_message_create_an_account))
-            .setNegativeButton(resources.getString(R.string.no_thanks)) { _, _ ->
+            .setOnDismissListener {
+                viewModelShared.setShowFavoritesDialogAgain(false)
+            }
+            .setNeutralButton(getString(R.string.no_thanks)) {_,_ ->
+                viewModelShared.setShowFavoritesDialogAgain(false)
+            }
+            .setNegativeButton(getString(R.string.do_not_show_again)) { _, _ ->
+                dataStoreUtils.setDialogShowAgain(false)
             }
             .setPositiveButton(resources.getString(R.string.accept)) { _, _ ->
                 navigateToRegisterGuestActivity()
@@ -86,11 +112,9 @@ class FavoritesFragment : Fragment(R.layout.fragment_favorites),
             when (result) {
                 is Result.Loading -> {
                     binding.lottieLoading.visibility = View.VISIBLE
-                    Log.d("ViewModelFireStore", "Loading... ")
                 }
                 is Result.Success -> {
                     binding.lottieLoading.visibility = View.GONE
-                    Log.d("ViewModelFireStore", "Results... ${result.data} ")
                     binding.rvFavorites.adapter =
                         FavoritesAdapter(result.data, this@FavoritesFragment)
                     isBottomNavVisible()

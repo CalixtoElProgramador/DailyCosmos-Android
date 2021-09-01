@@ -16,6 +16,7 @@ object AppConstants {
     const val KEY_STORE_IS_THE_FIRST_TIME_ON_THE_APP = "preferences_is_the_first_time_in_the_app"
     const val KEY_STORE_IS_THE_FIRST_TIME_GET_RESULTS = "preferences_first_time_get_results"
     const val KEY_STORE_IS_DARK_THEME_ACTIVATED = "preferences_dark_theme_activated"
+    const val KEY_STORE_SHOW_AGAIN_DIALOG_IN_FAVORITES = "preferences_show_again_dialog_in_favorites"
 
 
 }

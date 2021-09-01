@@ -5,8 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.listocalixto.dailycosmos.data.model.APOD
 import com.listocalixto.dailycosmos.ui.main.explore.adapter.ExploreAdapter
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class MainViewModel : ViewModel() {
+@HiltViewModel
+class MainViewModel @Inject constructor() : ViewModel() {
 
     private val detailsArgs = MutableLiveData<DetailsArgs>()
     private val userHaveInternet = MutableLiveData<Boolean>()
@@ -19,6 +22,7 @@ class MainViewModel : ViewModel() {
     private val expandedExploreAppBar = MutableLiveData<Boolean>()
     private val dateRangePicker = MutableLiveData<DateRangePicker>()
     private val apodTranslated =  MutableLiveData<APODTranslated?>()
+    private val showFavoritesDialogAgain = MutableLiveData<Boolean>()
 
     fun setArgsToDetails(args: DetailsArgs) { detailsArgs.value = args }
     fun getArgsToDetails(): LiveData<DetailsArgs> = detailsArgs
@@ -52,6 +56,9 @@ class MainViewModel : ViewModel() {
 
     fun setAPODTranslated(translation: APODTranslated?) { apodTranslated.value = translation }
     fun getAPODTranslated(): LiveData<APODTranslated?> = apodTranslated
+
+    fun setShowFavoritesDialogAgain(answer: Boolean) { showFavoritesDialogAgain.value = answer }
+    fun isShowFavoritesDialogAgain(): LiveData<Boolean> = showFavoritesDialogAgain
 
 }
 
@@ -87,6 +94,6 @@ data class DateRangePicker(
 )
 
 data class APODTranslated(
-    val title: String,
-    val explanation: String
+    val title: String?,
+    val explanation: String?
 )

@@ -5,13 +5,13 @@
     <item
         android:id="@+id/todayFragment"
         android:enabled="true"
-        android:icon="@drawable/ic_today"
+        android:icon="@drawable/ic_today_border"
         android:title="@string/today" />
 
     <item
         android:id="@+id/exploreFragment"
         android:enabled="true"
-        android:icon="@drawable/ic_explore"
+        android:icon="@drawable/ic_explore_border"
         android:title="@string/explore" />
 
     <item

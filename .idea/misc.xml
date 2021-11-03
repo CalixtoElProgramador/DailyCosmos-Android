@@ -3,12 +3,36 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout-night/fragment_welcome_page01.xml" value="0.21388888888888888" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout-night/fragment_welcome_page02.xml" value="0.21388888888888888" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout-night/fragment_welcome_page03.xml" value="0.21388888888888888" />
         <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/activity_single.xml" value="0.20833333333333334" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_appearance.xml" value="0.21388888888888888" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_contact_me.xml" value="0.21388888888888888" />
         <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_details.xml" value="0.2234375" />
         <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_explorer.xml" value="0.2234375" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_favorites.xml" value="0.21388888888888888" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_help.xml" value="0.21388888888888888" />
         <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_login.xml" value="0.2234375" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_menu.xml" value="0.21388888888888888" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_parent_auth.xml" value="0.21388888888888888" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_parent_register.xml" value="0.21388888888888888" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_parent_settings.xml" value="0.21388888888888888" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_parent_welcome.xml" value="0.21388888888888888" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_picture.xml" value="0.21388888888888888" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_register01.xml" value="0.21388888888888888" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_register02.xml" value="0.21388888888888888" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_register03.xml" value="0.21388888888888888" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_splash.xml" value="0.21388888888888888" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_successful.xml" value="0.21388888888888888" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_today.xml" value="0.21388888888888888" />
         <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_welcome_page01.xml" value="0.2234375" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_welcome_page02.xml" value="0.21388888888888888" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/fragment_welcome_page03.xml" value="0.21388888888888888" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/item_apod.xml" value="0.21388888888888888" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/item_apod_daily.xml" value="0.21388888888888888" />
         <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/item_apod_favorite.xml" value="0.21" />
+        <entry key="..\:/Users/calix/Documents/-/Personal/Apps/DailyCosmos/app/src/main/res/layout/layout_bottom_sheet_profile_picture.xml" value="0.21388888888888888" />
       </map>
     </option>
   </component>

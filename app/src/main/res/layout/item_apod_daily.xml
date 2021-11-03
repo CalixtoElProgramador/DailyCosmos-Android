@@ -1,185 +1,192 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?attr/backgroundSecondary"
-    android:fitsSystemWindows="true">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar_details"
+    <data>
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_300sdp"
+        android:layout_height="match_parent"
         android:background="?attr/backgroundSecondary"
         android:fitsSystemWindows="true">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar_details"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            app:layout_scrollFlags="scroll|enterAlwaysCollapsed|snap"
-            app:statusBarScrim="?attr/colorSecondaryVariant">
+            android:layout_height="@dimen/_300sdp"
+            android:background="?attr/backgroundSecondary"
+            android:fitsSystemWindows="true">
 
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/pb_imageDetails"
-                android:layout_width="@dimen/_80sdp"
-                android:layout_height="@dimen/_80sdp"
-                android:layout_gravity="center"
-                android:layout_marginTop="@dimen/_8sdp"
-                android:visibility="visible"
-                app:lottie_autoPlay="true"
-                app:lottie_loop="true"
-                app:lottie_rawRes="@raw/planet_loading" />
-
-            <ImageView
-                android:id="@+id/img_apodPicture"
+            <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/content_description_cover_photo"
                 android:fitsSystemWindows="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/photo_cover" />
+                app:layout_scrollFlags="scroll|enterAlwaysCollapsed|snap"
+                app:statusBarScrim="?attr/colorSecondaryVariant">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/topAppBar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/transparent"
-                android:elevation="0dp"
-                app:layout_collapseMode="pin">
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/pb_imageDetails"
+                    android:layout_width="@dimen/_80sdp"
+                    android:layout_height="@dimen/_80sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    android:visibility="visible"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/planet_loading" />
 
-            </com.google.android.material.appbar.MaterialToolbar>
+                <ImageView
+                    android:id="@+id/img_apodPicture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/content_description_cover_photo"
+                    android:fitsSystemWindows="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/photo_cover" />
 
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/topAppBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@android:color/transparent"
+                    android:elevation="0dp"
+                    app:layout_collapseMode="pin">
 
-    </com.google.android.material.appbar.AppBarLayout>
+                </com.google.android.material.appbar.MaterialToolbar>
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-        <LinearLayout
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/text_apodDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_32sdp"
-                android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Overline"
-                android:layout_marginBottom="@dimen/_8sdp"
-                tools:text="2021-07-31" />
-
-            <TextView
-                android:id="@+id/text_apodTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/_16sdp"
-                android:paddingEnd="@dimen/_16sdp"
-                android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Headline4"
-                android:textColor="?attr/colorSecondary"
-                android:textIsSelectable="true"
-                tools:text="@string/title_item_apod" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_32sdp"
+                android:layout_height="match_parent"
                 android:gravity="center"
-                android:orientation="vertical"
-                android:paddingBottom="?attr/actionBarSize">
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/text_apodExplanation"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_24sdp"
-                    android:lineSpacingExtra="@dimen/_8sdp"
-                    android:paddingStart="@dimen/_16sdp"
-                    android:paddingEnd="@dimen/_16sdp"
-                    android:textAlignment="center"
-                    android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body1"
-                    android:textIsSelectable="true"
-                    tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor, massa a lacinia fringilla, nibh mauris eleifend neque, vitae feugiat mauris mauris id nibh. Nulla pretium dapibus metus a pellentesque. Vestibulum suscipit leo sed ligula tincidunt, a vulputate libero mollis. Suspendisse neque libero, ultrices non quam quis, aliquam accumsan ante. Sed mauris libero, sollicitudin nec ultricies id, congue vel nisi. Fusce dictum purus sed augue egestas scelerisque. Vestibulum fermentum id ligula vel accumsan. Vestibulum id nulla hendrerit, tempor risus id, ullamcorper sem. Pellentesque non purus suscipit, pharetra ligula at, egestas elit. Aliquam erat volutpat. Integer eu ex lobortis, aliquet metus ut, sollicitudin lorem." />
-
-                <TextView
-                    android:id="@+id/text_apodCopyright"
+                    android:id="@+id/text_apodDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_32sdp"
-                    android:lineSpacingExtra="@dimen/_8sdp"
-                    android:paddingStart="@dimen/_16sdp"
-                    android:paddingEnd="@dimen/_16sdp"
-                    android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Overline"
-                    android:textIsSelectable="true"
-                    android:textSize="@dimen/_15ssp"
-                    tools:text="Copyright: Aarón Calixto" />
+                    android:layout_marginBottom="@dimen/_8sdp"
+                    tools:text="2021-07-31" />
 
                 <TextView
-                    android:id="@+id/textVideoMessage"
+                    android:id="@+id/text_apodTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_32sdp"
-                    android:lineSpacingExtra="@dimen/_8sdp"
                     android:paddingStart="@dimen/_16sdp"
                     android:paddingEnd="@dimen/_16sdp"
-                    android:text="@string/in_case_if_media_type_is_video"
                     android:textAlignment="center"
-                    android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body2"
-                    android:textSize="@dimen/_13ssp"
-                    android:visibility="gone" />
+                    android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Headline4"
+                    android:textColor="?attr/colorSecondary"
+                    android:textIsSelectable="true"
+                    tools:text="@string/title_item_apod" />
 
-                <ImageButton
-                    android:id="@+id/iconCopyLink"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="@string/app_name"
-                    android:layout_marginTop="@dimen/_8sdp"
-                    android:padding="@dimen/_8sdp"
-                    android:src="@drawable/ic_link"
-                    android:visibility="gone" />
+                    android:layout_marginBottom="@dimen/_32sdp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingBottom="?attr/actionBarSize">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_translate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:backgroundTint="?attr/colorSecondary"
-                    android:textColor="?attr/colorOnSecondary"
-                    android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Button"
-                    android:layout_marginTop="@dimen/_32sdp"
-                    android:text="@string/translate" />
+                    <TextView
+                        android:id="@+id/text_apodExplanation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_24sdp"
+                        android:lineSpacingExtra="@dimen/_8sdp"
+                        android:paddingStart="@dimen/_16sdp"
+                        android:paddingEnd="@dimen/_16sdp"
+                        android:textAlignment="center"
+                        android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body1"
+                        android:textIsSelectable="true"
+                        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed porttitor, massa a lacinia fringilla, nibh mauris eleifend neque, vitae feugiat mauris mauris id nibh. Nulla pretium dapibus metus a pellentesque. Vestibulum suscipit leo sed ligula tincidunt, a vulputate libero mollis. Suspendisse neque libero, ultrices non quam quis, aliquam accumsan ante. Sed mauris libero, sollicitudin nec ultricies id, congue vel nisi. Fusce dictum purus sed augue egestas scelerisque. Vestibulum fermentum id ligula vel accumsan. Vestibulum id nulla hendrerit, tempor risus id, ullamcorper sem. Pellentesque non purus suscipit, pharetra ligula at, egestas elit. Aliquam erat volutpat. Integer eu ex lobortis, aliquet metus ut, sollicitudin lorem." />
 
-                <TextView
-                    android:id="@+id/textShowOriginal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Caption"
-                    android:layout_marginTop="@dimen/_4sdp"
-                    android:text="@string/show_original"
-                    android:textSize="@dimen/_13ssp"
-                    android:visibility="gone" />
+                    <TextView
+                        android:id="@+id/text_apodCopyright"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_32sdp"
+                        android:lineSpacingExtra="@dimen/_8sdp"
+                        android:paddingStart="@dimen/_16sdp"
+                        android:paddingEnd="@dimen/_16sdp"
+                        android:textAlignment="center"
+                        android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Overline"
+                        android:textIsSelectable="true"
+                        android:textSize="@dimen/_15ssp"
+                        tools:text="Copyright: Aarón Calixto" />
+
+                    <TextView
+                        android:id="@+id/textVideoMessage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_32sdp"
+                        android:lineSpacingExtra="@dimen/_8sdp"
+                        android:paddingStart="@dimen/_16sdp"
+                        android:paddingEnd="@dimen/_16sdp"
+                        android:text="@string/in_case_if_media_type_is_video"
+                        android:textAlignment="center"
+                        android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body2"
+                        android:textSize="@dimen/_13ssp"
+                        android:visibility="gone" />
+
+                    <ImageButton
+                        android:id="@+id/iconCopyLink"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="@string/app_name"
+                        android:layout_marginTop="@dimen/_8sdp"
+                        android:padding="@dimen/_8sdp"
+                        android:src="@drawable/ic_link"
+                        android:visibility="gone" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_translate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:backgroundTint="?attr/colorSecondary"
+                        android:textColor="?attr/colorOnSecondary"
+                        android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Button"
+                        android:layout_marginTop="@dimen/_32sdp"
+                        android:text="@string/translate" />
+
+                    <TextView
+                        android:id="@+id/textShowOriginal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Caption"
+                        android:layout_marginTop="@dimen/_4sdp"
+                        android:text="@string/show_original"
+                        android:textSize="@dimen/_13ssp"
+                        android:visibility="gone" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
 
-    </androidx.core.widget.NestedScrollView>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_addAPODFavorites"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_favorite_border"
+            app:layout_anchor="@id/appbar_details"
+            app:layout_anchorGravity="center|bottom" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_addAPODFavorites"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/app_name"
-        android:src="@drawable/ic_favorite_border"
-        app:layout_anchor="@id/appbar_details"
-        app:layout_anchorGravity="center|bottom" />
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

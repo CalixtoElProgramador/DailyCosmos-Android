@@ -1,105 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/_4sdp"
-    android:orientation="vertical"
-    android:paddingStart="@dimen/_16sdp"
-    android:paddingTop="?attr/actionBarSize"
-    android:paddingEnd="@dimen/_16sdp"
-    tools:context=".ui.auth.register.Register01Fragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
+    <data>
+
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/create_an_account"
-        android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Headline3" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/_16sdp"
+        android:paddingTop="?attr/actionBarSize"
+        android:paddingEnd="@dimen/_16sdp"
+        tools:context=".ui.auth.register.Register01Fragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_8sdp"
-        android:text="@string/subtitle_register01"
-        android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body1" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputLayout_name"
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_24sdp"
-        android:hint="@string/name"
-        app:endIconMode="clear_text"
-        app:errorIconDrawable="@drawable/ic_error"
-        app:hintTextAppearance="@style/TextAppearance.DailyCosmosTypography.Subtitle2"
-        app:startIconDrawable="@drawable/ic_person">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_name"
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:inputType="textPersonName"
-            android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body2" />
+            android:layout_height="wrap_content"
+            android:text="@string/create_an_account"
+            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Headline3" />
 
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputLayout_lastName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_16sdp"
-        android:hint="@string/lastname"
-        app:endIconMode="clear_text"
-        app:errorIconDrawable="@drawable/ic_error"
-        app:hintTextAppearance="@style/TextAppearance.DailyCosmosTypography.Subtitle2"
-        app:startIconDrawable="@drawable/ic_person_outline">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_lastName"
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:inputType="textPersonName"
-            android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body2" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:text="@string/subtitle_register01"
+            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body1" />
 
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputLayout_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_16sdp"
-        android:hint="@string/email"
-        app:endIconMode="clear_text"
-        app:errorIconDrawable="@drawable/ic_error"
-        app:hintTextAppearance="@style/TextAppearance.DailyCosmosTypography.Subtitle2"
-        app:startIconDrawable="@drawable/ic_email">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/input_email"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inputLayout_name"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:inputType="textEmailAddress"
-            android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body2" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_24sdp"
+            android:hint="@string/name"
+            app:endIconMode="clear_text"
+            app:errorIconDrawable="@drawable/ic_error"
+            app:hintTextAppearance="@style/TextAppearance.DailyCosmosTypography.Subtitle2"
+            app:startIconDrawable="@drawable/ic_person">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPersonName"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body2" />
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottie_loading"
-        android:layout_width="@dimen/_80sdp"
-        android:layout_height="@dimen/_80sdp"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/_24sdp"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_textRegister"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_rawRes="@raw/planet_loading" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-</LinearLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inputLayout_lastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:hint="@string/lastname"
+            app:endIconMode="clear_text"
+            app:errorIconDrawable="@drawable/ic_error"
+            app:hintTextAppearance="@style/TextAppearance.DailyCosmosTypography.Subtitle2"
+            app:startIconDrawable="@drawable/ic_person_outline">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_lastName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPersonName"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body2" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inputLayout_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:hint="@string/email"
+            app:endIconMode="clear_text"
+            app:errorIconDrawable="@drawable/ic_error"
+            app:hintTextAppearance="@style/TextAppearance.DailyCosmosTypography.Subtitle2"
+            app:startIconDrawable="@drawable/ic_email">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_email"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textEmailAddress"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body2" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_loading"
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="@dimen/_80sdp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_24sdp"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_textRegister"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/planet_loading" />
+
+    </LinearLayout>
+</layout>

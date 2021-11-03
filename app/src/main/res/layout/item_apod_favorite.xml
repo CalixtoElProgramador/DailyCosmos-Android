@@ -1,59 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card"
-    style="@style/Widget.App.CardView.Favorites"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/_8sdp"
-    android:layout_marginBottom="@dimen/_8sdp"
-    app:cardPreventCornerOverlap="false"
-    tools:ignore="RtlSymmetry">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <data>
+
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card"
+        style="@style/Widget.App.CardView.Favorites"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/_90sdp">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        app:cardPreventCornerOverlap="false"
+        tools:ignore="RtlSymmetry">
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:gravity="end"
-            android:orientation="vertical"
-            android:paddingStart="@dimen/_16sdp"
-            android:paddingEnd="@dimen/_16sdp">
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_90sdp">
 
-            <TextView
-                android:id="@+id/title_apodFavorite"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:maxLines="2"
-                android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Subtitle1"
-                tools:text="Mima asdasda sasds asdasd asda sdasdasd" />
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/_16sdp"
+                android:paddingEnd="@dimen/_16sdp">
 
-            <TextView
-                android:id="@+id/date_apodFavorite"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_2sdp"
-                android:textColor="?attr/colorPrimary"
-                android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Overline"
-                tools:text="2021-08-09" />
+                <TextView
+                    android:id="@+id/title_apodFavorite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="2"
+                    android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Subtitle1"
+                    tools:text="Mima asdasda sasds asdasd asda sdasdasd" />
+
+                <TextView
+                    android:id="@+id/date_apodFavorite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:textColor="?attr/colorPrimary"
+                    android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Overline"
+                    tools:text="2021-08-09" />
+
+            </LinearLayout>
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/img_apodFavorite"
+                android:layout_width="@dimen/_110sdp"
+                android:layout_height="@dimen/_90sdp"
+                android:contentDescription="@string/app_name"
+                app:shapeAppearance="?attr/shapeAppearanceMediumComponent"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Card.Media"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/photo_item_apod" />
 
         </LinearLayout>
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/img_apodFavorite"
-            android:layout_width="@dimen/_110sdp"
-            android:layout_height="@dimen/_90sdp"
-            android:contentDescription="@string/app_name"
-            app:shapeAppearance="?attr/shapeAppearanceMediumComponent"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.Card.Media"
-            android:scaleType="centerCrop"
-            tools:src="@drawable/photo_item_apod" />
-
-    </LinearLayout>
-
-</com.google.android.material.card.MaterialCardView>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

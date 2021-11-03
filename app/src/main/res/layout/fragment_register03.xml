@@ -1,50 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:layout_marginTop="@dimen/_4sdp"
-    android:paddingStart="@dimen/_16sdp"
-    android:paddingTop="?attr/actionBarSize"
-    android:paddingEnd="@dimen/_16sdp"
-    tools:context=".ui.auth.register.Register03Fragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profilePicture"
-        android:layout_width="@dimen/_180sdp"
-        android:layout_height="@dimen/_180sdp"
-        android:background="@drawable/ic_photo" />
+    <data>
 
-    <TextView
-        style="@style/TextAppearance.DailyCosmosTypography.Headline3"
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:gravity="center"
-        android:text="@string/smile" />
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:paddingStart="@dimen/_16sdp"
+        android:paddingTop="?attr/actionBarSize"
+        android:paddingEnd="@dimen/_16sdp"
+        tools:context=".ui.auth.register.Register03Fragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_marginTop="@dimen/_8sdp"
-        android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body1"
-        android:text="@string/subtitle_register_03" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profilePicture"
+            android:layout_width="@dimen/_180sdp"
+            android:layout_height="@dimen/_180sdp"
+            android:background="@drawable/ic_photo" />
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottie_loading"
-        android:layout_width="@dimen/_80sdp"
-        android:layout_height="@dimen/_80sdp"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/_24sdp"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_textRegister"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_rawRes="@raw/planet_loading" />
+        <TextView
+            style="@style/TextAppearance.DailyCosmosTypography.Headline3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/smile" />
 
-</LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body1"
+            android:text="@string/subtitle_register_03" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_loading"
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="@dimen/_80sdp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_24sdp"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_textRegister"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/planet_loading" />
+
+    </LinearLayout>
+</layout>

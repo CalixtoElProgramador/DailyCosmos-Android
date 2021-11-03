@@ -1,69 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/bottomSheetDialog"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?attr/background"
-    android:paddingStart="@dimen/_16sdp"
-    android:paddingTop="@dimen/_16sdp"
-    android:paddingEnd="@dimen/_16sdp"
-    android:paddingBottom="@dimen/_24sdp"
-    android:visibility="visible"
-    app:behavior_hideable="true"
-    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/text_titleBottomSheet"
-        android:layout_width="wrap_content"
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomSheetDialog"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/profile_picture"
-        android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Headline6"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="?attr/background"
+        android:paddingStart="@dimen/_16sdp"
+        android:paddingTop="@dimen/_16sdp"
+        android:paddingEnd="@dimen/_16sdp"
+        android:paddingBottom="@dimen/_24sdp"
+        android:visibility="visible"
+        app:behavior_hideable="true"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <TextView
+            android:id="@+id/text_titleBottomSheet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_picture"
+            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Headline6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
-    <ImageView
-        android:id="@+id/image_gallery"
-        android:layout_width="@dimen/_32sdp"
-        android:layout_height="@dimen/_32sdp"
-        android:layout_marginStart="@dimen/_24sdp"
-        android:layout_marginTop="@dimen/_16sdp"
-        android:contentDescription="@string/app_name"
-        android:src="@drawable/ic_photo"
-        app:layout_constraintStart_toStartOf="@id/text_titleBottomSheet"
-        app:layout_constraintTop_toBottomOf="@+id/text_titleBottomSheet" />
+        <ImageView
+            android:id="@+id/image_gallery"
+            android:layout_width="@dimen/_32sdp"
+            android:layout_height="@dimen/_32sdp"
+            android:layout_marginStart="@dimen/_24sdp"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_photo"
+            app:layout_constraintStart_toStartOf="@id/text_titleBottomSheet"
+            app:layout_constraintTop_toBottomOf="@+id/text_titleBottomSheet" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_4sdp"
-        android:text="@string/gallery"
-        android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body2"
-        app:layout_constraintEnd_toEndOf="@id/image_gallery"
-        app:layout_constraintStart_toStartOf="@id/image_gallery"
-        app:layout_constraintTop_toBottomOf="@id/image_gallery" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:text="@string/gallery"
+            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body2"
+            app:layout_constraintEnd_toEndOf="@id/image_gallery"
+            app:layout_constraintStart_toStartOf="@id/image_gallery"
+            app:layout_constraintTop_toBottomOf="@id/image_gallery" />
 
-    <ImageView
-        android:id="@+id/image_camera"
-        android:layout_width="@dimen/_32sdp"
-        android:layout_height="@dimen/_32sdp"
-        android:layout_marginStart="@dimen/_48sdp"
-        android:contentDescription="@string/app_name"
-        android:src="@drawable/ic_camera"
-        app:layout_constraintBottom_toBottomOf="@id/image_gallery"
-        app:layout_constraintStart_toEndOf="@id/image_gallery"
-        app:layout_constraintTop_toTopOf="@id/image_gallery" />
+        <ImageView
+            android:id="@+id/image_camera"
+            android:layout_width="@dimen/_32sdp"
+            android:layout_height="@dimen/_32sdp"
+            android:layout_marginStart="@dimen/_48sdp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_camera"
+            app:layout_constraintBottom_toBottomOf="@id/image_gallery"
+            app:layout_constraintStart_toEndOf="@id/image_gallery"
+            app:layout_constraintTop_toTopOf="@id/image_gallery" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_4sdp"
-        android:text="@string/camera"
-        android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body2"
-        app:layout_constraintEnd_toEndOf="@id/image_camera"
-        app:layout_constraintStart_toStartOf="@id/image_camera"
-        app:layout_constraintTop_toBottomOf="@id/image_camera" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:text="@string/camera"
+            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Body2"
+            app:layout_constraintEnd_toEndOf="@id/image_camera"
+            app:layout_constraintStart_toStartOf="@id/image_camera"
+            app:layout_constraintTop_toBottomOf="@id/image_camera" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

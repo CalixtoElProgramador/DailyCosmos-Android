@@ -1,37 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.welcome.WelcomeParentFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager"
+    <data>
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:context=".ui.welcome.WelcomeParentFragment">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonNext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/_56sdp"
-        android:text="@string/start_now"
-        android:visibility="visible"
-        android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Button"
-        android:textColor="?attr/variationAlpha00"
-        app:layout_anchor="@id/viewPager"
-        app:layout_anchorGravity="bottom|center" />
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-    <LinearLayout
-        android:id="@+id/layoutOnBoardingIndicators"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/_16sdp"
-        android:orientation="horizontal"
-        android:padding="@dimen/_16sdp"
-        app:layout_anchor="@id/viewPager"
-        app:layout_anchorGravity="bottom|center" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_56sdp"
+            android:text="@string/start_now"
+            android:visibility="visible"
+            android:textAppearance="@style/TextAppearance.DailyCosmosTypography.Button"
+            android:textColor="?attr/variationAlpha00"
+            app:layout_anchor="@id/viewPager"
+            app:layout_anchorGravity="bottom|center" />
+
+        <LinearLayout
+            android:id="@+id/layoutOnBoardingIndicators"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_16sdp"
+            android:orientation="horizontal"
+            android:padding="@dimen/_16sdp"
+            app:layout_anchor="@id/viewPager"
+            app:layout_anchorGravity="bottom|center" />
 
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

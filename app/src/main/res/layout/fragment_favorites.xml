@@ -1,40 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_gravity="bottom"
-    android:background="?attr/background"
-    tools:context=".ui.main.favorites.FavoritesFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottie_loading"
-        android:layout_width="@dimen/_120sdp"
-        android:layout_height="@dimen/_120sdp"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_rawRes="@raw/planet_loading" />
+    <data>
 
-    <!-- TODO: Update blank parentFragment layout -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_favorites"
-        android:layout_width="wrap_content"
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="end"
-        android:layout_marginBottom="@dimen/_8sdp"
-        android:clipToPadding="false"
-        android:fadeScrollbars="true"
-        android:layoutDirection="rtl"
-        android:paddingTop="@dimen/_32sdp"
-        android:paddingStart="@dimen/_16sdp"
-        android:paddingBottom="?attr/actionBarSize"
-        android:scrollbarFadeDuration="@integer/material_motion_duration_medium_1"
-        android:verticalScrollbarPosition="right"
-        android:scrollbars="vertical"
-        android:text="@string/hello_blank_fragment"
-        tools:ignore="RtlSymmetry" />
+        android:layout_gravity="bottom"
+        android:background="?attr/background"
+        tools:context=".ui.main.favorites.FavoritesFragment">
 
-</FrameLayout>
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_loading"
+            android:layout_width="@dimen/_120sdp"
+            android:layout_height="@dimen/_120sdp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/planet_loading" />
+
+        <!-- TODO: Update blank parentFragment layout -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_favorites"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:clipToPadding="false"
+            android:fadeScrollbars="true"
+            android:layoutDirection="rtl"
+            android:paddingTop="@dimen/_32sdp"
+            android:paddingStart="@dimen/_16sdp"
+            android:paddingBottom="?attr/actionBarSize"
+            android:scrollbarFadeDuration="@integer/material_motion_duration_medium_1"
+            android:verticalScrollbarPosition="right"
+            android:scrollbars="vertical"
+            android:text="@string/hello_blank_fragment"
+            tools:ignore="RtlSymmetry" />
+
+    </FrameLayout>
+</layout>

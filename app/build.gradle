@@ -45,7 +45,7 @@ dependencies {
 
     // App dependencies
     testImplementation 'junit:junit:4.13.2'
-    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
@@ -67,10 +67,10 @@ dependencies {
 
     // Navigation Components
     implementation "androidx.activity:activity-ktx:1.4.0"
-    implementation "androidx.fragment:fragment-ktx:1.4.0-beta01"
-    implementation "androidx.navigation:navigation-ui-ktx:2.4.0-beta01"
-    implementation "androidx.navigation:navigation-fragment-ktx:2.4.0-beta01"
-    implementation "androidx.navigation:navigation-dynamic-features-fragment:2.4.0-beta01"
+    implementation "androidx.fragment:fragment-ktx:1.4.0-rc01"
+    implementation "androidx.navigation:navigation-ui-ktx:2.4.0-beta02"
+    implementation "androidx.navigation:navigation-fragment-ktx:2.4.0-beta02"
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:2.4.0-beta02"
 
     // LifeCycle
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"

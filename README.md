@@ -1,4 +1,7 @@
 # 🪐 Dailycosmos ![](https://img.shields.io/static/v1?style=plastic&label=Version&labelColor=212121&message=1.0.0&color=green) ![](https://img.shields.io/static/v1?style=plastic&label=Language&labelColor=212121&message=Kotlin&color=9719ff) ![](https://img.shields.io/static/v1?style=plastic&label=Technology&labelColor=212121&message=Android&color=#a4c639) ![](https://img.shields.io/static/v1?style=plastic&label=Backend&labelColor=212121&message=Firebase&color=ff9819) ![](https://img.shields.io/static/v1?style=plastic&label=Layout&labelColor=212121&message=XML&color=ff0068)
+
+![](dailycosmos_cover.jpg?raw=true)
+> 
 > ✨ My first app on Play Store. View as many photos as you can of the cosmos published by NASA since 1995. Create a user to save your favorites in the cloud or download them to your internal memory. 🌌.
 > Download it [_here_][application]
 
@@ -10,7 +13,6 @@
 * [Screenshots](#screenshots)
 * [Material Theming](#material-theming)
 * [Setup](#setup)
-* [Usage](#usage)
 * [Project Status](#project-status)
 * [Room for Improvement](#room-for-improvement)
 * [Acknowledgements](#acknowledgements)
